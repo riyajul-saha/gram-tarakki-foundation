@@ -14,297 +14,307 @@
 </head>
 
 <body>
-    <!-- Header & Navigation -->
-    <header>
-        <div class="container">
-            <nav class="navbar">
-                <a href="#" class="logo">Gram Tarakki</a>
-                <ul class="nav-menu">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="programs.html">Programs</a></li>
-                    <li><a href="#event">Events</a></li>
-                    <li><a href="#gallery">Gallery</a></li>
-                    <li><a href="#donate" class="btn btn-primary">Donate</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-                <div class="hamburger">
-                    <i class="fas fa-bars"></i>
-                </div>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Building self-reliant villages — Education · Health · Livelihood</h1>
-            <p>We empower marginalised and rural communities with education, healthcare and livelihood support.</p>
-            <div class="hero-buttons">
-                <a href="#donate" class="btn btn-primary">Donate Now</a>
-                <a href="#join" class="btn btn-secondary">Join a Program</a>
+    <div class="page-wrapper">
+        <!-- Header & Navigation -->
+        <header>
+            <div class="container">
+                <nav class="navbar">
+                    <a href="#" class="logo">
+                        <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Gram Tarakki Logo">
+                        Gram Tarakki
+                    </a>
+                    <ul class="nav-menu">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="programs.html">Programs</a></li>
+                        <li><a href="#event">Events</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#donate">Donate</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                    <div class="hamburger">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </nav>
             </div>
-        </div>
-    </section>
+        </header>
 
-    <!-- What We Do Section -->
-    <section id="what-we-do" class="what-we-do">
-        <div class="container">
-            <h2 class="section-title">What We Do</h2>
-            <div class="cards-container">
-                <div class="card">
-                    <i class="fas fa-graduation-cap"></i>
-                    <h3>Education</h3>
-                    <p>Providing quality education and learning resources to rural children and youth.</p>
-                    <a href="#" class="btn btn-primary">Know More</a>
-                </div>
-                <div class="card">
-                    <i class="fas fa-heartbeat"></i>
-                    <h3>Health</h3>
-                    <p>Ensuring accessible healthcare services and health awareness programs.</p>
-                    <a href="#" class="btn btn-primary">Know More</a>
-                </div>
-                <div class="card">
-                    <i class="fas fa-tools"></i>
-                    <h3>Skill Training</h3>
-                    <p>Vocational training to enhance employability and self-sufficiency.</p>
-                    <a href="#" class="btn btn-primary">Know More</a>
-                </div>
-                <div class="card">
-                    <i class="fas fa-fist-raised"></i>
-                    <h3>Karate & Self-defence</h3>
-                    <p>Empowering women and children with self-defence techniques and confidence.</p>
-                    <a href="#" class="btn btn-primary">Know More</a>
-                </div>
-                <div class="card">
-                    <i class="fas fa-spa"></i>
-                    <h3>Yoga</h3>
-                    <p>Promoting physical and mental wellbeing through regular yoga sessions.</p>
-                    <a href="#" class="btn btn-primary">Know More</a>
-                </div>
-                <div class="card">
-                    <i class="fas fa-hands-helping"></i>
-                    <h3>Children & Elders</h3>
-                    <p>Special care and support programs for vulnerable age groups.</p>
-                    <a href="#" class="btn btn-primary">Know More</a>
-                </div>
-                <div class="card">
-                    <i class="fas fa-paw"></i>
-                    <h3>Animal Welfare</h3>
-                    <p>Providing care and medical support for animals in rural areas.</p>
-                    <a href="#" class="btn btn-primary">Know More</a>
-                </div>
-                <div class="card">
-                    <i class="fas fa-leaf"></i>
-                    <h3>Environment</h3>
-                    <p>Tree plantation, waste management and environmental awareness campaigns.</p>
-                    <a href="#" class="btn btn-primary">Know More</a>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Building self-reliant villages — Education · Health · Livelihood</h1>
+                <p>We empower marginalised and rural communities with education, healthcare and livelihood support.</p>
+                <div class="hero-buttons">
+                    <a href="#donate" class="btn btn-primary">Donate Now</a>
+                    <a href="#join" class="btn btn-secondary">Join a Program</a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Impact Snapshot -->
-    <section class="impact">
-        <div class="container">
-            <h2 class="section-title">Our Impact</h2>
-            <div class="impact-stats">
-                <div class="stat-item">
-                    <div class="stat-number" id="villages-count">42</div>
-                    <div class="stat-label">Villages Reached</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="people-count">1850</div>
-                    <div class="stat-label">People Trained</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="events-count">67</div>
-                    <div class="stat-label">Events Held</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Event Section -->
-    <section id="event" class="event">
-        <div class="container">
-            <div class="event-content">
-                <h2>WADO West Bengal Karate Championship 2025</h2>
-                <p>Join us for the biggest karate championship in West Bengal, bringing together talented martial
-                    artists from across the state. This event aims to promote discipline, self-defence skills, and
-                    physical fitness among youth.</p>
-                <a href="#" class="btn btn-secondary">Learn More</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section id="gallery" class="gallery">
-        <div class="container">
-            <h2 class="section-title">Our Gallery</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item"
-                    data-src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
-                    <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        alt="Yoga session">
-                </div>
-                <div class="gallery-item"
-                    data-src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
-                    <img src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        alt="Karate training">
-                </div>
-                <div class="gallery-item"
-                    data-src="https://images.unsplash.com/photo-1492684223066-e9e3a5c4c029?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
-                    <img src="https://images.unsplash.com/photo-1492684223066-e9e3a5c4c029?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        alt="Stage performance">
-                </div>
-                <div class="gallery-item"
-                    data-src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
-                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        alt="Health camp">
-                </div>
-                <div class="gallery-item"
-                    data-src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
-                    <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        alt="Award distribution">
-                </div>
-            </div>
-        </div>
-
-        <!-- Lightbox -->
-        <div id="lightbox" class="lightbox">
-            <span class="close-lightbox">&times;</span>
-            <img class="lightbox-content" id="lightbox-img">
-        </div>
-    </section>
-
-    <!-- Donate Block -->
-    <section id="donate" class="join-form">
-        <div class="container">
-            <div class="form-container">
-                <h2 style="text-align: center; color: var(--earth-green); margin-bottom: 30px;">Support Our Cause</h2>
-                <p style="text-align: center; margin-bottom: 30px; color: var(--light-text);">Your donation helps us
-                    continue our work in education, health, and livelihood programs for rural communities.</p>
-                <div style="text-align: center;">
-                    <a href="#" class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 40px;">Donate Now</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Join Form Section -->
-    <section id="join" class="join-form">
-        <div class="container">
-            <h2 class="section-title">Join Our Programs</h2>
-            <div class="form-container">
-                <form id="join-form">
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+        <!-- What We Do Section -->
+        <section id="what-we-do" class="what-we-do">
+            <div class="container">
+                <h2 class="section-title">What We Do</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h3>Education</h3>
+                        <p>Providing quality education and learning resources to rural children and youth.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                    <div class="card">
+                        <i class="fas fa-heartbeat"></i>
+                        <h3>Health</h3>
+                        <p>Ensuring accessible healthcare services and health awareness programs.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
                     </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number"
-                            required>
+                    <div class="card">
+                        <i class="fas fa-tools"></i>
+                        <h3>Skill Training</h3>
+                        <p>Vocational training to enhance employability and self-sufficiency.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
                     </div>
-                    <div class="form-group">
-                        <label for="interest">Area of Interest</label>
-                        <select id="interest" class="form-control" required>
-                            <option value="" disabled selected>Select your interest</option>
-                            <option value="yoga">Yoga</option>
-                            <option value="karate">Karate</option>
-                            <option value="skill-enhancement">Skill Enhancement</option>
-                            <option value="education">Education</option>
-                            <option value="health">Health</option>
-                        </select>
+                    <div class="card">
+                        <i class="fas fa-fist-raised"></i>
+                        <h3>Karate & Self-defence</h3>
+                        <p>Empowering women and children with self-defence techniques and confidence.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
                     </div>
-                    <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" id="city" class="form-control" placeholder="Enter your city" required>
+                    <div class="card">
+                        <i class="fas fa-spa"></i>
+                        <h3>Yoga</h3>
+                        <p>Promoting physical and mental wellbeing through regular yoga sessions.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
                     </div>
-                    <div class="form-submit">
-                        <button type="submit" class="btn btn-primary">Submit Application</button>
+                    <div class="card">
+                        <i class="fas fa-hands-helping"></i>
+                        <h3>Children & Elders</h3>
+                        <p>Special care and support programs for vulnerable age groups.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
                     </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section class="testimonials">
-        <div class="container">
-            <h2 class="section-title">What People Say</h2>
-            <div class="testimonial-container">
-                <div class="testimonial-slide active">
-                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        alt="Testimonial 1" class="testimonial-img">
-                    <p class="testimonial-text">"Gram Tarakki's karate program transformed my daughter's confidence.
-                        She's now more assertive and focused in her studies too."</p>
-                    <p class="testimonial-author">- Priya Sharma, Mother</p>
-                </div>
-                <div class="testimonial-slide">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        alt="Testimonial 2" class="testimonial-img">
-                    <p class="testimonial-text">"The skill training helped me start my own tailoring business. I'm now
-                        earning enough to support my family."</p>
-                    <p class="testimonial-author">- Rajesh Kumar, Entrepreneur</p>
-                </div>
-                <div class="testimonial-slide">
-                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        alt="Testimonial 3" class="testimonial-img">
-                    <p class="testimonial-text">"Regular yoga sessions have improved my health significantly. I'm
-                        grateful for Gram Tarakki's free community classes."</p>
-                    <p class="testimonial-author">- Sunita Devi, Yoga Participant</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-contact">
-                    <div class="footer-logo">Gram Tarakki</div>
-                    <p>Empowering rural communities through education, healthcare, and sustainable livelihood programs.
-                    </p>
-                    <div class="contact-item">
-                        <i class="fas fa-phone-alt"></i>
-                        <span>9382318936</span>
+                    <div class="card">
+                        <i class="fas fa-paw"></i>
+                        <h3>Animal Welfare</h3>
+                        <p>Providing care and medical support for animals in rural areas.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
                     </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>gramtarakki786@gmail.com</span>
-                    </div>
-                </div>
-                <div class="footer-social">
-                    <h3>Follow Us</h3>
-                    <p>Stay connected with our latest updates and activities.</p>
-                    <div class="social-icons">
-                        <a href="https://www.youtube.com/gramtarakki" class="social-icon" target="_blank">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                        <a href="https://www.facebook.com/gram-tarakki" class="social-icon" target="_blank">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="social-icon">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="social-icon">
-                            <i class="fab fa-twitter"></i>
-                        </a>
+                    <div class="card">
+                        <i class="fas fa-leaf"></i>
+                        <h3>Environment</h3>
+                        <p>Tree plantation, waste management and environmental awareness campaigns.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
                     </div>
                 </div>
             </div>
-            <div class="copyright">
-                &copy; 2023 Gram Tarakki. All rights reserved.
+        </section>
+
+        <!-- Impact Snapshot -->
+        <section class="impact">
+            <div class="container">
+                <h2 class="section-title">Our Impact</h2>
+                <div class="impact-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="villages-count">42</div>
+                        <div class="stat-label">Villages Reached</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="people-count">1850</div>
+                        <div class="stat-label">People Trained</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="events-count">67</div>
+                        <div class="stat-label">Events Held</div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </footer>
+        </section>
+
+        <!-- Event Section -->
+        <section id="event" class="event">
+            <div class="container">
+                <div class="event-content">
+                    <h2>WADO West Bengal Karate Championship 2025</h2>
+                    <p>Join us for the biggest karate championship in West Bengal, bringing together talented martial
+                        artists from across the state. This event aims to promote discipline, self-defence skills, and
+                        physical fitness among youth.</p>
+                    <a href="#" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="gallery">
+            <div class="container">
+                <h2 class="section-title">Our Gallery</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item"
+                        data-src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
+                        <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Yoga session">
+                    </div>
+                    <div class="gallery-item"
+                        data-src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
+                        <img src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Karate training">
+                    </div>
+                    <div class="gallery-item"
+                        data-src="https://images.unsplash.com/photo-1492684223066-e9e3a5c4c029?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
+                        <img src="https://images.unsplash.com/photo-1492684223066-e9e3a5c4c029?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Stage performance">
+                    </div>
+                    <div class="gallery-item"
+                        data-src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Health camp">
+                    </div>
+                    <div class="gallery-item"
+                        data-src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80">
+                        <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Award distribution">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lightbox -->
+            <div id="lightbox" class="lightbox">
+                <span class="close-lightbox">&times;</span>
+                <img class="lightbox-content" id="lightbox-img">
+            </div>
+        </section>
+
+        <!-- Donate Block -->
+        <section id="donate" class="join-form">
+            <div class="container">
+                <div class="form-container">
+                    <h2 style="text-align: center; color: var(--earth-green); margin-bottom: 30px;">Support Our Cause
+                    </h2>
+                    <p style="text-align: center; margin-bottom: 30px; color: var(--light-text);">Your donation helps us
+                        continue our work in education, health, and livelihood programs for rural communities.</p>
+                    <div style="text-align: center;">
+                        <a href="#" class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 40px;">Donate
+                            Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Join Form Section -->
+        <section id="join" class="join-form">
+            <div class="container">
+                <h2 class="section-title">Join Our Programs</h2>
+                <div class="form-container">
+                    <form id="join-form">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="Enter your full name"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="interest">Area of Interest</label>
+                            <select id="interest" class="form-control" required>
+                                <option value="" disabled selected>Select your interest</option>
+                                <option value="yoga">Yoga</option>
+                                <option value="karate">Karate</option>
+                                <option value="skill-enhancement">Skill Enhancement</option>
+                                <option value="education">Education</option>
+                                <option value="health">Health</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" class="form-control" placeholder="Enter your city" required>
+                        </div>
+                        <div class="form-submit">
+                            <button type="submit" class="btn btn-primary">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials">
+            <div class="container">
+                <h2 class="section-title">What People Say</h2>
+                <div class="testimonial-container">
+                    <div class="testimonial-slide active">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Testimonial 1" class="testimonial-img">
+                        <p class="testimonial-text">"Gram Tarakki's karate program transformed my daughter's confidence.
+                            She's now more assertive and focused in her studies too."</p>
+                        <p class="testimonial-author">- Priya Sharma, Mother</p>
+                    </div>
+                    <div class="testimonial-slide">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Testimonial 2" class="testimonial-img">
+                        <p class="testimonial-text">"The skill training helped me start my own tailoring business. I'm
+                            now
+                            earning enough to support my family."</p>
+                        <p class="testimonial-author">- Rajesh Kumar, Entrepreneur</p>
+                    </div>
+                    <div class="testimonial-slide">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Testimonial 3" class="testimonial-img">
+                        <p class="testimonial-text">"Regular yoga sessions have improved my health significantly. I'm
+                            grateful for Gram Tarakki's free community classes."</p>
+                        <p class="testimonial-author">- Sunita Devi, Yoga Participant</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer id="contact">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-contact">
+                        <div class="footer-logo">Gram Tarakki</div>
+                        <p>Empowering rural communities through education, healthcare, and sustainable livelihood
+                            programs.
+                        </p>
+                        <div class="contact-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <span>9382318936</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>gramtarakki786@gmail.com</span>
+                        </div>
+                    </div>
+                    <div class="footer-social">
+                        <h3>Follow Us</h3>
+                        <p>Stay connected with our latest updates and activities.</p>
+                        <div class="social-icons">
+                            <a href="https://www.youtube.com/gramtarakki" class="social-icon" target="_blank">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                            <a href="https://www.facebook.com/gram-tarakki" class="social-icon" target="_blank">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="copyright">
+                    &copy; 2023 Gram Tarakki. All rights reserved.
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 </body>

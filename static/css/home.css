@@ -20,7 +20,7 @@
         body {
             font-family: 'Inter', sans-serif;
             color: var(--dark-text);
-            background-color: var(--soft-beige);
+            background-color: #f0ebe5;
             line-height: 1.6;
         }
 
@@ -84,11 +84,19 @@
             box-shadow: 0 10px 20px rgba(217, 115, 59, 0.2);
         }
 
+        .page-wrapper {
+            max-width: 1440px;
+            margin: 0 auto;
+            background-color: var(--white);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
         /* Header & Navigation */
         header {
             background-color: var(--white);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: fixed;
+            position: sticky;
             width: 100%;
             top: 0;
             z-index: 1000;
@@ -107,6 +115,14 @@
             font-weight: 700;
             color: var(--earth-green);
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
         }
 
         .nav-menu {
@@ -263,7 +279,6 @@
             background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../images/wado.webp');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
             color: var(--white);
         }
 
