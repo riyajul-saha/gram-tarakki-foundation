@@ -20,7 +20,7 @@
         body {
             font-family: 'Inter', sans-serif;
             color: var(--dark-text);
-            background-color: #f0ebe5;
+            background-color: #F3F8F5;
             line-height: 1.6;
         }
 
@@ -87,7 +87,7 @@
         .page-wrapper {
             max-width: 1440px;
             margin: 0 auto;
-            background-color: var(--white);
+            background-color: #F3F8F5;
             box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
             position: relative;
         }
@@ -161,7 +161,7 @@
         .hero {
             padding-top: 150px;
             padding-bottom: 100px;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../images/hero.webp');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../images/home/hero.webp');
             background-size: cover;
             background-position: center;
             color: var(--white);
@@ -194,7 +194,7 @@
 
         /* What We Do Section */
         .what-we-do {
-            background-color: var(--white);
+            background-color: #F3F8F5;
         }
 
         .cards-container {
@@ -276,7 +276,7 @@
 
         /* Event Section */
         .event {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../images/wado.webp');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../images/home/wado.webp');
             background-size: cover;
             background-position: center;
             color: var(--white);
@@ -362,7 +362,7 @@
 
         /* Join Form Section */
         .join-form {
-            background-color: var(--white);
+            background-color: #F3F8F5;
         }
 
         .form-container {
