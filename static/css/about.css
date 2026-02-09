@@ -195,7 +195,7 @@ header {
 .about-hero {
     padding-top: 150px;
     padding-bottom: 60px;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../images/about/hero.webp');
     background-size: cover;
     background-position: center;
     color: var(--white);
@@ -232,9 +232,14 @@ header {
     gap: 60px;
 }
 
-.mission-text,
+.mission-text {
+    flex: 0.8;
+    /* Reduced text width slightly */
+}
+
 .mission-image {
-    flex: 1;
+    flex: 1.2;
+    /* Increased image width */
 }
 
 .mission-text h2 {
@@ -254,14 +259,27 @@ header {
 }
 
 .mission-image img {
+    /* Explicit dimensions requested */
+    width: 416px;
+    height: 228px;
+    object-fit: cover;
+    /* Maintain aspect ratio */
     max-width: 100%;
+    /* Ensure responsiveness */
     border-radius: var(--border-radius);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+    /* Added transition */
 }
 
 /* Vision Section */
 .vision {
     background-color: var(--soft-beige);
+}
+
+/* Reverted container width */
+.vision .container {
+    max-width: 1200px;
 }
 
 .vision-content {
@@ -270,7 +288,12 @@ header {
     gap: 60px;
 }
 
-.vision-text,
+.vision-text {
+    flex: 1;
+    max-width: 500px;
+    /* Constrain text width */
+}
+
 .vision-image {
     flex: 1;
 }
@@ -295,6 +318,14 @@ header {
     max-width: 100%;
     border-radius: var(--border-radius);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+    /* Added transition */
+}
+
+.mission-image:hover img,
+.vision-image:hover img {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 /* Our Journey Section */
@@ -664,6 +695,14 @@ footer {
     .mission-content,
     .vision-content {
         flex-direction: column;
+    }
+
+    .mission-text,
+    .mission-image,
+    .vision-text,
+    .vision-image {
+        width: 100%;
+        flex: auto;
     }
 
     .mission-image,

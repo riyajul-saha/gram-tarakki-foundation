@@ -66,8 +66,7 @@
                     </div>
                     <div class="mission-image">
                         <!-- In production, replace with mission.webp -->
-                        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                            alt="Our Mission">
+                        <img src="{{ url_for('static', filename='images/about/mission.webp') }}" alt="Our Mission">
                     </div>
                 </div>
             </div>
@@ -90,8 +89,6 @@
                             protecting the vulnerable through compassionate care in old-age homes and orphanages, and
                             empowering women, children, and marginalized groups like tribal communities and migrant
                             labour with knowledge, legal aid, and livelihood support. </p>
-                        <a href="{{ url_for('hello_world', _anchor='join') }}" class="btn btn-secondary">Join Our
-                            Movement</a>
                     </div>
                 </div>
             </div>
