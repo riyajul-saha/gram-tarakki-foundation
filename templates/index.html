@@ -19,13 +19,13 @@
         <header>
             <div class="container">
                 <nav class="navbar">
-                    <a href="#" class="logo">
+                    <a href="{{ url_for('hello_world') }}" class="logo">
                         <img src="{{ url_for('static', filename='images/home/logo.webp') }}" alt="Gram Tarakki Logo">
                         Gram Tarakki
                     </a>
                     <ul class="nav-menu">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="about.html">About</a></li>
+                        <li><a href="{{ url_for('hello_world') }}">Home</a></li>
+                        <li><a href="{{ url_for('about') }}">About</a></li>
                         <li><a href="programs.html">Programs</a></li>
                         <li><a href="#event">Events</a></li>
                         <li><a href="#gallery">Gallery</a></li>
@@ -102,6 +102,24 @@
                         <i class="fas fa-leaf"></i>
                         <h3>Environment</h3>
                         <p>Tree plantation, waste management and environmental awareness campaigns.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-chalkboard-user"></i>
+                        <h3>Coaching</h3>
+                        <p>Expert guidance and personalized coaching for academic excellence.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-magnifying-glass-chart"></i>
+                        <h3>Research and Advocacy</h3>
+                        <p>Evidence-based research to drive policy change and social advocacy.</p>
+                        <a href="#" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-comments"></i>
+                        <h3>Spoken English</h3>
+                        <p>Interactive courses to improve communication skills and fluency.</p>
                         <a href="#" class="btn btn-primary">Know More</a>
                     </div>
                 </div>
@@ -237,11 +255,17 @@
                             <label for="interest">Area of Interest</label>
                             <select id="interest" class="form-control" required>
                                 <option value="" disabled selected>Select your interest</option>
-                                <option value="yoga">Yoga</option>
-                                <option value="karate">Karate</option>
-                                <option value="skill-enhancement">Skill Enhancement</option>
                                 <option value="education">Education</option>
                                 <option value="health">Health</option>
+                                <option value="skill-training">Skill Training</option>
+                                <option value="karate-self-defence">Karate & Self-defence</option>
+                                <option value="yoga">Yoga</option>
+                                <option value="children-elders">Children & Elders</option>
+                                <option value="animal-welfare">Animal Welfare</option>
+                                <option value="environment">Environment</option>
+                                <option value="coaching">Coaching</option>
+                                <option value="research-advocacy">Research and Advocacy</option>
+                                <option value="spoken-english">Spoken English</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -298,11 +322,11 @@
                         </p>
                         <div class="contact-item">
                             <i class="fas fa-phone-alt"></i>
-                            <span>9382318936</span>
+                            <span>9475321004</span>
                         </div>
                         <div class="contact-item">
                             <i class="fas fa-envelope"></i>
-                            <span>gramtarakki786@gmail.com</span>
+                            <span>info@gtfoundations.in</span>
                         </div>
                     </div>
                     <div class="footer-social">
@@ -325,7 +349,7 @@
                     </div>
                 </div>
                 <div class="copyright">
-                    &copy; 2023 Gram Tarakki. All rights reserved.
+                    &copy; 2026 Gram Tarakki. All rights reserved.
                 </div>
             </div>
         </footer>

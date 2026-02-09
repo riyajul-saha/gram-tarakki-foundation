@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Gram Tarakki Foundation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <!-- Header & Navigation -->
+        <header>
+            <div class="container">
+                <nav class="navbar">
+                    <a href="{{ url_for('hello_world') }}" class="logo">
+                        <img src="{{ url_for('static', filename='images/home/logo.webp') }}" alt="Gram Tarakki Logo">
+                        Gram Tarakki
+                    </a>
+                    <ul class="nav-menu">
+                        <li><a href="{{ url_for('hello_world') }}">Home</a></li>
+                        <li><a href="{{ url_for('about') }}" class="active">About</a></li>
+                        <li><a href="programs.html">Programs</a></li>
+                        <li><a href="{{ url_for('hello_world', _anchor='event') }}">Events</a></li>
+                        <li><a href="{{ url_for('hello_world', _anchor='gallery') }}">Gallery</a></li>
+                        <li><a href="{{ url_for('hello_world', _anchor='donate') }}">Donate</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                    <div class="hamburger">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- About Hero Section -->
+        <section class="about-hero">
+            <div class="container">
+                <div class="about-hero-content">
+                    <h1>About Gram Tarakki Foundation</h1>
+                    <p>Empowering rural communities through education, health and sustainable livelihood initiatives.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission Section -->
+        <section class="mission">
+            <div class="container">
+                <div class="mission-content">
+                    <div class="mission-text">
+                        <h2>Our Mission</h2>
+                        <p>To empower marginalized and rural communities by providing access to education, healthcare,
+                            skill
+                            development and self-reliant opportunities.</p>
+                        <p>We believe in creating sustainable change by addressing the root causes of poverty and
+                            inequality
+                            through collaborative, community-driven initiatives.</p>
+                        <a href="programs.html" class="btn btn-primary">Our Programs</a>
+                    </div>
+                    <div class="mission-image">
+                        <!-- In production, replace with mission.webp -->
+                        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Our Mission">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vision Section -->
+        <section class="vision">
+            <div class="container">
+                <div class="vision-content">
+                    <div class="vision-image">
+                        <!-- In production, replace with vision.webp -->
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Our Vision">
+                    </div>
+                    <div class="vision-text">
+                        <h2>Our Vision</h2>
+                        <p>Our vision is to create integrated ecosystems of empowerment. We see accessible healthcare
+                            and education as the bedrock—from schools and hospitals in underserved areas to skill
+                            centres offering training in trades, IT, and traditional crafts. We are committed to
+                            protecting the vulnerable through compassionate care in old-age homes and orphanages, and
+                            empowering women, children, and marginalized groups like tribal communities and migrant
+                            labour with knowledge, legal aid, and livelihood support. </p>
+                        <a href="{{ url_for('hello_world', _anchor='join') }}" class="btn btn-secondary">Join Our
+                            Movement</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Journey Section -->
+        <section class="journey">
+            <div class="container">
+                <div class="journey-content">
+                    <div class="journey-text">
+                        <h2>Our Journey</h2>
+                        <p>Gram Tarakki Foundation was founded with the belief that grassroots change creates lasting
+                            impact. Starting with small community programs, the foundation gradually expanded into
+                            education, karate training, yoga, health awareness and skill development initiatives across
+                            villages.</p>
+                        <p>Over the years, we've reached thousands of individuals, transforming lives through our
+                            holistic
+                            approach to community development.</p>
+                    </div>
+                    <div class="journey-images">
+                        <div class="journey-image">
+                            <!-- In production, replace with event1.webp -->
+                            <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                                alt="Early Community Program">
+                        </div>
+                        <div class="journey-image">
+                            <!-- In production, replace with event2.webp -->
+                            <img src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                                alt="Expansion to Multiple Villages">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="team">
+            <div class="container">
+                <h2 class="section-title">Our Team</h2>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="team-card-img">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                                alt="Team Member">
+                        </div>
+                        <div class="team-card-content">
+                            <h3>ABC</h3>
+                            <div class="team-card-role">Founder & Director</div>
+                            <p class="team-card-desc">"Working towards grassroots empowerment"</p>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-card-img">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                                alt="Team Member">
+                        </div>
+                        <div class="team-card-content">
+                            <h3>XYZ</h3>
+                            <div class="team-card-role">Program Manager</div>
+                            <p class="team-card-desc">"Building sustainable communities"</p>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-card-img">
+                            <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                                alt="Team Member">
+                        </div>
+                        <div class="team-card-content">
+                            <h3>PQR</h3>
+                            <div class="team-card-role">Education Coordinator</div>
+                            <p class="team-card-desc">"Empowering through knowledge"</p>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-card-img">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                                alt="Team Member">
+                        </div>
+                        <div class="team-card-content">
+                            <h3>LMN</h3>
+                            <div class="team-card-role">Health Program Lead</div>
+                            <p class="team-card-desc">"Healthy communities, stronger futures"</p>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-card-img">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                                alt="Team Member">
+                        </div>
+                        <div class="team-card-content">
+                            <h3>DEF</h3>
+                            <div class="team-card-role">Karate & Yoga Instructor</div>
+                            <p class="team-card-desc">"Building confidence through discipline"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Partners Section -->
+        <section class="partners">
+            <div class="container">
+                <h2 class="section-title">Our Partners</h2>
+                <p class="partners-intro">We collaborate with institutions, associations and community organizations to
+                    maximize impact.</p>
+
+                <div class="partners-grid">
+                    <div class="partner-logo">
+                        <img src="{{ url_for('static', filename='images/about/kio.webp') }}"
+                            alt="Karate India Organisation">
+                        <h3>Karate India Organisation</h3>
+                    </div>
+                    <div class="partner-logo">
+                        <img src="{{ url_for('static', filename='images/about/kab.webp') }}"
+                            alt="Karate-Do Association of Bengal">
+                        <h3>Karate-Do Association of Bengal</h3>
+                    </div>
+                    <div class="partner-logo">
+                        <img src="{{ url_for('static', filename='images/about/jknbhs.webp') }}"
+                            alt="JUKHIA KUMAR NARAYAN BANIMANDIR HIGH SCHOOL">
+                        <h3>JUKHIA KUMAR NARAYAN BANIMANDIR HIGH SCHOOL</h3>
+                    </div>
+                    <div class="partner-logo">
+                        <img src="{{ url_for('static', filename='images/about/rds.webp') }}"
+                            alt="Rural Development Society">
+                        <h3>Rural Development Society</h3>
+                    </div>
+                </div>
+
+                <div class="partner-btn">
+                    <a href="registration.html" class="btn btn-primary">Become a Partner</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer id="contact">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-contact">
+                        <div class="footer-logo">Gram Tarakki</div>
+                        <p>Empowering rural communities through education, healthcare, and sustainable livelihood
+                            programs.
+                        </p>
+                        <div class="contact-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <span>9382318936</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>gramtarakki786@gmail.com</span>
+                        </div>
+                    </div>
+                    <div class="footer-social">
+                        <h3>Follow Us</h3>
+                        <p>Stay connected with our latest updates and activities.</p>
+                        <div class="social-icons">
+                            <a href="https://www.youtube.com/gramtarakki" class="social-icon" target="_blank">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                            <a href="https://www.facebook.com/gram-tarakki" class="social-icon" target="_blank">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="copyright">
+                    &copy; 2023 Gram Tarakki. All rights reserved.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/about.js') }}"></script>
+</body>
+
+</html>

@@ -1,15 +1,20 @@
 // Mobile Navigation Toggle
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
+const hamburgerIcon = hamburger.querySelector('i');
 
 hamburger.addEventListener('click', () => {
     navMenu.classList.toggle('active');
+    hamburgerIcon.classList.toggle('fa-bars');
+    hamburgerIcon.classList.toggle('fa-times');
 });
 
 // Close mobile menu when clicking on a link
 document.querySelectorAll('.nav-menu a').forEach(link => {
     link.addEventListener('click', () => {
         navMenu.classList.remove('active');
+        hamburgerIcon.classList.add('fa-bars');
+        hamburgerIcon.classList.remove('fa-times');
     });
 });
 
@@ -65,12 +70,12 @@ joinForm.addEventListener('submit', (e) => {
 
 // Smooth scrolling for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
+    anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        
+
         const targetId = this.getAttribute('href');
         if (targetId === '#') return;
-        
+
         const targetElement = document.querySelector(targetId);
         if (targetElement) {
             window.scrollTo({
