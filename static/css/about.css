@@ -20,7 +20,7 @@
 body {
     font-family: 'Inter', sans-serif;
     color: var(--dark-text);
-    background-color: var(--soft-beige);
+    background-color: #F3F8F5;
     line-height: 1.6;
     opacity: 0;
     animation: fadeIn 0.5s ease forwards;
@@ -744,4 +744,12 @@ footer {
     background-color: var(--soft-beige);
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
     position: relative;
+}
+
+/* Added per user request */
+.card {
+    background: #ffffff;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 20px var(--shadow);
+    padding: 20px;
 }

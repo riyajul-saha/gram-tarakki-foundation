@@ -20,7 +20,8 @@
             <div class="container">
                 <nav class="navbar">
                     <a href="{{ url_for('hello_world') }}" class="logo">
-                        <img src="{{ url_for('static', filename='images/home/logo.webp') }}" alt="Gram Tarakki Logo">
+                        <img src="{{ url_for('static', filename='images/home/logo.webp') }}" loading="lazy"
+                            alt="Gram Tarakki Logo">
                         Gram Tarakki
                     </a>
                     <ul class="nav-menu">
@@ -167,42 +168,42 @@
                 <div class="gallery-grid">
                     <div class="gallery-item"
                         data-src="{{ url_for('static', filename='images/gallery/galary1.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary1.webp') }}"
+                        <img src="{{ url_for('static', filename='images/gallery/galary1.webp') }}" loading="lazy"
                             alt="Gallery Image 1">
                     </div>
                     <div class="gallery-item"
                         data-src="{{ url_for('static', filename='images/gallery/galary2.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary2.webp') }}"
+                        <img src="{{ url_for('static', filename='images/gallery/galary2.webp') }}" loading="lazy"
                             alt="Gallery Image 2">
                     </div>
                     <div class="gallery-item"
                         data-src="{{ url_for('static', filename='images/gallery/galary3.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary3.webp') }}"
+                        <img src="{{ url_for('static', filename='images/gallery/galary3.webp') }}" loading="lazy"
                             alt="Gallery Image 3">
                     </div>
                     <div class="gallery-item"
                         data-src="{{ url_for('static', filename='images/gallery/galary4.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary4.webp') }}"
+                        <img src="{{ url_for('static', filename='images/gallery/galary4.webp') }}" loading="lazy"
                             alt="Gallery Image 4">
                     </div>
                     <div class="gallery-item"
                         data-src="{{ url_for('static', filename='images/gallery/galary5.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary5.webp') }}"
+                        <img src="{{ url_for('static', filename='images/gallery/galary5.webp') }}" loading="lazy"
                             alt="Gallery Image 5">
                     </div>
                     <div class="gallery-item"
                         data-src="{{ url_for('static', filename='images/gallery/galary6.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary6.webp') }}"
+                        <img src="{{ url_for('static', filename='images/gallery/galary6.webp') }}" loading="lazy"
                             alt="Gallery Image 6">
                     </div>
                     <div class="gallery-item"
                         data-src="{{ url_for('static', filename='images/gallery/galary7.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary7.webp') }}"
+                        <img src="{{ url_for('static', filename='images/gallery/galary7.webp') }}" loading="lazy"
                             alt="Gallery Image 7">
                     </div>
                     <div class="gallery-item"
                         data-src="{{ url_for('static', filename='images/gallery/galary8.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary8.webp') }}"
+                        <img src="{{ url_for('static', filename='images/gallery/galary8.webp') }}" loading="lazy"
                             alt="Gallery Image 8">
                     </div>
                 </div>
@@ -211,7 +212,7 @@
             <!-- Lightbox -->
             <div id="lightbox" class="lightbox">
                 <span class="close-lightbox">&times;</span>
-                <img class="lightbox-content" id="lightbox-img">
+                <img class="lightbox-content" id="lightbox-img" loading="lazy">
             </div>
         </section>
 
@@ -287,14 +288,14 @@
                 <div class="testimonial-container">
                     <div class="testimonial-slide active">
                         <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                            alt="Testimonial 1" class="testimonial-img">
+                            loading="lazy" alt="Testimonial 1" class="testimonial-img">
                         <p class="testimonial-text">"Gram Tarakki's karate program transformed my daughter's confidence.
                             She's now more assertive and focused in her studies too."</p>
                         <p class="testimonial-author">- Priya Sharma, Mother</p>
                     </div>
                     <div class="testimonial-slide">
                         <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                            alt="Testimonial 2" class="testimonial-img">
+                            loading="lazy" alt="Testimonial 2" class="testimonial-img">
                         <p class="testimonial-text">"The skill training helped me start my own tailoring business. I'm
                             now
                             earning enough to support my family."</p>
@@ -302,7 +303,7 @@
                     </div>
                     <div class="testimonial-slide">
                         <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                            alt="Testimonial 3" class="testimonial-img">
+                            loading="lazy" alt="Testimonial 3" class="testimonial-img">
                         <p class="testimonial-text">"Regular yoga sessions have improved my health significantly. I'm
                             grateful for Gram Tarakki's free community classes."</p>
                         <p class="testimonial-author">- Sunita Devi, Yoga Participant</p>

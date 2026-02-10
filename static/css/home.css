@@ -139,10 +139,26 @@
             color: var(--dark-text);
             font-weight: 500;
             transition: var(--transition);
+            position: relative;
         }
 
         .nav-menu a:hover {
             color: var(--earth-green);
+        }
+
+        .nav-menu a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--earth-green);
+            left: 0;
+            bottom: -5px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover:after {
+            width: 100%;
         }
 
         .nav-menu .btn-primary {
