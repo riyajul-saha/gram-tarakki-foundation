@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Programs - Gram Tarakki Foundation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/programs.css') }}">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <!-- Header & Navigation -->
+        <header>
+            <div class="container">
+                <nav class="navbar">
+                    <a href="{{ url_for('home') }}" class="logo">
+                        <!-- Replace with actual logo -->
+                        <img src="{{ url_for('static', filename='images/home/logo.webp') }}" loading="lazy"
+                            alt="Gram Tarakki Logo" style="height: 40px; width: auto; margin-right: 10px;">
+                        Gram Tarakki
+                    </a>
+                    <ul class="nav-menu">
+                        <li><a href="{{ url_for('home') }}">Home</a></li>
+                        <li><a href="{{ url_for('about') }}">About</a></li>
+                        <li><a href="{{ url_for('programs') }}" class="active">Programs</a></li>
+                        <li><a href="{{ url_for('home', _anchor='event') }}">Events</a></li>
+                        <li><a href="#program-gallery">Gallery</a></li>
+                        <li><a href="{{ url_for('home', _anchor='donate') }}">Donate</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                    <div class="hamburger">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Programs Hero Section -->
+        <section class="programs-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>OUR PROGRAMS</h1>
+                    <p class="subtitle">Creating meaningful change through education, health, skill development and
+                        community training.</p>
+                    <div class="program-overview">
+                        <p>Gram Tarakki Foundation runs multiple community-focused programs designed to empower
+                            individuals,
+                            promote wellbeing and build self-reliant villages.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Individual Program Sections -->
+        <!-- Karate & Self-defence -->
+        <section id="karate" class="program-section">
+            <div class="container">
+                <div class="program-container">
+                    <div class="program-text">
+                        <h2><i class="fas fa-fist-raised"></i> Karate & Self-defence</h2>
+                        <p>This program focuses on physical fitness, discipline, confidence building and
+                            self-defence
+                            training for children and women.</p>
+                        <ul class="program-bullets">
+                            <li>Regular training sessions</li>
+                            <li>Belt examination & certification</li>
+                            <li>Stage performances & demonstrations</li>
+                            <li>Guidance by certified instructors</li>
+                        </ul>
+                        <a href="program-karate.html" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Karate Training" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education -->
+        <section id="education" class="program-section">
+            <div class="container">
+                <div class="program-container reverse">
+                    <div class="program-text">
+                        <h2><i class="fas fa-graduation-cap"></i> Education</h2>
+                        <p>Providing quality education support to rural children through learning resources,
+                            guidance and
+                            awareness programs.</p>
+                        <ul class="program-bullets">
+                            <li>After-school tutoring programs</li>
+                            <li>Digital literacy and computer training</li>
+                            <li>Library and reading initiatives</li>
+                            <li>Scholarship opportunities for meritorious students</li>
+                        </ul>
+                        <a href="program-education.html" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Education Program" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Health -->
+        <section id="health" class="program-section">
+            <div class="container">
+                <div class="program-container">
+                    <div class="program-text">
+                        <h2><i class="fas fa-heartbeat"></i> Health</h2>
+                        <p>Ensuring accessible healthcare services and health awareness programs for rural
+                            communities.</p>
+                        <ul class="program-bullets">
+                            <li>Regular health check-up camps</li>
+                            <li>Nutrition awareness programs</li>
+                            <li>First-aid training workshops</li>
+                            <li>Mental health awareness sessions</li>
+                        </ul>
+                        <a href="program-health.html" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1516549655669-df6654e435de?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Health Program" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skill Training -->
+        <section id="skill-training" class="program-section">
+            <div class="container">
+                <div class="program-container reverse">
+                    <div class="program-text">
+                        <h2><i class="fas fa-tools"></i> Skill Training</h2>
+                        <p>Vocational training to enhance employability and self-sufficiency among youth and women.
+                        </p>
+                        <ul class="program-bullets">
+                            <li>Tailoring and embroidery training</li>
+                            <li>Computer and digital skills</li>
+                            <li>Handicraft and artisan training</li>
+                            <li>Entrepreneurship development programs</li>
+                        </ul>
+                        <a href="program-skill-training.html" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Skill Training" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yoga -->
+        <section id="yoga" class="program-section">
+            <div class="container">
+                <div class="program-container">
+                    <div class="program-text">
+                        <h2><i class="fas fa-spa"></i> Yoga</h2>
+                        <p>Promoting physical and mental wellbeing through regular yoga sessions and meditation
+                            practices.
+                        </p>
+                        <ul class="program-bullets">
+                            <li>Daily morning yoga sessions</li>
+                            <li>Yoga for stress management</li>
+                            <li>Therapeutic yoga for specific health conditions</li>
+                            <li>Yoga certification programs</li>
+                        </ul>
+                        <a href="program-yoga.html" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Yoga Program" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Children & Elders -->
+        <section id="children-elders" class="program-section">
+            <div class="container">
+                <div class="program-container reverse">
+                    <div class="program-text">
+                        <h2><i class="fas fa-hands-helping"></i> Children & Elders</h2>
+                        <p>Special care and support programs for vulnerable age groups including children and senior
+                            citizens.</p>
+                        <ul class="program-bullets">
+                            <li>Day care facilities for children</li>
+                            <li>Elderly companionship programs</li>
+                            <li>Nutrition support for malnourished children</li>
+                            <li>Health monitoring for senior citizens</li>
+                        </ul>
+                        <a href="program-children-elders.html" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Children & Elders Program" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animal Welfare -->
+        <section id="animal-welfare" class="program-section">
+            <div class="container">
+                <div class="program-container">
+                    <div class="program-text">
+                        <h2><i class="fas fa-paw"></i> Animal Welfare</h2>
+                        <p>Providing care and medical support for animals in rural areas and promoting animal rights
+                            awareness.</p>
+                        <ul class="program-bullets">
+                            <li>Animal health check-up camps</li>
+                            <li>Vaccination drives for livestock</li>
+                            <li>Shelter and care for stray animals</li>
+                            <li>Animal rights awareness programs</li>
+                        </ul>
+                        <a href="program-animal-welfare.html" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Animal Welfare" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Environment -->
+        <section id="environment" class="program-section">
+            <div class="container">
+                <div class="program-container reverse">
+                    <div class="program-text">
+                        <h2><i class="fas fa-leaf"></i> Environment</h2>
+                        <p>Tree plantation, waste management and environmental awareness campaigns for sustainable
+                            living.
+                        </p>
+                        <ul class="program-bullets">
+                            <li>Tree plantation drives</li>
+                            <li>Plastic waste reduction initiatives</li>
+                            <li>Rainwater harvesting projects</li>
+                            <li>Environmental education in schools</li>
+                        </ul>
+                        <a href="program-environment.html" class="btn btn-primary">Know More</a>
+                    </div>
+                    <div class="program-image">
+                        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Environment Program" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Program Gallery Section -->
+        <section id="program-gallery" class="program-gallery">
+            <div class="container">
+                <h2 class="section-title">Program Gallery</h2>
+                <div class="gallery-container">
+                    <div class="gallery-filter">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="karate">Karate Training</button>
+                        <button class="filter-btn" data-filter="yoga">Yoga Sessions</button>
+                        <button class="filter-btn" data-filter="community">Community Events</button>
+                    </div>
+
+                    <div class="gallery-slider">
+                        <!-- Slide 1: All -->
+                        <div class="gallery-slide active" data-category="all">
+                            <h3 class="slide-category">All Programs</h3>
+                            <div class="slide-images">
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Karate Training" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Yoga Session" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Community Event" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Education Program" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2: Karate Training -->
+                        <div class="gallery-slide" data-category="karate">
+                            <h3 class="slide-category">Karate Training</h3>
+                            <div class="slide-images">
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Karate Training 1" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Karate Training 2" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1547707188-5d31ec5c3d6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1547707188-5d31ec5c3d6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Karate Training 3" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Karate Training 4" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: Yoga Sessions -->
+                        <div class="gallery-slide" data-category="yoga">
+                            <h3 class="slide-category">Yoga Sessions</h3>
+                            <div class="slide-images">
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Yoga Session 1" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Yoga Session 2" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1549576490-b0b4831ef60a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1549576490-b0b4831ef60a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Yoga Session 3" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Yoga Session 4" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 4: Community Events -->
+                        <div class="gallery-slide" data-category="community">
+                            <h3 class="slide-category">Community Events</h3>
+                            <div class="slide-images">
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Community Event 1" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1492684223066-e9e3a5c4c029?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1492684223066-e9e3a5c4c029?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Community Event 2" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Community Event 3" loading="lazy">
+                                </div>
+                                <div class="gallery-thumb"
+                                    data-src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                                        alt="Community Event 4" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slider-controls">
+                        <div class="slider-arrow prev-slide">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="slider-dots">
+                            <div class="slider-dot active" data-slide="0"></div>
+                            <div class="slider-dot" data-slide="1"></div>
+                            <div class="slider-dot" data-slide="2"></div>
+                            <div class="slider-dot" data-slide="3"></div>
+                        </div>
+                        <div class="slider-arrow next-slide">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lightbox -->
+            <div id="lightbox" class="lightbox">
+                <button class="close-lightbox">&times;</button>
+                <img class="lightbox-img" id="lightbox-img">
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="cta-section">
+            <div class="container">
+                <h2>Want to be part of our programs?</h2>
+                <p>Join our community of volunteers, enroll in training programs, or support our initiatives to make
+                    a
+                    difference in rural communities.</p>
+                <div class="cta-buttons">
+                    <a href="volunteer.html" class="cta-button volunteer">
+                        <i class="fas fa-hands-helping"></i> Get Involved
+                    </a>
+                    <a href="tel:+919875321004" class="cta-button contact">
+                        <i class="fas fa-phone-alt"></i> Contact Us
+                    </a>
+                    <a href="donate.html" class="cta-button donate">
+                        <i class="fas fa-heart"></i> Donate
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer id="contact">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-contact">
+                        <div class="footer-logo">Gram Tarakki</div>
+                        <p>Empowering rural communities through education, healthcare, and sustainable livelihood
+                            programs.
+                        </p>
+                        <div class="contact-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <span>9475321004</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>info@gtfoundations.in</span>
+                        </div>
+                    </div>
+                    <div class="footer-social">
+                        <h3>Follow Us</h3>
+                        <p>Stay connected with our latest updates and activities.</p>
+                        <div class="social-icons">
+                            <a href="https://www.youtube.com/gramtarakki" class="social-icon" target="_blank">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                            <a href="https://www.facebook.com/gram-tarakki" class="social-icon" target="_blank">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="copyright">
+                    &copy; 2026 Gram Tarakki. All rights reserved.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/programs.js') }}"></script>
+</body>
+
+</html>

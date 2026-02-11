@@ -19,18 +19,18 @@
         <header>
             <div class="container">
                 <nav class="navbar">
-                    <a href="{{ url_for('hello_world') }}" class="logo">
+                    <a href="{{ url_for('home') }}" class="logo">
                         <img src="{{ url_for('static', filename='images/home/logo.webp') }}" loading="lazy"
                             alt="Gram Tarakki Logo">
                         Gram Tarakki
                     </a>
                     <ul class="nav-menu">
-                        <li><a href="{{ url_for('hello_world') }}">Home</a></li>
+                        <li><a href="{{ url_for('home') }}">Home</a></li>
                         <li><a href="{{ url_for('about') }}" class="active">About</a></li>
-                        <li><a href="programs.html">Programs</a></li>
-                        <li><a href="{{ url_for('hello_world', _anchor='event') }}">Events</a></li>
-                        <li><a href="{{ url_for('hello_world', _anchor='gallery') }}">Gallery</a></li>
-                        <li><a href="{{ url_for('hello_world', _anchor='donate') }}">Donate</a></li>
+                        <li><a href="{{ url_for('programs') }}">Programs</a></li>
+                        <li><a href="{{ url_for('home', _anchor='event') }}">Events</a></li>
+                        <li><a href="{{ url_for('home', _anchor='gallery') }}">Gallery</a></li>
+                        <li><a href="{{ url_for('home', _anchor='donate') }}">Donate</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                     <div class="hamburger">
@@ -63,7 +63,7 @@
                         <p>We believe in creating sustainable change by addressing the root causes of poverty and
                             inequality
                             through collaborative, community-driven initiatives.</p>
-                        <a href="programs.html" class="btn btn-primary">Our Programs</a>
+                        <a href="{{ url_for('programs') }}" class="btn btn-primary">Our Programs</a>
                     </div>
                     <div class="mission-image">
                         <!-- In production, replace with mission.webp -->
