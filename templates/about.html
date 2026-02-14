@@ -1,191 +1,191 @@
 {% extends "base.html" %}
-{% block title %}About{% endblock %}
-{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">{% endblock %}
 {% block content %}
-        <!-- About Hero Section -->
-        <section class="about-hero">
-            <div class="container">
-                <div class="about-hero-content">
-                    <h1>About Gram Tarakki Foundation</h1>
-                    <p>Empowering rural communities through education, health and sustainable livelihood initiatives.
-                    </p>
+<!-- About Hero Section -->
+<section class="about-hero">
+    <div class="container">
+        <div class="about-hero-content">
+            <h1>About Gram Tarakki Foundation</h1>
+            <p>Empowering rural communities through education, health and sustainable livelihood initiatives.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section class="mission">
+    <div class="container">
+        <div class="mission-content">
+            <div class="mission-text">
+                <h2>Our Mission</h2>
+                <p>To empower marginalized and rural communities by providing access to education, healthcare,
+                    skill
+                    development and self-reliant opportunities.</p>
+                <p>We believe in creating sustainable change by addressing the root causes of poverty and
+                    inequality
+                    through collaborative, community-driven initiatives.</p>
+                <a href="{{ url_for('programs') }}" class="btn btn-primary">Our Programs</a>
+            </div>
+            <div class="mission-image">
+                <!-- In production, replace with mission.webp -->
+                <img src="{{ url_for('static', filename='images/about/mission.webp') }}" loading="lazy"
+                    alt="Our Mission">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vision Section -->
+<section class="vision">
+    <div class="container">
+        <div class="vision-content">
+            <div class="vision-image">
+                <!-- In production, replace with vision.webp -->
+                <img src="{{ url_for('static', filename='images/about/vision.webp') }}" loading="lazy" alt="Our Vision">
+            </div>
+            <div class="vision-text">
+                <h2>Our Vision</h2>
+                <p>Our vision is to create integrated ecosystems of empowerment. We see accessible healthcare
+                    and education as the bedrock—from schools and hospitals in underserved areas to skill
+                    centres offering training in trades, IT, and traditional crafts. We are committed to
+                    protecting the vulnerable through compassionate care in old-age homes and orphanages, and
+                    empowering women, children, and marginalized groups like tribal communities and migrant
+                    labour with knowledge, legal aid, and livelihood support. </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Journey Section -->
+<section class="journey">
+    <div class="container">
+        <div class="journey-content">
+            <div class="journey-text">
+                <h2>Our Journey</h2>
+                <p>Gram Tarakki Foundation was founded with the belief that grassroots change creates lasting
+                    impact. Starting with small community programs, the foundation gradually expanded into
+                    education, karate training, yoga, health awareness and skill development initiatives across
+                    villages.</p>
+                <p>Over the years, we've reached thousands of individuals, transforming lives through our
+                    holistic
+                    approach to community development.</p>
+            </div>
+            <div class="journey-images">
+                <div class="journey-image">
+                    <!-- In production, replace with event1.webp -->
+                    <img src="{{ url_for('static', filename='images/about/journey1.webp') }}" loading="lazy"
+                        alt="Early Community Program">
+                </div>
+                <div class="journey-image">
+                    <!-- In production, replace with event2.webp -->
+                    <img src="{{ url_for('static', filename='images/about/journey2.webp') }}" loading="lazy"
+                        alt="Expansion to Multiple Villages">
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
-        <!-- Mission Section -->
-        <section class="mission">
-            <div class="container">
-                <div class="mission-content">
-                    <div class="mission-text">
-                        <h2>Our Mission</h2>
-                        <p>To empower marginalized and rural communities by providing access to education, healthcare,
-                            skill
-                            development and self-reliant opportunities.</p>
-                        <p>We believe in creating sustainable change by addressing the root causes of poverty and
-                            inequality
-                            through collaborative, community-driven initiatives.</p>
-                        <a href="{{ url_for('programs') }}" class="btn btn-primary">Our Programs</a>
-                    </div>
-                    <div class="mission-image">
-                        <!-- In production, replace with mission.webp -->
-                        <img src="{{ url_for('static', filename='images/about/mission.webp') }}" loading="lazy"
-                            alt="Our Mission">
-                    </div>
+<!-- Team Section -->
+<section class="team">
+    <div class="container">
+        <h2 class="section-title">Our Team</h2>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-card-img">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        loading="lazy" alt="Team Member">
+                </div>
+                <div class="team-card-content">
+                    <h3>ABC</h3>
+                    <div class="team-card-role">Founder & Director</div>
+                    <p class="team-card-desc">"Working towards grassroots empowerment"</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Vision Section -->
-        <section class="vision">
-            <div class="container">
-                <div class="vision-content">
-                    <div class="vision-image">
-                        <!-- In production, replace with vision.webp -->
-                        <img src="{{ url_for('static', filename='images/about/vision.webp') }}" loading="lazy"
-                            alt="Our Vision">
-                    </div>
-                    <div class="vision-text">
-                        <h2>Our Vision</h2>
-                        <p>Our vision is to create integrated ecosystems of empowerment. We see accessible healthcare
-                            and education as the bedrock—from schools and hospitals in underserved areas to skill
-                            centres offering training in trades, IT, and traditional crafts. We are committed to
-                            protecting the vulnerable through compassionate care in old-age homes and orphanages, and
-                            empowering women, children, and marginalized groups like tribal communities and migrant
-                            labour with knowledge, legal aid, and livelihood support. </p>
-                    </div>
+            <div class="team-card">
+                <div class="team-card-img">
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        loading="lazy" alt="Team Member">
+                </div>
+                <div class="team-card-content">
+                    <h3>XYZ</h3>
+                    <div class="team-card-role">Program Manager</div>
+                    <p class="team-card-desc">"Building sustainable communities"</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Our Journey Section -->
-        <section class="journey">
-            <div class="container">
-                <div class="journey-content">
-                    <div class="journey-text">
-                        <h2>Our Journey</h2>
-                        <p>Gram Tarakki Foundation was founded with the belief that grassroots change creates lasting
-                            impact. Starting with small community programs, the foundation gradually expanded into
-                            education, karate training, yoga, health awareness and skill development initiatives across
-                            villages.</p>
-                        <p>Over the years, we've reached thousands of individuals, transforming lives through our
-                            holistic
-                            approach to community development.</p>
-                    </div>
-                    <div class="journey-images">
-                        <div class="journey-image">
-                            <!-- In production, replace with event1.webp -->
-                            <img src="{{ url_for('static', filename='images/about/journey1.webp') }}" loading="lazy"
-                                alt="Early Community Program">
-                        </div>
-                        <div class="journey-image">
-                            <!-- In production, replace with event2.webp -->
-                            <img src="{{ url_for('static', filename='images/about/journey2.webp') }}" loading="lazy"
-                                alt="Expansion to Multiple Villages">
-                        </div>
-                    </div>
+            <div class="team-card">
+                <div class="team-card-img">
+                    <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        loading="lazy" alt="Team Member">
+                </div>
+                <div class="team-card-content">
+                    <h3>PQR</h3>
+                    <div class="team-card-role">Education Coordinator</div>
+                    <p class="team-card-desc">"Empowering through knowledge"</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Team Section -->
-        <section class="team">
-            <div class="container">
-                <h2 class="section-title">Our Team</h2>
-                <div class="team-grid">
-                    <div class="team-card">
-                        <div class="team-card-img">
-                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                                loading="lazy" alt="Team Member">
-                        </div>
-                        <div class="team-card-content">
-                            <h3>ABC</h3>
-                            <div class="team-card-role">Founder & Director</div>
-                            <p class="team-card-desc">"Working towards grassroots empowerment"</p>
-                        </div>
-                    </div>
-                    <div class="team-card">
-                        <div class="team-card-img">
-                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                                loading="lazy" alt="Team Member">
-                        </div>
-                        <div class="team-card-content">
-                            <h3>XYZ</h3>
-                            <div class="team-card-role">Program Manager</div>
-                            <p class="team-card-desc">"Building sustainable communities"</p>
-                        </div>
-                    </div>
-                    <div class="team-card">
-                        <div class="team-card-img">
-                            <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                                loading="lazy" alt="Team Member">
-                        </div>
-                        <div class="team-card-content">
-                            <h3>PQR</h3>
-                            <div class="team-card-role">Education Coordinator</div>
-                            <p class="team-card-desc">"Empowering through knowledge"</p>
-                        </div>
-                    </div>
-                    <div class="team-card">
-                        <div class="team-card-img">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                                loading="lazy" alt="Team Member">
-                        </div>
-                        <div class="team-card-content">
-                            <h3>LMN</h3>
-                            <div class="team-card-role">Health Program Lead</div>
-                            <p class="team-card-desc">"Healthy communities, stronger futures"</p>
-                        </div>
-                    </div>
-                    <div class="team-card">
-                        <div class="team-card-img">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                                loading="lazy" alt="Team Member">
-                        </div>
-                        <div class="team-card-content">
-                            <h3>DEF</h3>
-                            <div class="team-card-role">Karate & Yoga Instructor</div>
-                            <p class="team-card-desc">"Building confidence through discipline"</p>
-                        </div>
-                    </div>
+            <div class="team-card">
+                <div class="team-card-img">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        loading="lazy" alt="Team Member">
+                </div>
+                <div class="team-card-content">
+                    <h3>LMN</h3>
+                    <div class="team-card-role">Health Program Lead</div>
+                    <p class="team-card-desc">"Healthy communities, stronger futures"</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Partners Section -->
-        <section class="partners">
-            <div class="container">
-                <h2 class="section-title">Our Partners</h2>
-                <p class="partners-intro">We collaborate with institutions, associations and community organizations to
-                    maximize impact.</p>
-
-                <div class="partners-grid">
-                    <div class="partner-logo">
-                        <img src="{{ url_for('static', filename='images/about/kio.webp') }}" loading="lazy"
-                            alt="Karate India Organisation">
-                        <h3>Karate India Organisation</h3>
-                    </div>
-                    <div class="partner-logo">
-                        <img src="{{ url_for('static', filename='images/about/kab.webp') }}" loading="lazy"
-                            alt="Karate-Do Association of Bengal">
-                        <h3>Karate-Do Association of Bengal</h3>
-                    </div>
-                    <div class="partner-logo">
-                        <img src="{{ url_for('static', filename='images/about/jknbhs.webp') }}" loading="lazy"
-                            alt="JUKHIA KUMAR NARAYAN BANIMANDIR HIGH SCHOOL">
-                        <h3>JUKHIA KUMAR NARAYAN BANIMANDIR HIGH SCHOOL</h3>
-                    </div>
-                    <div class="partner-logo">
-                        <img src="{{ url_for('static', filename='images/about/rds.webp') }}" loading="lazy"
-                            alt="Rural Development Society">
-                        <h3>Rural Development Society</h3>
-                    </div>
+            <div class="team-card">
+                <div class="team-card-img">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        loading="lazy" alt="Team Member">
                 </div>
-
-                <div class="partner-btn">
-                    <a href="registration.html" class="btn btn-primary">Become a Partner</a>
+                <div class="team-card-content">
+                    <h3>DEF</h3>
+                    <div class="team-card-role">Karate & Yoga Instructor</div>
+                    <p class="team-card-desc">"Building confidence through discipline"</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
+
+<!-- Partners Section -->
+<section class="partners">
+    <div class="container">
+        <h2 class="section-title">Our Partners</h2>
+        <p class="partners-intro">We collaborate with institutions, associations and community organizations to
+            maximize impact.</p>
+
+        <div class="partners-grid">
+            <div class="partner-logo">
+                <img src="{{ url_for('static', filename='images/about/kio.webp') }}" loading="lazy"
+                    alt="Karate India Organisation">
+                <h3>Karate India Organisation</h3>
+            </div>
+            <div class="partner-logo">
+                <img src="{{ url_for('static', filename='images/about/kab.webp') }}" loading="lazy"
+                    alt="Karate-Do Association of Bengal">
+                <h3>Karate-Do Association of Bengal</h3>
+            </div>
+            <div class="partner-logo">
+                <img src="{{ url_for('static', filename='images/about/jknbhs.webp') }}" loading="lazy"
+                    alt="JUKHIA KUMAR NARAYAN BANIMANDIR HIGH SCHOOL">
+                <h3>JUKHIA KUMAR NARAYAN BANIMANDIR HIGH SCHOOL</h3>
+            </div>
+            <div class="partner-logo">
+                <img src="{{ url_for('static', filename='images/about/rds.webp') }}" loading="lazy"
+                    alt="Rural Development Society">
+                <h3>Rural Development Society</h3>
+            </div>
+        </div>
+
+        <div class="partner-btn">
+            <a href="registration.html" class="btn btn-primary">Become a Partner</a>
+        </div>
+    </div>
+</section>
 {% endblock %}
-{% block js %}<script src="{{ url_for('static', filename='js/about.js') }}"></script>{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='js/about.js') }}"></script>{% endblock %}

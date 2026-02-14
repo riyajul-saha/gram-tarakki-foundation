@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/join.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <!-- PART 1: HERO SECTION -->
+    <section class="hero fade-section">
+        <h1>Join Our Program</h1>
+        <p>Start your journey towards discipline, confidence and self-growth.</p>
+    </section>
+
+    <!-- PART 2: IMPORTANT INFO BOX (random placeholders) -->
+    <section class="info-grid fade-section">
+        <div class="info-item">
+            <span class="info-label">Live Program</span>
+            <span class="info-value">Karate Championship 2026</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Location</span>
+            <span class="info-value">Kolkata & Rural Bengal</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Age eligibility</span>
+            <span class="info-value">6 – 35 years</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Training days</span>
+            <span class="info-value">Sat, Sun & Wed</span>
+        </div>
+    </section>
+
+    <!-- PART 3: MAIN ENROLLMENT FORM -->
+    <section class="form-card fade-section" id="enrollmentForm">
+        <h2 style="font-size: 1.8rem; margin-bottom: 1.8rem;">Student Enrollment</h2>
+        <form id="joinForm" novalidate>
+            <!-- 3.1 Student Information -->
+            <div class="form-section">
+                <h3>Student Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullname" class="required">Full Name</label>
+                        <input type="text" id="fullname" name="fullname" placeholder="e.g. Ariana Gantait" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="age" class="required">Age</label>
+                        <input type="number" id="age" name="age" placeholder="Years" min="1" max="100" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gender" class="required">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="" disabled selected>-- Select --</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer-not">Prefer not to say</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="school">School / College (optional)</label>
+                        <input type="text" id="school" name="school" placeholder="Institution name">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.2 Guardian Info (conditionally shown) -->
+            <div class="form-section guardian-section" id="guardianSection">
+                <h3>Parent / Guardian Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="parentName" class="required">Parent / Guardian Name</label>
+                        <input type="text" id="parentName" name="parentName" placeholder="Full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="parentContact" class="required">Contact Number</label>
+                        <input type="tel" id="parentContact" name="parentContact" placeholder="10-digit mobile">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.3 Contact Details -->
+            <div class="form-section">
+                <h3>Contact Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone" class="required">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Your mobile number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="required">Address</label>
+                        <input type="text" id="address" name="address" placeholder="Street, city, PIN" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.4 Program Details -->
+            <div class="form-section">
+                <h3>Program Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="program" class="required">Select Program</label>
+                        <select id="program" name="program" required>
+                            <option value="" disabled selected>-- Choose a program --</option>
+                            <option value="Karate">Karate</option>
+                            <option value="Education">Education</option>
+                            <option value="Health">Health</option>
+                            <option value="Skill Training">Skill Training</option>
+                            <option value="Yoga">Yoga</option>
+                            <option value="Animal Welfare">Animal Welfare</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">Previous experience?</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="experience" value="yes" required> Yes
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="experience" value="no"> No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="medical">Medical condition? (optional)</label>
+                    <textarea id="medical" name="medical" rows="2"
+                        placeholder="Any health concerns we should know about?"></textarea>
+                </div>
+            </div>
+
+            <!-- 3.5 Consent -->
+            <div class="form-section">
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="agreeDiscipline" name="agreeDiscipline" required>
+                        <span>I agree to follow training discipline and rules.</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="confirmInfo" name="confirmInfo" required>
+                        <span>I confirm that the information provided is correct.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- SUBMIT BUTTON -->
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-paper-plane" style="margin-right: 10px;"></i> Submit Application
+            </button>
+        </form>
+    </section>
+
+    <!-- PART 4: WHAT HAPPENS NEXT -->
+    <section class="next-steps fade-section">
+        <i class="fas fa-clock" style="font-size: 2rem;"></i>
+        <p><strong>After submitting, our team will contact you within 24–48 hours</strong></p>
+        <p style="margin-top: 10px; font-size: 1rem;">We’ll guide you through the next steps and session details.
+        </p>
+    </section>
+
+    <!-- PART 5: CONTACT US BUTTONS -->
+    <section class="fade-section">
+        <div class="contact-buttons">
+            <a href="mailto:info@gtfoundation.in?subject=Join%20Program%20Inquiry" class="contact-btn email">
+                <i class="fas fa-envelope"></i> Email Us
+            </a>
+            <a href="tel:+919475321004" class="contact-btn call">
+                <i class="fas fa-phone-alt"></i> Call Now
+            </a>
+        </div>
+    </section>
+</div>
+
+<!-- POPUP MODAL (Success/Failure) -->
+<div id="popupModal" class="popup-modal">
+    <div class="popup-content">
+        <div class="popup-icon" id="popupIcon">✅</div>
+        <div class="popup-title" id="popupTitle">Success!</div>
+        <div class="popup-message" id="popupMessage">Your application has been submitted successfully.</div>
+        <button class="popup-close" id="popupCloseBtn">Close</button>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='js/join.js') }}"></script>{% endblock %}

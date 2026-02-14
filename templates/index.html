@@ -1,277 +1,268 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
-{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">{% endblock %}
 {% block content %}
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Building self-reliant villages — Education · Health · Livelihood</h1>
-                <p>We empower marginalised and rural communities with education, healthcare and livelihood support.</p>
-                <div class="hero-buttons">
-                    <a href="#donate" class="btn btn-primary">Donate Now</a>
-                    <a href="#join" class="btn btn-secondary">Join a Program</a>
-                </div>
-            </div>
-        </section>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Building self-reliant villages — Education · Health · Livelihood</h1>
+        <p>We empower marginalised and rural communities with education, healthcare and livelihood support.</p>
+        <div class="hero-buttons">
+            <a href="#donate" class="btn btn-primary">Donate Now</a>
+            <a href="#join" class="btn btn-secondary">Join a Program</a>
+        </div>
+    </div>
+</section>
 
-        <!-- What We Do Section -->
-        <section id="what-we-do" class="what-we-do">
-            <div class="container">
-                <h2 class="section-title">What We Do</h2>
-                <div class="cards-container">
-                    <div class="card">
-                        <i class="fas fa-graduation-cap"></i>
-                        <h3>Education</h3>
-                        <p>Providing quality education and learning resources to rural children and youth.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-heartbeat"></i>
-                        <h3>Health</h3>
-                        <p>Ensuring accessible healthcare services and health awareness programs.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-tools"></i>
-                        <h3>Skill Training</h3>
-                        <p>Vocational training to enhance employability and self-sufficiency.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-fist-raised"></i>
-                        <h3>Karate & Self-defence</h3>
-                        <p>Empowering women and children with self-defence techniques and confidence.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-spa"></i>
-                        <h3>Yoga</h3>
-                        <p>Promoting physical and mental wellbeing through regular yoga sessions.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-hands-helping"></i>
-                        <h3>Children & Elders</h3>
-                        <p>Special care and support programs for vulnerable age groups.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-paw"></i>
-                        <h3>Animal Welfare</h3>
-                        <p>Providing care and medical support for animals in rural areas.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-leaf"></i>
-                        <h3>Environment</h3>
-                        <p>Tree plantation, waste management and environmental awareness campaigns.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-chalkboard-user"></i>
-                        <h3>Coaching</h3>
-                        <p>Expert guidance and personalized coaching for academic excellence.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-magnifying-glass-chart"></i>
-                        <h3>Research and Advocacy</h3>
-                        <p>Evidence-based research to drive policy change and social advocacy.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-comments"></i>
-                        <h3>Spoken English</h3>
-                        <p>Interactive courses to improve communication skills and fluency.</p>
-                        <a href="#" class="btn btn-primary">Know More</a>
-                    </div>
-                </div>
+<!-- What We Do Section -->
+<section id="what-we-do" class="what-we-do">
+    <div class="container">
+        <h2 class="section-title">What We Do</h2>
+        <div class="cards-container">
+            <div class="card">
+                <i class="fas fa-graduation-cap"></i>
+                <h3>Education</h3>
+                <p>Providing quality education and learning resources to rural children and youth.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
             </div>
-        </section>
+            <div class="card">
+                <i class="fas fa-heartbeat"></i>
+                <h3>Health</h3>
+                <p>Ensuring accessible healthcare services and health awareness programs.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
+            </div>
+            <div class="card">
+                <i class="fas fa-tools"></i>
+                <h3>Skill Training</h3>
+                <p>Vocational training to enhance employability and self-sufficiency.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
+            </div>
+            <div class="card">
+                <i class="fas fa-fist-raised"></i>
+                <h3>Karate & Self-defence</h3>
+                <p>Empowering women and children with self-defence techniques and confidence.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
+            </div>
+            <div class="card">
+                <i class="fas fa-spa"></i>
+                <h3>Yoga</h3>
+                <p>Promoting physical and mental wellbeing through regular yoga sessions.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
+            </div>
+            <div class="card">
+                <i class="fas fa-hands-helping"></i>
+                <h3>Children & Elders</h3>
+                <p>Special care and support programs for vulnerable age groups.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
+            </div>
+            <div class="card">
+                <i class="fas fa-paw"></i>
+                <h3>Animal Welfare</h3>
+                <p>Providing care and medical support for animals in rural areas.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
+            </div>
+            <div class="card">
+                <i class="fas fa-leaf"></i>
+                <h3>Environment</h3>
+                <p>Tree plantation, waste management and environmental awareness campaigns.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
+            </div>
+            <div class="card">
+                <i class="fas fa-chalkboard-user"></i>
+                <h3>Coaching</h3>
+                <p>Expert guidance and personalized coaching for academic excellence.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
+            </div>
+            <div class="card">
+                <i class="fas fa-magnifying-glass-chart"></i>
+                <h3>Research and Advocacy</h3>
+                <p>Evidence-based research to drive policy change and social advocacy.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
+            </div>
+            <div class="card">
+                <i class="fas fa-comments"></i>
+                <h3>Spoken English</h3>
+                <p>Interactive courses to improve communication skills and fluency.</p>
+                <a href="#" class="btn btn-primary">Know More</a>
+            </div>
+        </div>
+    </div>
+</section>
 
-        <!-- Impact Snapshot -->
-        <section class="impact">
-            <div class="container">
-                <h2 class="section-title">Our Impact</h2>
-                <div class="impact-stats">
-                    <div class="stat-item">
-                        <div class="stat-number" id="villages-count">42</div>
-                        <div class="stat-label">Villages Reached</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="people-count">1850</div>
-                        <div class="stat-label">People Trained</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="events-count">67</div>
-                        <div class="stat-label">Events Held</div>
-                    </div>
-                </div>
+<!-- Impact Snapshot -->
+<section class="impact">
+    <div class="container">
+        <h2 class="section-title">Our Impact</h2>
+        <div class="impact-stats">
+            <div class="stat-item">
+                <div class="stat-number" id="villages-count">42</div>
+                <div class="stat-label">Villages Reached</div>
             </div>
-        </section>
+            <div class="stat-item">
+                <div class="stat-number" id="people-count">1850</div>
+                <div class="stat-label">People Trained</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="events-count">67</div>
+                <div class="stat-label">Events Held</div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        <!-- Event Section -->
-        <section id="event" class="event">
-            <div class="container">
-                <div class="event-content">
-                    <h2>WADO West Bengal Karate Championship 2025</h2>
-                    <p>Join us for the biggest karate championship in West Bengal, bringing together talented martial
-                        artists from across the state. This event aims to promote discipline, self-defence skills, and
-                        physical fitness among youth.</p>
-                    <a href="#" class="btn btn-secondary">Learn More</a>
-                </div>
-            </div>
-        </section>
+<!-- Event Section -->
+<section id="event" class="event">
+    <div class="container">
+        <div class="event-content">
+            <h2>WADO West Bengal Karate Championship 2025</h2>
+            <p>Join us for the biggest karate championship in West Bengal, bringing together talented martial
+                artists from across the state. This event aims to promote discipline, self-defence skills, and
+                physical fitness among youth.</p>
+            <a href="#" class="btn btn-secondary">Learn More</a>
+        </div>
+    </div>
+</section>
 
-        <!-- Gallery Section -->
-        <section id="gallery" class="gallery">
-            <div class="container">
-                <h2 class="section-title">Our Gallery</h2>
-                <div class="gallery-grid">
-                    <div class="gallery-item"
-                        data-src="{{ url_for('static', filename='images/gallery/galary1.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary1.webp') }}" loading="lazy"
-                            alt="Gallery Image 1">
-                    </div>
-                    <div class="gallery-item"
-                        data-src="{{ url_for('static', filename='images/gallery/galary2.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary2.webp') }}" loading="lazy"
-                            alt="Gallery Image 2">
-                    </div>
-                    <div class="gallery-item"
-                        data-src="{{ url_for('static', filename='images/gallery/galary3.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary3.webp') }}" loading="lazy"
-                            alt="Gallery Image 3">
-                    </div>
-                    <div class="gallery-item"
-                        data-src="{{ url_for('static', filename='images/gallery/galary4.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary4.webp') }}" loading="lazy"
-                            alt="Gallery Image 4">
-                    </div>
-                    <div class="gallery-item"
-                        data-src="{{ url_for('static', filename='images/gallery/galary5.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary5.webp') }}" loading="lazy"
-                            alt="Gallery Image 5">
-                    </div>
-                    <div class="gallery-item"
-                        data-src="{{ url_for('static', filename='images/gallery/galary6.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary6.webp') }}" loading="lazy"
-                            alt="Gallery Image 6">
-                    </div>
-                    <div class="gallery-item"
-                        data-src="{{ url_for('static', filename='images/gallery/galary7.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary7.webp') }}" loading="lazy"
-                            alt="Gallery Image 7">
-                    </div>
-                    <div class="gallery-item"
-                        data-src="{{ url_for('static', filename='images/gallery/galary8.webp') }}">
-                        <img src="{{ url_for('static', filename='images/gallery/galary8.webp') }}" loading="lazy"
-                            alt="Gallery Image 8">
-                    </div>
-                </div>
+<!-- Gallery Section -->
+<section id="gallery" class="gallery">
+    <div class="container">
+        <h2 class="section-title">Our Gallery</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary1.webp') }}">
+                <img src="{{ url_for('static', filename='images/gallery/galary1.webp') }}" loading="lazy"
+                    alt="Gallery Image 1">
             </div>
+            <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary2.webp') }}">
+                <img src="{{ url_for('static', filename='images/gallery/galary2.webp') }}" loading="lazy"
+                    alt="Gallery Image 2">
+            </div>
+            <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary3.webp') }}">
+                <img src="{{ url_for('static', filename='images/gallery/galary3.webp') }}" loading="lazy"
+                    alt="Gallery Image 3">
+            </div>
+            <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary4.webp') }}">
+                <img src="{{ url_for('static', filename='images/gallery/galary4.webp') }}" loading="lazy"
+                    alt="Gallery Image 4">
+            </div>
+            <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary5.webp') }}">
+                <img src="{{ url_for('static', filename='images/gallery/galary5.webp') }}" loading="lazy"
+                    alt="Gallery Image 5">
+            </div>
+            <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary6.webp') }}">
+                <img src="{{ url_for('static', filename='images/gallery/galary6.webp') }}" loading="lazy"
+                    alt="Gallery Image 6">
+            </div>
+            <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary7.webp') }}">
+                <img src="{{ url_for('static', filename='images/gallery/galary7.webp') }}" loading="lazy"
+                    alt="Gallery Image 7">
+            </div>
+            <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary8.webp') }}">
+                <img src="{{ url_for('static', filename='images/gallery/galary8.webp') }}" loading="lazy"
+                    alt="Gallery Image 8">
+            </div>
+        </div>
+    </div>
 
-            <!-- Lightbox -->
-            <div id="lightbox" class="lightbox">
-                <span class="close-lightbox">&times;</span>
-                <img class="lightbox-content" id="lightbox-img" loading="lazy">
-            </div>
-        </section>
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" loading="lazy">
+    </div>
+</section>
 
-        <!-- Donate Block -->
-        <section id="donate" class="join-form">
-            <div class="container">
-                <div class="form-container">
-                    <h2 style="text-align: center; color: var(--earth-green); margin-bottom: 30px;">Support Our Cause
-                    </h2>
-                    <p style="text-align: center; margin-bottom: 30px; color: var(--light-text);">Your donation helps us
-                        continue our work in education, health, and livelihood programs for rural communities.</p>
-                    <div style="text-align: center;">
-                        <a href="#" class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 40px;">Donate
-                            Now</a>
-                    </div>
-                </div>
+<!-- Donate Block -->
+<section id="donate" class="join-form">
+    <div class="container">
+        <div class="form-container">
+            <h2 style="text-align: center; color: var(--earth-green); margin-bottom: 30px;">Support Our Cause
+            </h2>
+            <p style="text-align: center; margin-bottom: 30px; color: var(--light-text);">Your donation helps us
+                continue our work in education, health, and livelihood programs for rural communities.</p>
+            <div style="text-align: center;">
+                <a href="#" class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 40px;">Donate
+                    Now</a>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
-        <!-- Join Form Section -->
-        <section id="join" class="join-form">
-            <div class="container">
-                <h2 class="section-title">Join Our Programs</h2>
-                <div class="form-container">
-                    <form id="join-form">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" class="form-control" placeholder="Enter your full name"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="interest">Area of Interest</label>
-                            <select id="interest" class="form-control" required>
-                                <option value="" disabled selected>Select your interest</option>
-                                <option value="education">Education</option>
-                                <option value="health">Health</option>
-                                <option value="skill-training">Skill Training</option>
-                                <option value="karate-self-defence">Karate & Self-defence</option>
-                                <option value="yoga">Yoga</option>
-                                <option value="children-elders">Children & Elders</option>
-                                <option value="animal-welfare">Animal Welfare</option>
-                                <option value="environment">Environment</option>
-                                <option value="coaching">Coaching</option>
-                                <option value="research-advocacy">Research and Advocacy</option>
-                                <option value="spoken-english">Spoken English</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="city">City</label>
-                            <input type="text" id="city" class="form-control" placeholder="Enter your city" required>
-                        </div>
-                        <div class="form-submit">
-                            <button type="submit" class="btn btn-primary">Submit Application</button>
-                        </div>
-                    </form>
+<!-- Join Form Section -->
+<section id="join" class="join-form">
+    <div class="container">
+        <h2 class="section-title">Join Our Programs</h2>
+        <div class="form-container">
+            <form id="join-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
                 </div>
-            </div>
-        </section>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number" required>
+                </div>
+                <div class="form-group">
+                    <label for="interest">Area of Interest</label>
+                    <select id="interest" class="form-control" required>
+                        <option value="" disabled selected>Select your interest</option>
+                        <option value="education">Education</option>
+                        <option value="health">Health</option>
+                        <option value="skill-training">Skill Training</option>
+                        <option value="karate-self-defence">Karate & Self-defence</option>
+                        <option value="yoga">Yoga</option>
+                        <option value="children-elders">Children & Elders</option>
+                        <option value="animal-welfare">Animal Welfare</option>
+                        <option value="environment">Environment</option>
+                        <option value="coaching">Coaching</option>
+                        <option value="research-advocacy">Research and Advocacy</option>
+                        <option value="spoken-english">Spoken English</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" class="form-control" placeholder="Enter your city" required>
+                </div>
+                <div class="form-submit">
+                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
 
-        <!-- Testimonials Section -->
-        <section class="testimonials">
-            <div class="container">
-                <h2 class="section-title">What People Say</h2>
-                <div class="testimonial-container">
-                    <div class="testimonial-slide active">
-                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                            loading="lazy" alt="Testimonial 1" class="testimonial-img">
-                        <p class="testimonial-text">"Gram Tarakki's karate program transformed my daughter's confidence.
-                            She's now more assertive and focused in her studies too."</p>
-                        <p class="testimonial-author">- Priya Sharma, Mother</p>
-                    </div>
-                    <div class="testimonial-slide">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                            loading="lazy" alt="Testimonial 2" class="testimonial-img">
-                        <p class="testimonial-text">"The skill training helped me start my own tailoring business. I'm
-                            now
-                            earning enough to support my family."</p>
-                        <p class="testimonial-author">- Rajesh Kumar, Entrepreneur</p>
-                    </div>
-                    <div class="testimonial-slide">
-                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                            loading="lazy" alt="Testimonial 3" class="testimonial-img">
-                        <p class="testimonial-text">"Regular yoga sessions have improved my health significantly. I'm
-                            grateful for Gram Tarakki's free community classes."</p>
-                        <p class="testimonial-author">- Sunita Devi, Yoga Participant</p>
-                    </div>
-                </div>
+<!-- Testimonials Section -->
+<section class="testimonials">
+    <div class="container">
+        <h2 class="section-title">What People Say</h2>
+        <div class="testimonial-container">
+            <div class="testimonial-slide active">
+                <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                    loading="lazy" alt="Testimonial 1" class="testimonial-img">
+                <p class="testimonial-text">"Gram Tarakki's karate program transformed my daughter's confidence.
+                    She's now more assertive and focused in her studies too."</p>
+                <p class="testimonial-author">- Priya Sharma, Mother</p>
             </div>
-        </section>
+            <div class="testimonial-slide">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                    loading="lazy" alt="Testimonial 2" class="testimonial-img">
+                <p class="testimonial-text">"The skill training helped me start my own tailoring business. I'm
+                    now
+                    earning enough to support my family."</p>
+                <p class="testimonial-author">- Rajesh Kumar, Entrepreneur</p>
+            </div>
+            <div class="testimonial-slide">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                    loading="lazy" alt="Testimonial 3" class="testimonial-img">
+                <p class="testimonial-text">"Regular yoga sessions have improved my health significantly. I'm
+                    grateful for Gram Tarakki's free community classes."</p>
+                <p class="testimonial-author">- Sunita Devi, Yoga Participant</p>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
-{% block js %}<script src="{{ url_for('static', filename='js/home.js') }}"></script>{% endblock %}   
+{% block js %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>{% endblock %}

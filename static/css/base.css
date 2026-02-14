@@ -93,6 +93,7 @@ header {
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
     position: relative;
 }
+
 /* Footer */
 footer {
     background-color: var(--dark-text);
