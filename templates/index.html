@@ -1,45 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gram Tarakki - Building Self-Reliant Villages</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-</head>
-
-<body>
-    <div class="page-wrapper">
-        <!-- Header & Navigation -->
-        <header>
-            <div class="container">
-                <nav class="navbar">
-                    <a href="{{ url_for('home') }}" class="logo">
-                        <img src="{{ url_for('static', filename='images/home/logo.webp') }}" loading="lazy"
-                            alt="Gram Tarakki Logo">
-                        Gram Tarakki
-                    </a>
-                    <ul class="nav-menu">
-                        <li><a href="{{ url_for('home') }}">Home</a></li>
-                        <li><a href="{{ url_for('about') }}">About</a></li>
-                        <li><a href="{{ url_for('programs') }}">Programs</a></li>
-                        <li><a href="#event">Events</a></li>
-                        <li><a href="#gallery">Gallery</a></li>
-                        <li><a href="#donate">Donate</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                    <div class="hamburger">
-                        <i class="fas fa-bars"></i>
-                    </div>
-                </nav>
-            </div>
-        </header>
-
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">{% endblock %}
+{% block content %}
         <!-- Hero Section -->
         <section class="hero">
             <div class="hero-content">
@@ -311,52 +273,5 @@
                 </div>
             </div>
         </section>
-
-        <!-- Footer -->
-        <footer id="contact">
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-contact">
-                        <div class="footer-logo">Gram Tarakki</div>
-                        <p>Empowering rural communities through education, healthcare, and sustainable livelihood
-                            programs.
-                        </p>
-                        <div class="contact-item">
-                            <i class="fas fa-phone-alt"></i>
-                            <span>9475321004</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>info@gtfoundations.in</span>
-                        </div>
-                    </div>
-                    <div class="footer-social">
-                        <h3>Follow Us</h3>
-                        <p>Stay connected with our latest updates and activities.</p>
-                        <div class="social-icons">
-                            <a href="https://www.youtube.com/gramtarakki" class="social-icon" target="_blank">
-                                <i class="fab fa-youtube"></i>
-                            </a>
-                            <a href="https://www.facebook.com/gram-tarakki" class="social-icon" target="_blank">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="social-icon">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="social-icon">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="copyright">
-                    &copy; 2026 Gram Tarakki. All rights reserved.
-                </div>
-            </div>
-        </footer>
-    </div>
-
-    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
-</body>
-
-</html>
+{% endblock %}
+{% block js %}<script src="{{ url_for('static', filename='js/home.js') }}"></script>{% endblock %}   
