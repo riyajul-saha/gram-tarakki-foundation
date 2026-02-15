@@ -1,0 +1,22 @@
+{
+    "Live Program": [
+        "Karate & Selfe Defence",
+        "Skill Development",
+        "Yoga"
+    ],
+    "Location": [
+        "Kolkata",
+        "Mugberia",
+        "Itaberia"
+    ],
+    "Age": [
+        "5-30",
+        "15-60",
+        "9-60"
+    ],
+    "Training days": [
+        "Sun,Mon&Sat",
+        "Tues & Wed",
+        "Fri & Sun"
+    ]
+}

@@ -30,7 +30,7 @@ body {
     background-color: var(--light-green-soft);
     color: var(--text-dark);
     line-height: 1.5;
-    padding-top: 30px;
+    /* padding-top: 30px; */
     /* breathing space */
 }
 
@@ -505,4 +505,21 @@ input[type="checkbox"]:hover {
 
 .mt-4 {
     margin-top: 2rem;
+}
+
+/* Dynamic text animation */
+.info-value {
+    display: inline-block;
+    transition: opacity 0.5s ease;
+    opacity: 1;
+    white-space: nowrap;
+    /* Prevent wrapping during transition if possible */
+}
+
+.info-value.slide-out {
+    opacity: 0;
+}
+
+.info-value.slide-in-start {
+    opacity: 0;
 }

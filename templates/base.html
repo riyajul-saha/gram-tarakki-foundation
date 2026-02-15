@@ -12,9 +12,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     {% block css %}{% endblock %}
+    <!-- Config for JS -->
+    <!-- <div id="program-info-config" data-url="{{ url_for('static', filename='data/program_info.json') }}"
+        style="display:none;"></div> -->
 </head>
 
 <body>
+    <div id="program-info-config" data-url="{{ url_for('static', filename='data/program_info.json') }}"
+        style="display:none;"></div>
     <div class="page-wrapper">
         <!-- Header & Navigation -->
         <header>
