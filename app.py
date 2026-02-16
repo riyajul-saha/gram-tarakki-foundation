@@ -22,6 +22,10 @@ def programs():
 def join():
   return render_template('join.html')
 
+@app.route("/karate")
+def karate():
+  return render_template('programs-karate.html')
+
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=3000, debug=True)

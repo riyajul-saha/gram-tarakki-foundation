@@ -1,0 +1,344 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karate Training Program</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body> -->
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/programs-karate.css') }}">{% endblock %}
+{% block content %}
+<!-- 1. Hero Section -->
+<section class="hero-section">
+    <!-- Background Accent -->
+    <div class="hero-bg-accent"></div>
+
+    <div class="hero-container">
+
+        <!-- Text Content -->
+        <div class="hero-text fade-in-left">
+            <span class="badge">Join the Legacy</span>
+            <h1 class="hero-title">
+                Karate Training Program
+            </h1>
+            <p class="hero-tagline">
+                Discipline • Confidence • Self-Defence • Character Building
+            </p>
+
+            <!-- Feature Box -->
+            <div class="feature-box">
+                <ul class="feature-list">
+                    <li>
+                        <i data-lucide="check-circle-2" class="icon-brand"></i>
+                        <span>Traditional karate training</span>
+                    </li>
+                    <li>
+                        <i data-lucide="check-circle-2" class="icon-brand"></i>
+                        <span>Certified instructor</span>
+                    </li>
+                    <li>
+                        <i data-lucide="check-circle-2" class="icon-brand"></i>
+                        <span>Suitable for children & youth</span>
+                    </li>
+                </ul>
+                <div class="hero-cta-wrapper">
+                    <a href="{{ url_for('join') }}" class="btn btn-primary">
+                        Enroll Now
+                        <i data-lucide="arrow-right" class="icon-sm"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Image -->
+        <div class="hero-image-wrapper fade-in-scale">
+            <div class="hero-image-container">
+                <img src="{{ url_for('static', filename='images/karate/hero.webp') }}" alt="Karate Training"
+                    class="hero-image" />
+                <div class="hero-image-overlay"></div>
+            </div>
+            <!-- Floating Badge -->
+            <div class="floating-badge animate-bounce-slow">
+                <div class="badge-icon">
+                    <i data-lucide="star" class="icon-secondary"></i>
+                </div>
+                <div>
+                    <p class="badge-subtitle">Rated 5/5</p>
+                    <p class="badge-title">By Parents</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. About Program Section -->
+<section class="section about-section">
+    <div class="scroll-reveal">
+        <div class="section-header">
+            <h2 class="section-title">About the Program</h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="about-content">
+            <p>Karate helps people stay physically fit, mentally strong, and confident in modern life. It teaches
+                self-defense skills and builds character, which is valuable in today’s fast-paced and stressful world.
+            </p>
+            <p>Physically, karate improves strength, flexibility, balance, and stamina. Mentally, it increases focus,
+                reduces stress, boosts confidence, and develops quick decision-making ability.</p>
+            <p>Karate training is usually done under trained instructors with proper rules, protective gear, and
+                controlled practice. This ensures students learn techniques safely while minimizing the risk of injury.
+            </p>
+            <p>Karate strongly emphasizes discipline, respect, and self-control. Students learn to follow rules, respect
+                teachers and peers, and develop patience—qualities that help in studies, career, and daily life.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Our Sensei Section -->
+<section class="section sensei-section">
+    <div class="container">
+        <div class="scroll-reveal">
+            <h2 class="section-title text-center mb-large">Our Sensei</h2>
+
+            <div class="sensei-grid">
+                <!-- Sensei Image -->
+                <div class="sensei-image-col">
+                    <div class="sensei-card group">
+                        <img src="{{ url_for('static', filename='images/karate/sansai.webp') }}" alt="Sensei"
+                            class="sensei-img" />
+                        <div class="sensei-overlay">
+                            <p class="sensei-name-overlay">Sensei Sagar Khamrai</p>
+                            <p class="sensei-title-overlay">Head Instructor</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sensei Details -->
+                <div class="sensei-details-col">
+                    <div>
+                        <h3 class="sensei-name">Sensei Sagar Khamrai</h3>
+                        <p class="sensei-role">Head Instructor</p>
+                    </div>
+
+                    <div class="qualifications-box">
+                        <ul class="qualifications-list">
+                            <li>
+                                <i data-lucide="award" class="icon-secondary"></i>
+                                <span>3rd Dan Black Belt</span>
+                            </li>
+                            <li>
+                                <i data-lucide="award" class="icon-secondary"></i>
+                                <span>Head Instructor of SDKTC</span>
+                            </li>
+                            <li>
+                                <i data-lucide="award" class="icon-secondary"></i>
+                                <span>International referee & judge</span>
+                            </li>
+                            <li>
+                                <i data-lucide="award" class="icon-secondary"></i>
+                                <span>Attended national & international camps</span>
+                            </li>
+                            <li>
+                                <i data-lucide="award" class="icon-secondary"></i>
+                                <span>Experienced in training children & youth</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <blockquote class="sensei-quote">
+                        “Karate is not just self-defence, it is character building.”
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Training Structure -->
+<section class="section training-section">
+    <div class="scroll-reveal">
+        <div class="section-header">
+            <h2 class="section-title">Training Structure</h2>
+            <div class="section-divider"></div>
+        </div>
+
+        <div class="training-grid">
+            <div class="training-card group">
+                <div class="card-icon-wrapper">
+                    <i data-lucide="zap" class="card-icon"></i>
+                </div>
+                <h3 class="card-title">Basic Techniques</h3>
+            </div>
+            <div class="training-card group">
+                <div class="card-icon-wrapper">
+                    <i data-lucide="target" class="card-icon"></i>
+                </div>
+                <h3 class="card-title">Discipline & Focus</h3>
+            </div>
+            <div class="training-card group">
+                <div class="card-icon-wrapper">
+                    <i data-lucide="activity" class="card-icon"></i>
+                </div>
+                <h3 class="card-title">Physical Conditioning</h3>
+            </div>
+            <div class="training-card group">
+                <div class="card-icon-wrapper">
+                    <i data-lucide="shield" class="card-icon"></i>
+                </div>
+                <h3 class="card-title">Self-Defence Skills</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Belt Promotion -->
+<section class="section belt-section">
+    <div class="container">
+        <div class="scroll-reveal">
+            <div class="belt-grid">
+                <div class="belt-content">
+                    <h2 class="section-title text-left">Belt Promotion & Examination</h2>
+                    <p class="belt-description">
+                        We believe in rewarding dedication and progress. Our structured belt promotion system ensures
+                        every student is evaluated fairly.
+                    </p>
+                    <div class="belt-points">
+                        <div class="belt-point">
+                            <div class="dot"></div>
+                            <span>Regular belt examinations</span>
+                        </div>
+                        <div class="belt-point">
+                            <div class="dot"></div>
+                            <span>Progress-based promotion</span>
+                        </div>
+                        <div class="belt-point">
+                            <div class="dot"></div>
+                            <span>Certificate & belt distribution ceremony</span>
+                        </div>
+                        <div class="belt-point">
+                            <div class="dot"></div>
+                            <span>Performance evaluation</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="belt-images">
+                    <div class="belt-image-grid">
+                        <img src="{{ url_for('static', filename='images/karate/belt1.webp') }}" alt="Belt Ceremony"
+                            class="belt-img belt-img-1" />
+                        <img src="{{ url_for('static', filename='images/karate/belt2.webp') }}" alt="Belt Ceremony"
+                            class="belt-img belt-img-2" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. Achievements Gallery -->
+<section class="section gallery-section">
+    <div class="scroll-reveal">
+        <div class="section-header">
+            <h2 class="section-title">Achievements & Performances</h2>
+            <p class="section-subtitle">Celebrating our students' success on and off the mat</p>
+        </div>
+
+        <div id="gallery-root">
+            <!-- Gallery logic will be injected by JS, but providing structure -->
+            <div class="gallery-container">
+                <div class="gallery-grid" id="gallery-grid">
+                    <!-- Images injected here -->
+                </div>
+
+                <div class="gallery-controls">
+                    <button id="prev-btn" class="control-btn">
+                        <i data-lucide="chevron-left" class="icon-sm"></i>
+                    </button>
+                    <button id="next-btn" class="control-btn">
+                        <i data-lucide="chevron-right" class="icon-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Custom Lightbox Overlay -->
+<div id="lightbox" class="lightbox closed">
+    <div class="lightbox-content">
+        <button id="lightbox-close" class="lightbox-close">
+            <i data-lucide="x" class="icon-md"></i>
+        </button>
+        <img id="lightbox-img" src="" alt="Full view" class="lightbox-image">
+    </div>
+</div>
+
+<!-- 7. Who Can Join -->
+<section class="section join-info-section">
+    <div class="scroll-reveal">
+        <h2 class="section-title text-center mb-large">Who Can Join?</h2>
+        <div class="join-grid">
+            <div class="join-card">
+                <i data-lucide="users" class="icon-brand-lg"></i>
+                <span>Children (6+)</span>
+            </div>
+            <div class="join-card">
+                <i data-lucide="users" class="icon-brand-lg"></i>
+                <span>Boys & Girls</span>
+            </div>
+            <div class="join-card">
+                <i data-lucide="users" class="icon-brand-lg"></i>
+                <span>Beginners welcome</span>
+            </div>
+            <div class="join-card">
+                <i data-lucide="users" class="icon-brand-lg"></i>
+                <span>No prior experience needed</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 8. Footer CTA -->
+<section class="footer-cta">
+    <!-- Decorative Circles -->
+    <div class="circle-deco circle-1"></div>
+    <div class="circle-deco circle-2"></div>
+
+    <div class="scroll-reveal">
+        <div class="cta-content">
+            <h2 class="cta-title">
+                Start your journey of discipline and confidence today.
+            </h2>
+            <p class="cta-subtitle">
+                Join a community that builds character, strength, and resilience.
+            </p>
+            <div class="cta-actions">
+                <a href="{{ url_for('join') }}" class="btn btn-white">
+                    Join Now
+                </a>
+                <a href="tel:+919475321004" class="btn btn-white">
+                    Contact Now
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Simple Footer Note
+<footer class="site-footer">
+<p>© <span id="year"></span> Karate Training Program. All rights reserved.</p>
+</footer> -->
+{% endblock %}
+{% block js %}
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="{{ url_for('static', filename='js/programs-karate.js') }}"></script>
+<script>
+    lucide.createIcons();
+    const yearSpan = document.getElementById('year');
+    if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+    }
+</script>
+{% endblock %}
