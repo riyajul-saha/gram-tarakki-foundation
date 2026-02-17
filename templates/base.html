@@ -39,7 +39,7 @@
                                 class="{{ 'active' if request.endpoint == 'about' else '' }}">About</a></li>
                         <li><a href="{{ url_for('programs') }}"
                                 class="{{ 'active' if request.endpoint == 'programs' else '' }}">Programs</a></li>
-                        <li><a href="{{ url_for('home', _anchor='event') }}">Events</a></li>
+                        <li><a href="{{ url_for('join') }}">Join</a></li>
                         <li><a href="#program-gallery">Gallery</a></li>
                         <li><a href="{{ url_for('home', _anchor='donate') }}">Donate</a></li>
                         <li><a href="#contact">Contact</a></li>
@@ -70,6 +70,11 @@
                             <i class="fas fa-envelope"></i>
                             <span>info@gtfoundations.in</span>
                         </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>C/O- SK HANIF, MADHAKHALI BHUPATINAGAR, Bhupatinagar, East Midnapore, Bhupatinagar,
+                                West Bengal, India, 721425</span>
+                        </div>
                     </div>
                     <div class="footer-social">
                         <h3>Follow Us</h3>
@@ -91,7 +96,9 @@
                     </div>
                 </div>
                 <div class="copyright">
-                    &copy; 2026 Gram Tarakki. All rights reserved.
+                    <!-- &copy; 2026 Gram Tarakki. All rights reserved. -->
+                    <p>&copy; 2026 Gram Tarakki Foundation. All Rights Reserved.</p>
+                    <p>CIN: U88900WB2026NPL286268 | ROC: Kolkata</p>
                 </div>
             </div>
         </footer>

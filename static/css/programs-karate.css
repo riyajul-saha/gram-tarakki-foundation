@@ -714,14 +714,23 @@ a {
   object-fit: cover;
   border-radius: 0.75rem;
   box-shadow: var(--shadow-lg);
+  transition: transform 0.3s ease;
 }
 
 .belt-img-1 {
   transform: translateY(1rem);
 }
 
+.belt-img-1:hover {
+  transform: translateY(1rem) scale(1.05);
+}
+
 .belt-img-2 {
   transform: translateY(-1rem);
+}
+
+.belt-img-2:hover {
+  transform: translateY(-1rem) scale(1.05);
 }
 
 /* --- 6. Gallery Section --- */

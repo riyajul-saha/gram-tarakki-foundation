@@ -24,7 +24,7 @@ def join():
 
 @app.route("/karate")
 def karate():
-  return render_template('programs-karate.html')
+  return render_template('programs/programs-karate.html')
 
 
 if __name__ == "__main__":
