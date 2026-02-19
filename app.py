@@ -26,6 +26,9 @@ def join():
 def karate():
   return render_template('programs/programs-karate.html')
 
+@app.route("/yoga")
+def yoga():
+  return render_template('programs/programs-yoga.html')
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=3000, debug=True)

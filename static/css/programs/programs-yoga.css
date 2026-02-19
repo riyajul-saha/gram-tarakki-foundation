@@ -1,0 +1,495 @@
+/* ----- COLOR THEME ----- */
+:root {
+    --primary-purple: #6c5ce7;
+    --primary-purple-dark: #5a4bcf;
+    --secondary-teal: #00b894;
+    --bg-soft: #f8fffe;
+    --text-dark: #2d3436;
+    --text-light: #636e72;
+    --white: #ffffff;
+    --shadow-soft: 0 15px 35px rgba(108, 92, 231, 0.08);
+    --shadow-hover: 0 20px 40px rgba(108, 92, 231, 0.15);
+    --border-radius: 20px;
+    --transition: all 0.3s ease;
+
+    /* Mappings for base.css compatibility */
+    --dark-text: var(--text-dark);
+    --earth-green: var(--secondary-teal);
+    --warm-terracotta: #d35400;
+    /* Fallback accent */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: var(--bg-soft);
+    color: var(--text-dark);
+    line-height: 1.7;
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-dark);
+}
+
+h1 {
+    font-size: 3.5rem;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+h2:after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-purple), var(--secondary-teal));
+    border-radius: 4px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+section {
+    padding: 5rem 0;
+}
+
+/* ----- BUTTON STYLES ----- */
+.btn {
+    display: inline-block;
+    padding: 0.9rem 2.2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    box-shadow: 0 8px 18px rgba(108, 92, 231, 0.2);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-purple), var(--secondary-teal));
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-purple-dark), #00997a);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(108, 92, 231, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+}
+
+.btn-outline:hover {
+    background: white;
+    color: var(--primary-purple);
+    transform: translateY(-3px);
+}
+
+/* ----- HERO SECTION (parallax, fade-up) ----- */
+.hero {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    padding: 0;
+    height: 90vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=1400&auto=format&fit=crop');
+    /* soft yoga pose */
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+    transform: scale(1.1);
+    animation: slowZoom 25s infinite alternate;
+}
+
+@keyframes slowZoom {
+    0% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1.2);
+    }
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.6), rgba(0, 184, 148, 0.6));
+    z-index: -1;
+}
+
+.hero-content {
+    max-width: 800px;
+    padding: 0 20px;
+    animation: fadeUp 1.2s ease;
+}
+
+@keyframes fadeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-content h1 {
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.hero-content p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+}
+
+.hero-btn {
+    animation: softPulse 2s infinite;
+}
+
+@keyframes softPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 12px rgba(255, 255, 255, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+/* ----- ABOUT SECTION (two columns) ----- */
+.about {
+    background: linear-gradient(180deg, #f8fffe, #eef7f6);
+}
+
+.about-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    align-items: center;
+}
+
+.about-text {
+    flex: 1 1 300px;
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.8s ease;
+}
+
+.about-text.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.about-image {
+    flex: 1 1 300px;
+    text-align: center;
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 0.8s ease;
+}
+
+.about-image.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.about-image img {
+    max-width: 100%;
+    border-radius: 40px 40px 40px 10px;
+    box-shadow: var(--shadow-soft);
+}
+
+/* ----- BENEFITS CARDS (grid) ----- */
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.benefit-card {
+    background: var(--white);
+    padding: 2.2rem 1.5rem;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition);
+}
+
+.benefit-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+}
+
+.benefit-card i {
+    font-size: 3rem;
+    background: linear-gradient(135deg, var(--primary-purple), var(--secondary-teal));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.benefit-card:hover i {
+    background: var(--primary-purple);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.benefit-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.benefit-card p {
+    color: var(--text-light);
+}
+
+/* ----- YOGA GALLERY (auto-changing grid) ----- */
+.gallery-container {
+    position: relative;
+    overflow: hidden;
+    min-height: 300px;
+}
+
+.gallery-sets {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.gallery-set {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    flex: 0 0 100%;
+}
+
+.gallery-item {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    aspect-ratio: 1 / 1;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.gallery-item:hover img {
+    transform: scale(1.08);
+}
+
+.gallery-item:hover .overlay-icon {
+    opacity: 1;
+}
+
+.overlay-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(108, 92, 231, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    color: white;
+    font-size: 2.5rem;
+    backdrop-filter: blur(2px);
+}
+
+/* ----- CTA SECTION (gradient, moving background) ----- */
+.cta {
+    background: linear-gradient(135deg, #7ed6df, #badc58);
+    background-size: 200% 200%;
+    animation: gradientMove 8s ease infinite;
+    border-radius: 50px;
+    margin: 3rem auto;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: white;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.cta h2 {
+    color: white;
+    font-size: 2.8rem;
+}
+
+.cta h2:after {
+    background: white;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+}
+
+.cta p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.cta .btn {
+    animation: btnPulse 2s infinite;
+}
+
+@keyframes btnPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+    }
+
+    70% {
+        box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+/* ----- SCROLL REVEAL (general) ----- */
+.reveal {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ----- MOBILE RESPONSIVE ----- */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    .hero {
+        min-height: 500px;
+    }
+
+    .about-grid {
+        flex-direction: column;
+    }
+
+    .about-image {
+        order: -1;
+    }
+
+    .cta h2 {
+        font-size: 2rem;
+    }
+
+    .cta-buttons .btn {
+        width: 100%;
+    }
+
+    .gallery-set {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .hero-content p {
+        font-size: 1.1rem;
+    }
+
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-set {
+        grid-template-columns: 1fr;
+    }
+}

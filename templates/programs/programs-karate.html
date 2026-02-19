@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/programs-karate.css') }}">{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/programs/programs-karate.css') }}">{% endblock %}
 {% block content %}
 <!-- 1. Hero Section -->
 <section class="hero-section">
@@ -318,7 +318,7 @@
 {% endblock %}
 {% block js %}
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="{{ url_for('static', filename='js/programs-karate.js') }}"></script>
+<script src="{{ url_for('static', filename='js/programs/programs-karate.js') }}"></script>
 <script>
     lucide.createIcons();
     const yearSpan = document.getElementById('year');
