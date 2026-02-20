@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/donate.css') }}">{% endblock %}
+{% block content %}
+<!-- Sticky Donate Button for Mobile -->
+<a href="#donation-options" class="sticky-donate"><i class="fas fa-heart"></i> Donate Now</a>
+
+<!-- 1. Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content reveal">
+            <h1>Support a Child’s Future</h1>
+            <p>Your small contribution can create a big impact in rural education and martial arts training.</p>
+            <div class="hero-buttons">
+                <a href="#donation-options" class="btn"><i class="fas fa-heart"></i> Donate Now</a>
+                <a href="#impact" class="btn btn-outline">Learn More</a>
+            </div>
+        </div>
+        <div class="hero-image reveal">
+            <!-- Emotional image of child – replace with your own -->
+            <img src="https://images.unsplash.com/photo-1540479859555-17af45c78602?w=600&auto=format&fit=crop"
+                alt="Happy child" loading="lazy">
+        </div>
+    </div>
+</section>
+
+<!-- 2. Donation Options Block -->
+<section id="donation-options">
+    <div class="container">
+        <h2 class="reveal">Choose how you'd like to give</h2>
+        <div class="cards-grid">
+            <div class="donation-card reveal">
+                <i class="fas fa-hand-holding-heart"></i>
+                <h3>One-time</h3>
+                <p>Make a single donation to support immediate needs.</p>
+                <button class="card-btn">Select</button>
+            </div>
+            <div class="donation-card reveal">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Monthly</h3>
+                <p>Sustainable monthly giving for long-term impact.</p>
+                <button class="card-btn">Select</button>
+            </div>
+            <div class="donation-card reveal">
+                <i class="fas fa-handshake"></i>
+                <h3>Pledge</h3>
+                <p>Commit to a future donation or corporate matching.</p>
+                <button class="card-btn">Select</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Donation Amount Selector + Donor Info + Payment (combined in one section for flow) -->
+<section>
+    <div class="container">
+        <div class="amount-selector reveal">
+            <h3 style="margin-bottom: 1.2rem;">Select amount</h3>
+            <div class="preset-amounts" id="presetAmounts">
+                <span class="amount-pill" data-amount="100">₹100</span>
+                <span class="amount-pill" data-amount="500">₹500</span>
+                <span class="amount-pill" data-amount="1000">₹1000</span>
+                <span class="amount-pill" data-amount="5000">₹5000</span>
+            </div>
+            <div class="custom-amount">
+                <label for="customAmount">Custom:</label>
+                <input type="number" id="customAmount" placeholder="Enter amount" min="1">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Donor Information Form -->
+<section>
+    <div class="container">
+        <div class="donor-form reveal">
+            <h3 style="margin-bottom: 1.8rem;">Your information</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="required">Full Name</label>
+                    <input type="text" placeholder="As on PAN card" required>
+                </div>
+                <div class="form-group">
+                    <label class="required">Email</label>
+                    <input type="email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="required">Phone</label>
+                    <input type="tel" placeholder="10-digit mobile" required>
+                </div>
+                <div class="form-group">
+                    <label>City (optional)</label>
+                    <input type="text" placeholder="Your city">
+                </div>
+                <div class="form-group">
+                    <label>PAN (optional)</label>
+                    <input type="text" placeholder="For 80G certificate">
+                </div>
+                <div class="form-group">
+                    <label>Message (optional)</label>
+                    <textarea rows="2" placeholder="Write something..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Payment Methods -->
+<section>
+    <div class="container">
+        <h2 class="reveal">Payment methods</h2>
+        <div class="payment-grid reveal">
+            <div class="payment-item"><i class="fa-brands fa-google-pay"></i><span>UPI</span></div>
+            <div class="payment-item"><i class="fas fa-university"></i><span>Net Banking</span></div>
+            <div class="payment-item"><i class="fas fa-credit-card"></i><span>Card</span></div>
+            <div class="payment-item"><i class="fas fa-building-columns"></i><span>Bank Transfer</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. Trust Signals (VERY IMPORTANT) -->
+<section>
+    <div class="container">
+        <div class="trust-badge reveal">
+            <div class="trust-item"><i class="fas fa-building"></i> <span>Registered under ROC Kolkata</span></div>
+            <div class="trust-item"><i class="fas fa-id-card"></i> <span>CIN: U88900WB2026NPL286268</span></div>
+            <div class="trust-item"><i class="fas fa-check-circle"></i> <span>Active NGO</span></div>
+            <div class="secure-badge"><i class="fas fa-lock"></i> Secure Payment</div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. Impact Section (Emotional Trigger) -->
+<section id="impact">
+    <div class="container">
+        <h2 class="text-center reveal">Your support in action</h2>
+        <div class="stats-grid reveal">
+            <div class="stat-card">
+                <div class="stat-number">2,500+</div>
+                <div class="stat-label">Children trained</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">850+</div>
+                <div class="stat-label">Karate students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">42</div>
+                <div class="stat-label">Villages reached</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">120+</div>
+                <div class="stat-label">Scholarships given</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 8. Testimonials -->
+<section>
+    <div class="container">
+        <h2 class="reveal">What people say</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card reveal">
+                <img class="testimonial-photo" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Parent">
+                <p class="testimonial-quote">“My daughter gained so much confidence through karate. Grateful for
+                    this foundation.”</p>
+                <p class="testimonial-name">– Sunita Devi, parent</p>
+            </div>
+            <div class="testimonial-card reveal">
+                <img class="testimonial-photo" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Student">
+                <p class="testimonial-quote">“Training here changed my life. I’ve learned discipline and made great
+                    friends.”</p>
+                <p class="testimonial-name">– Arjun, student</p>
+            </div>
+            <div class="testimonial-card reveal">
+                <img class="testimonial-photo" src="https://randomuser.me/api/portraits/men/62.jpg" alt="Sensei">
+                <p class="testimonial-quote">“Every donation helps us buy equipment and support talented kids.”</p>
+                <p class="testimonial-name">– Sensei Sagar Khamrai</p>
+            </div>
+            <div class="testimonial-card reveal">
+                <img class="testimonial-photo" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Supporter">
+                <p class="testimonial-quote">“I’ve been donating monthly for a year – I see the impact in our
+                    village.”</p>
+                <p class="testimonial-name">– Meera, supporter</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 9. Help Section -->
+<section>
+    <div class="container">
+        <div class="help-section reveal">
+            <h3>Need help with donation?</h3>
+            <p style="margin: 1rem 0 1.5rem; color: var(--text-muted);">Contact us directly – we're here for you.
+            </p>
+            <div class="help-buttons">
+                <a href="tel:+919475321004" class="help-btn call"><i class="fas fa-phone-alt"></i> Call</a>
+                <a href="https://wa.me/919475321004?text=Hello%20!%20I%20am%20facing%20a%20problem%20at%20donating%20time."
+                    target="_blank" class="help-btn whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                <a href="mailto:info@gtfoundation.in?subject=Donation%20Support" class="help-btn email"><i
+                        class="fas fa-envelope"></i> Email</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='js/donate.js') }}"></script>{% endblock %}
+<!-- Simple footer (optional)
+<footer style="background: #1f2e2e; color: white; padding: 2rem 0; margin-top: 3rem;">
+    <div class="container" style="text-align: center;">
+        <p>© 2026 Gram Tarakki Foundation. All rights reserved.</p>
+    </div>
+</footer> -->
