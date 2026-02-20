@@ -8,7 +8,7 @@
         <h1>Building self-reliant villages — Education · Health · Livelihood</h1>
         <p>We empower marginalised and rural communities with education, healthcare and livelihood support.</p>
         <div class="hero-buttons">
-            <a href="#donate" class="btn btn-primary">Donate Now</a>
+            <a href="{{ url_for('donate') }}" class="btn btn-primary">Donate Now</a>
             <a href="{{ url_for('join') }}" class="btn btn-secondary">Join a Program</a>
         </div>
     </div>
@@ -179,7 +179,8 @@
             <p style="text-align: center; margin-bottom: 30px; color: var(--light-text);">Your donation helps us
                 continue our work in education, health, and livelihood programs for rural communities.</p>
             <div style="text-align: center;">
-                <a href="#" class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 40px;">Donate
+                <a href="{{ url_for('donate') }}" class="btn btn-primary"
+                    style="font-size: 1.2rem; padding: 15px 40px;">Donate
                     Now</a>
             </div>
         </div>

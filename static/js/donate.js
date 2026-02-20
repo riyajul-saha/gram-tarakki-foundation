@@ -10,6 +10,30 @@
     }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
     reveals.forEach(el => observer.observe(el));
 
+    // Donation card selection toggle
+    const donationCards = document.querySelectorAll('.donation-card');
+    donationCards.forEach(card => {
+        const btn = card.querySelector('.card-btn');
+        if (btn) {
+            btn.addEventListener('click', function () {
+                // Remove selected class from all cards and their buttons
+                donationCards.forEach(c => {
+                    c.classList.remove('selected');
+                    const b = c.querySelector('.card-btn');
+                    if (b) {
+                        b.classList.remove('selected');
+                        b.textContent = 'Select';
+                    }
+                });
+
+                // Add selected class to this card and button
+                card.classList.add('selected');
+                this.classList.add('selected');
+                this.textContent = 'Selected';
+            });
+        }
+    });
+
     // Amount pill active toggle
     const pills = document.querySelectorAll('.amount-pill');
     const customInput = document.getElementById('customAmount');
