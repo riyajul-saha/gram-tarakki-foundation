@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}">{% endblock %}
+{% block content %}
+<div class="app-container">
+  <!-- 1. Hero Header Section -->
+  <section class="hero-header">
+    <div class="hero-bg">
+      <img src="https://picsum.photos/seed/gramtarakki-hero/1920/1080" alt="Hero Background"
+        referrerpolicy="no-referrer">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">Our Gallery</h1>
+      <p class="hero-subtitle">Moments of impact from Gram Tarakki Foundation</p>
+    </div>
+  </section>
+
+  <main class="main-content">
+    <!-- 2. Filter / Category Tabs -->
+    <div class="category-tabs" id="categoryTabs">
+      <!-- Categories injected by JS -->
+    </div>
+
+    <!-- 3. Main Photo Grid -->
+    <div class="photo-grid" id="photoGrid">
+      <!-- Photos injected by JS -->
+    </div>
+
+    <!-- 4. Load More Button -->
+    <div class="load-more-container hidden" id="loadMoreContainer">
+      <button class="load-more-btn" id="loadMoreBtn">
+        Load More Photos
+      </button>
+    </div>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">
+      <i data-lucide="x" style="width: 28px; height: 28px;"></i>
+    </button>
+    <button class="lightbox-prev" id="lightboxPrev">
+      <i data-lucide="chevron-left" style="width: 36px; height: 36px;"></i>
+    </button>
+    <button class="lightbox-next" id="lightboxNext">
+      <i data-lucide="chevron-right" style="width: 36px; height: 36px;"></i>
+    </button>
+
+    <div class="lightbox-content animate-spring" id="lightboxContent">
+      <!-- Lightbox content injected by JS -->
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="{{ url_for('static', filename='js/gallery.js') }}"></script>{% endblock %}

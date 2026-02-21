@@ -40,7 +40,7 @@
                         <li><a href="{{ url_for('programs') }}"
                                 class="{{ 'active' if request.endpoint == 'programs' else '' }}">Programs</a></li>
                         <li><a href="{{ url_for('join') }}">Join</a></li>
-                        <li><a href="#program-gallery">Gallery</a></li>
+                        <li><a href="{{ url_for('gallery') }}">Gallery</a></li>
                         <li><a href="{{ url_for('donate') }}">Donate</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
