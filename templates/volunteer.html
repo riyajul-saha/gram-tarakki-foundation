@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/volunteer.css') }}">
+{% endblock %}
+{% block content %}
+<div class="selection-custom">
+    <div class="app-container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-bg"
+                style="background-image: url('{{ url_for('static', filename='images/volunteer/hero.webp') }}')">
+            </div>
+            <div class="hero-overlay"></div>
+
+            <div class="hero-content">
+                <h1 class="hero-title animate-fade-in-up-css init-hidden">Become a Volunteer</h1>
+                <p class="hero-subtitle animate-fade-in-up-delay-1 init-hidden">Join Gram Tarakki Foundation and help
+                    transform rural lives</p>
+                <div class="hero-buttons animate-fade-in-up-delay-2 init-hidden">
+                    <a href="#register" class="btn btn-primary">Join Now</a>
+                    <a href="#roles" class="btn btn-secondary">View Roles</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Volunteer Section -->
+        <section class="why-volunteer-section">
+            <div class="section-header scroll-stagger-container">
+                <h2 class="section-title scroll-animate-item">Why Volunteer With Us?</h2>
+                <p class="section-description scroll-animate-item">Make a real difference in the community while gaining
+                    valuable experience and building lasting connections.</p>
+            </div>
+
+            <div class="benefits-grid scroll-stagger-container">
+                <div class="benefit-card scroll-animate-item group">
+                    <div class="benefit-icon-container">
+                        <i data-lucide="book-open" class="benefit-icon"></i>
+                    </div>
+                    <h3 class="benefit-title">Teach children</h3>
+                    <p class="benefit-desc">Empower the next generation with knowledge</p>
+                </div>
+                <div class="benefit-card scroll-animate-item group">
+                    <div class="benefit-icon-container">
+                        <i data-lucide="users" class="benefit-icon"></i>
+                    </div>
+                    <h3 class="benefit-title">Support karate training</h3>
+                    <p class="benefit-desc">Build discipline and physical fitness</p>
+                </div>
+                <div class="benefit-card scroll-animate-item group">
+                    <div class="benefit-icon-container">
+                        <i data-lucide="heart-handshake" class="benefit-icon"></i>
+                    </div>
+                    <h3 class="benefit-title">Help community work</h3>
+                    <p class="benefit-desc">Participate in local development projects</p>
+                </div>
+                <div class="benefit-card scroll-animate-item group">
+                    <div class="benefit-icon-container">
+                        <i data-lucide="monitor-smartphone" class="benefit-icon"></i>
+                    </div>
+                    <h3 class="benefit-title">Digital support</h3>
+                    <p class="benefit-desc">Bridge the digital divide in rural areas</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Motivation Section -->
+        <section class="motivation-section">
+            <div class="motivation-content scroll-stagger-container">
+                <h2 class="motivation-text scroll-animate-item">
+                    "Your one hour a week can change a child's future."
+                </h2>
+            </div>
+        </section>
+
+        <!-- Volunteer Roles Section -->
+        <section id="roles" class="roles-section">
+            <div class="section-header scroll-stagger-container">
+                <h2 class="section-title scroll-animate-item">Open Volunteer Roles</h2>
+                <p class="section-description scroll-animate-item">Find a role that matches your skills and passion.</p>
+            </div>
+
+            <div class="roles-grid scroll-stagger-container">
+                <div class="role-card scroll-animate-item group">
+                    <div class="role-header">
+                        <div class="role-icon-container">
+                            <i data-lucide="graduation-cap" class="role-icon"></i>
+                        </div>
+                        <h3 class="role-title">Teacher / Tutor</h3>
+                    </div>
+                    <p class="role-desc">Help students with their daily studies and foundational subjects.</p>
+                    <a href="#register" class="btn-outline apply-role-btn" data-role="Teacher">Apply for this role</a>
+                </div>
+                <div class="role-card scroll-animate-item group">
+                    <div class="role-header">
+                        <div class="role-icon-container">
+                            <i data-lucide="activity" class="role-icon"></i>
+                        </div>
+                        <h3 class="role-title">Karate Assistant</h3>
+                    </div>
+                    <p class="role-desc">Assist our main trainers during martial arts sessions.</p>
+                    <a href="#register" class="btn-outline apply-role-btn" data-role="Trainer">Apply for this role</a>
+                </div>
+                <div class="role-card scroll-animate-item group">
+                    <div class="role-header">
+                        <div class="role-icon-container">
+                            <i data-lucide="heart-handshake" class="role-icon"></i>
+                        </div>
+                        <h3 class="role-title">Yoga Trainer</h3>
+                    </div>
+                    <p class="role-desc">Conduct yoga and mindfulness sessions for the community.</p>
+                    <a href="#register" class="btn-outline apply-role-btn" data-role="Trainer">Apply for this role</a>
+                </div>
+                <div class="role-card scroll-animate-item group">
+                    <div class="role-header">
+                        <div class="role-icon-container">
+                            <i data-lucide="calendar-heart" class="role-icon"></i>
+                        </div>
+                        <h3 class="role-title">Event Volunteer</h3>
+                    </div>
+                    <p class="role-desc">Help organize and manage community events and drives.</p>
+                    <a href="#register" class="btn-outline apply-role-btn" data-role="Volunteer">Apply for this role</a>
+                </div>
+                <div class="role-card scroll-animate-item group">
+                    <div class="role-header">
+                        <div class="role-icon-container">
+                            <i data-lucide="share-2" class="role-icon"></i>
+                        </div>
+                        <h3 class="role-title">Social Media Helper</h3>
+                    </div>
+                    <p class="role-desc">Create content and manage our digital presence.</p>
+                    <a href="#register" class="btn-outline apply-role-btn" data-role="Other">Apply for this role</a>
+                </div>
+                <div class="role-card scroll-animate-item group">
+                    <div class="role-header">
+                        <div class="role-icon-container">
+                            <i data-lucide="map-pin" class="role-icon"></i>
+                        </div>
+                        <h3 class="role-title">Field Volunteer</h3>
+                    </div>
+                    <p class="role-desc">Work directly on the ground for various community initiatives.</p>
+                    <a href="#register" class="btn-outline apply-role-btn" data-role="Volunteer">Apply for this role</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registration Form Section -->
+        <section id="register" class="register-section">
+            <div class="form-container">
+                <div class="section-header scroll-stagger-container">
+                    <div class="scroll-animate-item">
+                        <h2 class="section-title">Register as a Volunteer</h2>
+                        <p class="section-description">Fill out the form below and our team will get back to you
+                            shortly.</p>
+                    </div>
+                </div>
+
+                <form id="volunteerForm" class="registration-form scroll-stagger-container">
+                    <div class="form-grid scroll-animate-item">
+                        <div class="form-group">
+                            <label class="form-label">Full Name *</label>
+                            <input required type="text" class="form-input" placeholder="John Doe"
+                                title="Please fill with your full name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input required type="email" inputmode="email" class="form-input"
+                                placeholder="john@example.com" title="Please fill with your valid email address">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone *</label>
+                            <input required type="tel" inputmode="tel" class="form-input" placeholder="+91 98765 43210"
+                                title="Please fill with your valid Phone number">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">City *</label>
+                            <input required type="text" class="form-input" placeholder="Your City"
+                                title="Please fill with your current city">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Age</label>
+                            <input type="number" inputmode="numeric" class="form-input" placeholder="25"
+                                title="Please provide your age in years (Optional)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Preferred Role *</label>
+                            <select id="role-select" class="form-select" required
+                                title="Please select a preferred role from the available options">
+                                <option value="" disabled selected>-- Select a Role --</option>
+                                <option value="Teacher">Teacher</option>
+                                <option value="Volunteer">Volunteer</option>
+                                <option value="Trainer">Trainer</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group-full scroll-animate-item">
+                        <label class="form-label">Skills & Experience *</label>
+                        <textarea required rows="4" class="form-textarea"
+                            placeholder="Tell us your skills or experience..."
+                            title="Please provide a brief description of your relevant skills or experience"></textarea>
+                    </div>
+
+                    <div class="form-group-full scroll-animate-item">
+                        <label class="form-label">Availability</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="availability" value="Weekends" class="form-radio">
+                                <span>Weekends</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="availability" value="Weekdays" class="form-radio">
+                                <span>Weekdays</span>
+                            </label>
+                            <label class="radio-label flex-checked">
+                                <input type="radio" name="availability" value="Flexible" class="form-radio" checked>
+                                <span>Flexible</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group-full scroll-animate-item">
+                        <label class="form-label">Upload Documents (Optional)</label>
+                        <div class="file-upload-box" id="fileUploadBox">
+                            <i data-lucide="upload-cloud" class="upload-icon"></i>
+                            <p class="upload-text">Click to upload Resume or ID proof</p>
+                            <input type="file" id="fileInput" class="file-input" multiple
+                                accept=".pdf,.doc,.docx,.jpg,.png">
+                        </div>
+                    </div>
+
+                    <div class="form-group-checkbox scroll-animate-item">
+                        <label class="checkbox-label-container">
+                            <input required type="checkbox" class="form-checkbox">
+                            <span class="checkbox-text">I agree to be contacted by Gram Tarakki Foundation and confirm
+                                that the information provided is accurate.</span>
+                        </label>
+                    </div>
+
+                    <div class="form-actions scroll-animate-item" style="margin-top: 2rem;">
+                        <button type="submit" class="btn-submit">Submit Application</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Trust Section -->
+        <section class="trust-section">
+            <div class="trust-container">
+                <div class="trust-grid">
+                    <div class="trust-item">
+                        <i data-lucide="shield-check" class="trust-icon"></i>
+                        <div class="trust-text-container">
+                            <p class="trust-title">Registered NGO</p>
+                            <p class="trust-subtitle">Active Status</p>
+                        </div>
+                    </div>
+                    <div class="trust-divider"></div>
+                    <div class="trust-item">
+                        <i data-lucide="check-circle-2" class="trust-icon"></i>
+                        <div class="trust-text-container">
+                            <p class="trust-title">CIN: U85300MH2021NPL360000</p>
+                            <p class="trust-subtitle">Verified Organization</p>
+                        </div>
+                    </div>
+                    <div class="trust-divider"></div>
+                    <div class="trust-item">
+                        <i data-lucide="shield-check" class="trust-icon"></i>
+                        <div class="trust-text-container">
+                            <p class="trust-title">Data Privacy</p>
+                            <p class="trust-subtitle">Your information is secure</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Help Section -->
+        <section class="help-section scroll-stagger-container">
+            <div class="help-container scroll-animate-item">
+                <h2 class="help-title">Have Questions?</h2>
+                <div class="help-buttons">
+                    <a href="https://wa.me/919876543210?text=Hello!%20GTFoundation%20team,%20I%20have%20a%20question...."
+                        target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+                        <i data-lucide="message-circle" class="btn-icon"></i>
+                        WhatsApp
+                    </a>
+                    <a href="tel:+919876543210" class="btn btn-call">
+                        <i data-lucide="phone" class="btn-icon"></i>
+                        Call Us
+                    </a>
+                    <a href="mailto:contact@gtfoundation.org?subject=Volunteer%20Inquiry" class="btn btn-email">
+                        <i data-lucide="mail" class="btn-icon"></i>
+                        Email
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- POPUP MODAL (Success/Failure) -->
+<div id="popupModal" class="popup-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(4px);">
+    <div class="popup-content"
+        style="background: white; padding: 2.5rem 2rem; border-radius: 40px; max-width: 450px; width: 90%; text-align: center; box-shadow: 0 30px 50px rgba(0, 0, 0, 0.2);">
+        <div class="popup-icon" id="popupIcon" style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+        <div class="popup-title" id="popupTitle"
+            style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem; font-family: 'Playfair Display', serif; color: var(--color-green);">
+            Success!</div>
+        <div class="popup-message" id="popupMessage"
+            style="font-size: 1.1rem; margin-bottom: 2rem; color: var(--text-gray-600);">Your application has been
+            submitted successfully.</div>
+        <button class="popup-close" id="popupCloseBtn"
+            style="background: var(--color-green); color: white; border: none; padding: 0.8rem 2.5rem; border-radius: 40px; font-size: 1.2rem; font-weight: 600; cursor: pointer;">Close</button>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="{{ url_for('static', filename='js/volunteer.js') }}"></script>
+{% endblock %}
