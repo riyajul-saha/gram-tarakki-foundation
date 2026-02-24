@@ -361,6 +361,17 @@ input[type="checkbox"]:hover {
     min-width: 200px;
 }
 
+.contact-btn.volunteer {
+    background-color: var(--warm-terracotta);
+    color: white;
+}
+
+.contact-btn.volunteer:hover {
+    background-color: #c96531;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 20px rgba(217, 115, 59, 0.25);
+}
+
 .contact-btn.email {
     background-color: #4f46e5;
     color: white;

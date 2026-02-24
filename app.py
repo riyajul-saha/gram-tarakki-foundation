@@ -42,5 +42,9 @@ def gallery():
 def volunteer():
   return render_template('volunteer.html')
 
+@app.route("/partners")
+def partners():
+  return render_template('partners.html')
+
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=3000, debug=True)

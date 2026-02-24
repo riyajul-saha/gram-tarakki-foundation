@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/partners.css') }}">{% endblock %}
+{% block content %}
+<!-- 1. Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content reveal">
+            <h1>Partner With Us</h1>
+            <p>Together we can create a bigger impact in rural communities.</p>
+            <div class="hero-buttons">
+                <a href="#partner-form" class="btn">Become a Partner</a>
+                <a href="#existing-partners" class="btn btn-outline">View Our Partners</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. Why Partner With Us -->
+<section>
+    <div class="container">
+        <h2 class="reveal">Why Partner With Us?</h2>
+        <div class="why-grid">
+            <div class="why-card reveal">
+                <i class="fas fa-globe-asia"></i>
+                <h3>Wider community reach</h3>
+                <p>Connect with rural communities across multiple districts.</p>
+            </div>
+            <div class="why-card reveal">
+                <i class="fas fa-chart-line"></i>
+                <h3>Social impact</h3>
+                <p>Directly contribute to education, health, and skill development.</p>
+            </div>
+            <div class="why-card reveal">
+                <i class="fas fa-bullhorn"></i>
+                <h3>Brand visibility</h3>
+                <p>Your brand featured in our events, materials, and online.</p>
+            </div>
+            <div class="why-card reveal">
+                <i class="fas fa-handshake"></i>
+                <h3>Trusted collaboration</h3>
+                <p>Work with a registered, transparent NGO (CIN given).</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Our Existing Partners (copied snippet, adapted) -->
+<section id="existing-partners">
+    <div class="container">
+        <h2 class="reveal">Our Partners</h2>
+        <p class="partners-intro">We collaborate with institutions, associations and community organizations to maximize
+            impact.</p>
+        <div class="partners-grid">
+            <div class="partner-logo">
+                <img src="{{ url_for('static', filename='images/partners/kio.webp') }}" alt="Karate India Organisation"
+                    class="partner-img">
+                <h3>Karate India Organisation</h3>
+            </div>
+            <div class="partner-logo">
+                <img src="{{ url_for('static', filename='images/partners/kab.webp') }}"
+                    alt="Karate-Do Association of Bengal" class="partner-img">
+                <h3>Karate-Do Association of Bengal</h3>
+            </div>
+            <div class="partner-logo">
+                <img src="{{ url_for('static', filename='images/partners/jknbhs.webp') }}"
+                    alt="JUKHIA KUMAR NARAYAN BANIMANDIR HIGH SCHOOL" class="partner-img">
+                <h3>JUKHIA KUMAR NARAYAN BANIMANDIR HIGH SCHOOL</h3>
+            </div>
+            <div class="partner-logo">
+                <img src="{{ url_for('static', filename='images/partners/rds.webp') }}" alt="Rural Development Society"
+                    class="partner-img">
+                <h3>Rural Development Society</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Types of Partnership -->
+<section>
+    <div class="container">
+        <h2 class="reveal">Types of Partnership</h2>
+        <div class="types-grid">
+            <div class="type-card reveal">
+                <i class="fas fa-building"></i>
+                <h3>Corporate Partner</h3>
+                <p>CSR funding, employee engagement</p>
+            </div>
+            <div class="type-card reveal">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h3>Training Partner</h3>
+                <p>Skill development, karate, yoga</p>
+            </div>
+            <div class="type-card reveal">
+                <i class="fas fa-hand-holding-heart"></i>
+                <h3>Community Partner</h3>
+                <p>On‑ground implementation</p>
+            </div>
+            <div class="type-card reveal">
+                <i class="fas fa-trophy"></i>
+                <h3>Event Sponsor</h3>
+                <p>Sponsor tournaments, camps</p>
+            </div>
+            <div class="type-card reveal">
+                <i class="fas fa-user"></i>
+                <h3>Individual Supporter</h3>
+                <p>Monthly donation, mentorship</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Partnership Application Form -->
+<section id="partner-form">
+    <div class="container">
+        <h2 class="reveal">Partnership Application</h2>
+        <div class="form-card reveal">
+            <form id="partnerForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="required">Organization Name</label>
+                        <input type="text" id="orgName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Contact Person</label>
+                        <input type="text" id="contactPerson" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Phone</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">City</label>
+                        <input type="text" id="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Partnership Type</label>
+                        <select id="partnerType" required>
+                            <option value="" disabled selected>Select type</option>
+                            <option value="Corporate">Corporate Partner</option>
+                            <option value="Training">Training Partner</option>
+                            <option value="Community">Community Partner</option>
+                            <option value="Sponsor">Event Sponsor</option>
+                            <option value="Individual">Individual Supporter</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Conditional Other Type -->
+                <div class="form-group" id="otherTypeGroup" style="display: none;">
+                    <label>Please specify other type</label>
+                    <input type="text" id="otherType">
+                </div>
+
+                <div class="form-group">
+                    <label>Support type (check all that apply)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" value="Funding"> Funding</label>
+                        <label class="checkbox-item"><input type="checkbox" value="Training"> Training</label>
+                        <label class="checkbox-item"><input type="checkbox" value="Equipment"> Equipment</label>
+                        <label class="checkbox-item"><input type="checkbox" value="Venue"> Venue</label>
+                        <label class="checkbox-item"><input type="checkbox" value="Volunteering"> Volunteering</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tell us how you want to collaborate</label>
+                    <textarea id="message" rows="3" placeholder="Brief description..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Upload logo (optional)</label>
+                    <div class="file-upload" id="fileUploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i> Click or drag to upload
+                        <input type="file" id="logoUpload" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="consent-group">
+                    <label>
+                        <input type="checkbox" id="consent" required>
+                        <span>I agree to be contacted by Gram Tarakki Foundation</span>
+                    </label>
+                </div>
+
+                <div class="form-submit">
+                    <button type="submit" class="btn-submit" id="submitBtn">Become a Partner</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- 6. Impact Snapshot -->
+<section>
+    <div class="container">
+        <h2 class="reveal">Our Impact</h2>
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card reveal">
+                <div class="stat-number" id="stat1" data-target="2500">0</div>
+                <div class="stat-label">Children trained</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-number" id="stat2" data-target="180">0</div>
+                <div class="stat-label">Programs run</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-number" id="stat3" data-target="320">0</div>
+                <div class="stat-label">Volunteers engaged</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-number" id="stat4" data-target="42">0</div>
+                <div class="stat-label">Villages reached</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. Direct Contact -->
+<section>
+    <div class="container">
+        <h2 class="reveal">Ready to partner? Reach out directly</h2>
+        <div class="contact-buttons reveal">
+            <a href="mailto:info@gtfoundations.in" class="contact-btn"><i class="fas fa-envelope"></i>
+                Email Us</a>
+            <a href="tel:+919475321004" class="contact-btn"><i class="fas fa-phone-alt"></i>Call Us</a>
+            <a href="https://wa.me/919475321004?text=Hello%20Gram%20Tarakki%20Foundation,%20I'm%20interested%20in%20partnering."
+                target="_blank" class="contact-btn"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+        </div>
+    </div>
+</section>
+
+<!-- Popup Notification -->
+<div id="popup" class="popup">
+    <i id="popupIcon"></i>
+    <h3 id="popupTitle"></h3>
+    <p id="popupMessage"></p>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='js/partners.js') }}"></script>{% endblock %}
