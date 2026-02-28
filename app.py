@@ -95,11 +95,36 @@ def join():
     experience = request.form.get("experience")
     medical = request.form.get("medical")
 
-    conn = get_db_connection()
-    if conn:
+    def validate_opt(val):
+        return val if (val and val.strip() != "") else "NaN"
+
+    try:
+        conn = get_db_connection()
+        if not conn:
+            init_db()  # Try to initialize if connection fails
+            conn = get_db_connection()
+            if not conn:
+                return jsonify({"status": "error", "message": "Database connection failed"}), 500
+
         cursor = conn.cursor()
-        # Check if exists
-        cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND phone = %s", (fullname, phone))
+        
+        try:
+            # Check if exists
+            cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND phone = %s", (fullname, phone))
+        except mysql.connector.Error as err:
+            if err.errno == 1146: # Table doesn't exist
+                init_db()
+                # Get a fresh connection after initialization
+                cursor.close()
+                conn.close()
+                conn = get_db_connection()
+                if not conn:
+                    return jsonify({"status": "error", "message": "Database connection failed after init"}), 500
+                cursor = conn.cursor()
+                cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND phone = %s", (fullname, phone))
+            else:
+                raise
+
         if cursor.fetchone():
             cursor.close()
             conn.close()
@@ -107,9 +132,6 @@ def join():
         
         # Insert (save optional fields as NaN if they are empty string / None in Python, but DB schema expects string)
         # We will save string "NaN" for optional empty values as requested by user.
-        def validate_opt(val):
-            return val if (val and val.strip() != "") else "NaN"
-            
         cursor.execute("""
             INSERT INTO join_requests (fullname, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -130,8 +152,9 @@ def join():
         cursor.close()
         conn.close()
         return jsonify({"status": "success"})
-    else:
-        return jsonify({"status": "error", "message": "Database connection failed"}), 500
+    except Exception as e:
+        print(f"Error handling join request: {e}")
+        return jsonify({"status": "error", "message": "Failed to submit. Please try again later."}), 500
 
   return render_template('join.html')
 
