@@ -64,8 +64,25 @@ const joinForm = document.getElementById('join-form');
 
 joinForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    alert('Thank you for your interest! We will contact you soon.');
-    joinForm.reset();
+
+    // Get form values
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const role = document.getElementById('interest').value;
+    const city = document.getElementById('city').value;
+
+    // Construct URL with query parameters
+    const params = new URLSearchParams({
+        name: name,
+        email: email,
+        phone: phone,
+        role: role,
+        city: city
+    });
+
+    // Redirect to volunteer.html#register page with query parameters
+    window.location.href = `/volunteer?${params.toString()}#register`;
 });
 
 // Smooth scrolling for anchor links

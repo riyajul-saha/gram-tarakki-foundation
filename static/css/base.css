@@ -223,3 +223,40 @@ footer {
     }
 
 }
+
+/* Donate link color change animation */
+@keyframes donateRainbowColors {
+
+    0%,
+    100% {
+        color: red;
+    }
+
+    14.28% {
+        color: orange;
+    }
+
+    28.57% {
+        color: yellow;
+    }
+
+    42.85% {
+        color: green;
+    }
+
+    57.14% {
+        color: blue;
+    }
+
+    71.42% {
+        color: indigo;
+    }
+
+    85.71% {
+        color: violet;
+    }
+}
+
+.nav-menu a[href*="donate"] {
+    animation: donateRainbowColors 7s infinite;
+}

@@ -114,13 +114,47 @@
         }
 
         if (isValid) {
-            // success popup
-            showPopup('success', 'Success!', 'Your application has been submitted successfully. We will contact you soon.');
-            form.reset(); // optional reset
-            // reset guardian display after reset (age empty)
-            setTimeout(() => {
-                toggleGuardianFields();
-            }, 50);
+            const formData = new FormData(form);
+
+            const submitBtn = form.querySelector('.btn-submit');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 10px;"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            fetch('/join', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+
+                    if (data.status === 'exists') {
+                        showPopup('fail', 'Already Joined', data.message);
+                        setTimeout(() => {
+                            closePopup();
+                            const contactSection = document.querySelector('.contact-buttons');
+                            if (contactSection) {
+                                contactSection.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }, 2500);
+                    } else if (data.status === 'success') {
+                        showPopup('success', 'Success!', 'Your application has been submitted successfully. We will contact you soon.');
+                        form.reset();
+                        setTimeout(() => {
+                            toggleGuardianFields();
+                        }, 50);
+                    } else {
+                        showPopup('fail', 'Error', data.message || 'Something went wrong. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                    showPopup('fail', 'Error', 'Failed to submit application. Please check your connection.');
+                });
         } else {
             // failure popup
             showPopup('fail', 'Incomplete Form', 'Please fill all required fields and agree to the terms.');

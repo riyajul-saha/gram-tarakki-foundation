@@ -67,7 +67,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4. Form Submission and Popup logic
+    // 4. Pre-fill form from URL parameters if present
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('name')) {
+        const nameInput = document.querySelector('input[placeholder="John Doe"]');
+        if (nameInput) nameInput.value = urlParams.get('name');
+    }
+    if (urlParams.has('email')) {
+        const emailInput = document.querySelector('input[type="email"]');
+        if (emailInput) emailInput.value = urlParams.get('email');
+    }
+    if (urlParams.has('phone')) {
+        const phoneInput = document.querySelector('input[type="tel"]');
+        if (phoneInput) phoneInput.value = urlParams.get('phone');
+    }
+    if (urlParams.has('city')) {
+        const cityInput = document.querySelector('input[placeholder="Your City"]');
+        if (cityInput) cityInput.value = urlParams.get('city');
+    }
+    if (urlParams.has('role')) {
+        const role = urlParams.get('role');
+        const roleSelect = document.getElementById('role-select');
+        if (roleSelect) {
+            // Find option case-insensitively
+            const option = Array.from(roleSelect.options).find(o => o.value.toLowerCase() === role.toLowerCase());
+            if (option) {
+                roleSelect.value = option.value;
+            } else {
+                roleSelect.value = 'Other';
+            }
+        }
+    }
+
+    // 5. Form Submission and Popup logic
     const form = document.getElementById('volunteerForm');
     const popupModal = document.getElementById('popupModal');
     const popupTitle = document.getElementById('popupTitle');

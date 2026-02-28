@@ -39,9 +39,12 @@
                                 class="{{ 'active' if request.endpoint == 'about' else '' }}">About</a></li>
                         <li><a href="{{ url_for('programs') }}"
                                 class="{{ 'active' if request.endpoint == 'programs' else '' }}">Programs</a></li>
-                        <li><a href="{{ url_for('join') }}">Join</a></li>
-                        <li><a href="{{ url_for('gallery') }}">Gallery</a></li>
-                        <li><a href="{{ url_for('donate') }}">Donate</a></li>
+                        <li><a href="{{ url_for('join') }}"
+                                class="{{ 'active' if request.endpoint == 'join' else '' }}">Join</a></li>
+                        <li><a href="{{ url_for('gallery') }}"
+                                class="{{ 'active' if request.endpoint == 'gallery' else '' }}">Gallery</a></li>
+                        <li><a href="{{ url_for('donate') }}"
+                                class="{{ 'active' if request.endpoint == 'donate' else '' }}">Donate</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                     <div class="hamburger">
