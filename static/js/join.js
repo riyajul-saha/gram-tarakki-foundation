@@ -85,6 +85,25 @@
             }
         }
 
+        // check if at least one checkbox in 'program' is checked
+        const programCheckboxes = document.getElementsByName('program');
+        let programChecked = false;
+        for (let checkbox of programCheckboxes) {
+            if (checkbox.checked) programChecked = true;
+        }
+        if (!programChecked && programCheckboxes.length > 0) {
+            isValid = false;
+            const pgGroup = document.querySelector('.program-group');
+            if (pgGroup) {
+                pgGroup.style.border = '2px solid #dc2626';
+                pgGroup.style.borderRadius = '12px';
+                pgGroup.style.padding = '8px';
+            }
+        } else {
+            const pgGroup = document.querySelector('.program-group');
+            if (pgGroup) pgGroup.style.border = 'none';
+        }
+
         // check if at least one radio in 'experience' is checked
         const experienceRadios = document.getElementsByName('experience');
         let experienceChecked = false;
@@ -198,6 +217,14 @@
     experienceRadios.forEach(radio => {
         radio.addEventListener('change', function () {
             document.querySelector('.radio-group').style.border = 'none';
+        });
+    });
+
+    const programCb = document.getElementsByName('program');
+    programCb.forEach(cb => {
+        cb.addEventListener('change', function () {
+            const pgGroup = document.querySelector('.program-group');
+            if(pgGroup) pgGroup.style.border = 'none';
         });
     });
 

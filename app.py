@@ -1,4 +1,8 @@
 import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from datetime import datetime
 import mysql.connector
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify
@@ -31,12 +35,13 @@ def init_db():
             CREATE TABLE IF NOT EXISTS join_requests (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 fullname VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
                 age INT,
                 gender VARCHAR(50),
                 school VARCHAR(255),
                 parent_name VARCHAR(255),
                 parent_contact VARCHAR(50),
-                phone VARCHAR(50) NOT NULL,
+                phone VARCHAR(50),
                 address TEXT NOT NULL,
                 program VARCHAR(100) NOT NULL,
                 experience VARCHAR(10),
@@ -44,6 +49,16 @@ def init_db():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        # Ensure email column exists if table was previously created
+        try:
+            cursor.execute("ALTER TABLE join_requests ADD COLUMN email VARCHAR(255) NOT NULL DEFAULT '' AFTER fullname")
+        except mysql.connector.Error:
+            pass
+        # Ensure phone allows NULL/empty or optional
+        try:
+            cursor.execute("ALTER TABLE join_requests MODIFY phone VARCHAR(50) NULL")
+        except mysql.connector.Error:
+            pass
         connection.commit()
         cursor.close()
         connection.close()
@@ -86,6 +101,7 @@ def programs():
 def join():
   if request.method == "POST":
     fullname = request.form.get("fullname")
+    email = request.form.get("email")
     age = request.form.get("age")
     gender = request.form.get("gender")
     school = request.form.get("school")
@@ -93,7 +109,8 @@ def join():
     parent_contact = request.form.get("parentContact")
     phone = request.form.get("phone")
     address = request.form.get("address")
-    program = request.form.get("program")
+    programs_list = request.form.getlist("program")
+    program = ", ".join(programs_list) if programs_list else ""
     experience = request.form.get("experience")
     medical = request.form.get("medical")
 
@@ -112,7 +129,7 @@ def join():
         
         try:
             # Check if exists
-            cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND phone = %s", (fullname, phone))
+            cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND email = %s", (fullname, email))
         except mysql.connector.Error as err:
             if err.errno == 1146: # Table doesn't exist
                 init_db()
@@ -123,7 +140,7 @@ def join():
                 if not conn:
                     return jsonify({"status": "error", "message": "Database connection failed after init"}), 500
                 cursor = conn.cursor()
-                cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND phone = %s", (fullname, phone))
+                cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND email = %s", (fullname, email))
             else:
                 raise
 
@@ -135,16 +152,17 @@ def join():
         # Insert (save optional fields as NaN if they are empty string / None in Python, but DB schema expects string)
         # We will save string "NaN" for optional empty values as requested by user.
         cursor.execute("""
-            INSERT INTO join_requests (fullname, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO join_requests (fullname, email, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             fullname,
+            email,
             int(age) if age else None,
             gender,
             validate_opt(school),
             validate_opt(parent_name),
             validate_opt(parent_contact),
-            phone,
+            validate_opt(phone),
             address,
             program,
             experience,
@@ -153,6 +171,40 @@ def join():
         conn.commit()
         cursor.close()
         conn.close()
+
+        # Send confirmation email
+        if email:
+            try:
+                gmail_user = os.getenv("GMAIL")
+                gmail_password = os.getenv("GMAIL_PASSWORD")
+                
+                if gmail_user and gmail_password:
+                    msg = MIMEMultipart()
+                    msg['From'] = gmail_user
+                    msg['To'] = email
+                    msg['Subject'] = "Application Received – Gram Tarakki Foundation"
+                    
+                    current_date = datetime.now().strftime("%d %B %Y")
+                    if current_date.startswith("0"):
+                        current_date = current_date[1:]
+                        
+                    html_body = render_template('emails/student_join_mail.html', 
+                                                fullname=fullname, 
+                                                program=program, 
+                                                date=current_date)
+                    
+                    msg.attach(MIMEText(html_body, 'html'))
+                    
+                    server = smtplib.SMTP('smtp.gmail.com', 587)
+                    server.starttls()
+                    server.login(gmail_user, gmail_password)
+                    server.send_message(msg)
+                    server.quit()
+                else:
+                    print("Gmail credentials not found in environment variables.")
+            except Exception as e:
+                print(f"Failed to send confirmation email: {e}")
+
         return jsonify({"status": "success"})
     except Exception as e:
         print(f"Error handling join request: {e}")

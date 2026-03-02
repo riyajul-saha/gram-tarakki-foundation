@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <title>Application Received – Gram Tarakki Foundation</title>
+    <style>
+        /* Reset and base styles for email compatibility */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #F3F4F6;
+            /* light gray */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background-color: #0F766E;
+            /* deep green */
+            padding: 32px 30px;
+            color: white;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .header-text h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .header-text p {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        /* Main content */
+        .content {
+            padding: 40px 30px;
+            background: white;
+        }
+
+        /* Greeting */
+        .greeting {
+            margin-bottom: 28px;
+        }
+
+        .greeting h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0F766E;
+            margin-bottom: 8px;
+        }
+
+        .greeting p {
+            font-size: 1rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        /* Highlight box */
+        .highlight-box {
+            background-color: #E6F7F0;
+            /* very light green tint */
+            border-left: 6px solid #10B981;
+            border-radius: 16px;
+            padding: 22px 20px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .highlight-box i {
+            color: #10B981;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .highlight-box p {
+            font-size: 1.05rem;
+            color: #1f2e2e;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* Summary card */
+        .summary-card {
+            background-color: #F9FAFB;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .summary-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0F766E;
+            margin-bottom: 18px;
+            letter-spacing: -0.01em;
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: baseline;
+            padding: 10px 0;
+            border-bottom: 1px dashed #E5E7EB;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            width: 110px;
+            font-size: 0.9rem;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            flex: 1;
+            font-weight: 600;
+            color: #374151;
+            font-size: 1rem;
+        }
+
+        /* Next steps */
+        .next-steps {
+            margin-bottom: 32px;
+        }
+
+        .next-steps h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0F766E;
+            margin-bottom: 16px;
+        }
+
+        .steps-list {
+            list-style: none;
+        }
+
+        .steps-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: #374151;
+        }
+
+        .steps-list li i {
+            color: #10B981;
+            font-size: 1.3rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Contact block */
+        .contact-block {
+            background-color: #F3F4F6;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .contact-block p {
+            color: #374151;
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+
+        .contact-icons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #0F766E;
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.95rem;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .contact-item i {
+            font-size: 1.2rem;
+        }
+
+        /* Social impact line */
+        .impact-line {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #0F766E;
+            padding: 16px 0 8px;
+            border-top: 2px solid #10B981;
+            margin-bottom: 24px;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #F3F4F6;
+            padding: 28px 30px;
+            color: #6B7280;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            text-align: center;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .footer p {
+            margin-bottom: 6px;
+        }
+
+        .footer .cin {
+            font-family: monospace;
+            background: #fff;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 8px 0;
+        }
+
+        /* mobile adjustments */
+        @media (max-width: 480px) {
+            .header {
+                padding: 24px 20px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .footer {
+                padding: 24px 20px;
+            }
+
+            .contact-icons {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .summary-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .summary-label {
+                width: auto;
+            }
+        }
+    </style>
+    <!-- Font Awesome for icons (optional, but we can use inline) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <img src="{{ url_for('static', filename='images/home/logo.webp', _external=True) }}" alt="GT"
+                    style="width: 50px; height: 50px; border-radius: 12px; object-fit: contain; background-color: white; border: 2px solid white;">
+                <div class="header-text">
+                    <h1>Gram Tarakki Foundation</h1>
+                    <p>Building self‑reliant villages</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Greeting -->
+            <div class="greeting">
+                <h2>Dear {{ fullname }},</h2>
+                <p>Thank you for joining Gram Tarakki Foundation. We're excited to have you on this journey.</p>
+            </div>
+
+            <!-- Confirmation highlight -->
+            <div class="highlight-box">
+                <i class="fas fa-check-circle"></i>
+                <p>We have successfully received your application. Our team will review your details and contact you
+                    soon.</p>
+            </div>
+
+            <!-- Submitted Details Summary -->
+            <div class="summary-card">
+                <div class="summary-title">📋 Application Summary</div>
+                <div class="summary-row">
+                    <span class="summary-label">Full name: </span>
+                    <span class="summary-value">{{ fullname }}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Role applied: </span>
+                    <span class="summary-value">{{ program }}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Date: </span>
+                    <span class="summary-value">{{ date }}</span>
+                </div>
+            </div>
+
+
+            <!-- Social Impact Line -->
+            <div class="impact-line">
+                🌱 Together we are building a stronger rural future.
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Gram Tarakki Foundation</strong></p>
+            <p>MADHAKHALI BHUPATINAGAR, Bhupatinagar, East Midnapore, Bhupatinagar,West Bengal, India, 721425</p>
+            <p class="cin">CIN: U88900WB2026NPL286268</p>
+            <p>&copy; 2026 Gram Tarakki Foundation. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -87,13 +87,17 @@
                 <h3>Contact Details</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="phone" class="required">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" placeholder="Your mobile number" required>
+                        <label for="email" class="required">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Your email address" required>
                     </div>
                     <div class="form-group">
-                        <label for="address" class="required">Address</label>
-                        <input type="text" id="address" name="address" placeholder="Street, city, PIN" required>
+                        <label for="phone">Phone Number (optional)</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Your mobile number">
                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="address" class="required">Address</label>
+                    <input type="text" id="address" name="address" placeholder="Street, city, PIN" required>
                 </div>
             </div>
 
@@ -102,16 +106,21 @@
                 <h3>Program Details</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="program" class="required">Select Program</label>
-                        <select id="program" name="program" required>
-                            <option value="" disabled selected>-- Choose a program --</option>
-                            <option value="Karate">Karate</option>
-                            <option value="Education">Education</option>
-                            <option value="Health">Health</option>
-                            <option value="Skill Training">Skill Training</option>
-                            <option value="Yoga">Yoga</option>
-                            <option value="Animal Welfare">Animal Welfare</option>
-                        </select>
+                        <label class="required">Select Programs</label>
+                        <div class="checkbox-group program-group">
+                            <label class="checkbox-item"><input type="checkbox" name="program" value="Karate">
+                                <span>Karate</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="program" value="Education">
+                                <span>Education</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="program" value="Health">
+                                <span>Health</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="program" value="Skill Training">
+                                <span>Skill Training</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="program" value="Yoga">
+                                <span>Yoga</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="program" value="Animal Welfare">
+                                <span>Animal Welfare</span></label>
+                        </div>
                     </div>
                 </div>
                 <div class="form-row">
