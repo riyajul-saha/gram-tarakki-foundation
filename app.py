@@ -1,5 +1,6 @@
 import os
 import smtplib
+import threading
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
@@ -46,9 +47,15 @@ def init_db():
                 program VARCHAR(100) NOT NULL,
                 experience VARCHAR(10),
                 medical TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(fullname, email)
             )
         """)
+        # Ensure unique constraint on fullname and email
+        try:
+            cursor.execute("ALTER TABLE join_requests ADD UNIQUE(fullname, email)")
+        except mysql.connector.Error:
+            pass
         # Ensure email column exists if table was previously created
         try:
             cursor.execute("ALTER TABLE join_requests ADD COLUMN email VARCHAR(255) NOT NULL DEFAULT '' AFTER fullname")
@@ -80,6 +87,29 @@ def get_db_connection():
     except mysql.connector.Error as err:
         print(f"Error connecting to database: {err}")
         return None
+
+def send_email_async(email, html_body):
+    try:
+        gmail_user = os.getenv("GMAIL")
+        gmail_password = os.getenv("GMAIL_PASSWORD")
+        
+        if gmail_user and gmail_password:
+            msg = MIMEMultipart()
+            msg['From'] = gmail_user
+            msg['To'] = email
+            msg['Subject'] = "Application Received – Gram Tarakki Foundation"
+            
+            msg.attach(MIMEText(html_body, 'html'))
+            
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(gmail_user, gmail_password)
+            server.send_message(msg)
+            server.quit()
+        else:
+            print("Gmail credentials not found in environment variables.")
+    except Exception as e:
+        print(f"Failed to send confirmation email: {e}")
 
 
 @app.route("/")
@@ -172,38 +202,22 @@ def join():
         cursor.close()
         conn.close()
 
-        # Send confirmation email
+        # Send confirmation email asynchronously
         if email:
             try:
-                gmail_user = os.getenv("GMAIL")
-                gmail_password = os.getenv("GMAIL_PASSWORD")
+                current_date = datetime.now().strftime("%d %B %Y")
+                if current_date.startswith("0"):
+                    current_date = current_date[1:]
+                    
+                html_body = render_template('emails/student_join_mail.html', 
+                                            fullname=fullname, 
+                                            program=program, 
+                                            date=current_date)
                 
-                if gmail_user and gmail_password:
-                    msg = MIMEMultipart()
-                    msg['From'] = gmail_user
-                    msg['To'] = email
-                    msg['Subject'] = "Application Received – Gram Tarakki Foundation"
-                    
-                    current_date = datetime.now().strftime("%d %B %Y")
-                    if current_date.startswith("0"):
-                        current_date = current_date[1:]
-                        
-                    html_body = render_template('emails/student_join_mail.html', 
-                                                fullname=fullname, 
-                                                program=program, 
-                                                date=current_date)
-                    
-                    msg.attach(MIMEText(html_body, 'html'))
-                    
-                    server = smtplib.SMTP('smtp.gmail.com', 587)
-                    server.starttls()
-                    server.login(gmail_user, gmail_password)
-                    server.send_message(msg)
-                    server.quit()
-                else:
-                    print("Gmail credentials not found in environment variables.")
+                email_thread = threading.Thread(target=send_email_async, args=(email, html_body))
+                email_thread.start()
             except Exception as e:
-                print(f"Failed to send confirmation email: {e}")
+                print(f"Failed to prepare confirmation email: {e}")
 
         return jsonify({"status": "success"})
     except Exception as e:
