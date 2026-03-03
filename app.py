@@ -90,8 +90,9 @@ def get_db_connection():
 
 def send_email_async(email, html_body):
     try:
-        gmail_user = os.getenv("GMAIL")
-        gmail_password = os.getenv("GMAIL_PASSWORD")
+        print(f"Starting to send email to {email}...", flush=True)
+        gmail_user = os.getenv("GMAIL", "").strip()
+        gmail_password = os.getenv("GMAIL_PASSWORD", "").strip()
         
         if gmail_user and gmail_password:
             msg = MIMEMultipart()
@@ -102,14 +103,16 @@ def send_email_async(email, html_body):
             msg.attach(MIMEText(html_body, 'html'))
             
             server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.set_debuglevel(1)  # View SMTP logs in Render
             server.starttls()
             server.login(gmail_user, gmail_password)
             server.send_message(msg)
             server.quit()
+            print(f"Email sent successfully to {email}", flush=True)
         else:
-            print("Gmail credentials not found in environment variables.")
+            print("Gmail credentials not found in environment variables.", flush=True)
     except Exception as e:
-        print(f"Failed to send confirmation email: {e}")
+        print(f"Failed to send confirmation email: {e}", flush=True)
 
 
 @app.route("/")
