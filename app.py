@@ -91,8 +91,8 @@ def get_db_connection():
 def send_email_async(email, html_body):
     try:
         print(f"Starting to send email to {email}...", flush=True)
-        gmail_user = os.getenv("GMAIL", "").strip()
-        gmail_password = os.getenv("GMAIL_PASSWORD", "").strip()
+        gmail_user = os.getenv("GMAIL").strip()
+        gmail_password = os.getenv("GMAIL_PASSWORD").strip()
         
         if gmail_user and gmail_password:
             msg = MIMEMultipart()
