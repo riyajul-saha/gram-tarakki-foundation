@@ -1,12 +1,11 @@
 import os
-import smtplib
 import threading
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from datetime import datetime
 import mysql.connector
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify
+
+from core.email_sender import send_email_async
 
 # Load environment variables from .env file (if it exists)
 # In production platforms (like Render/Railway), variables are usually 
@@ -87,33 +86,6 @@ def get_db_connection():
     except mysql.connector.Error as err:
         print(f"Error connecting to database: {err}")
         return None
-
-def send_email_async(email, html_body):
-    try:
-        print(f"Starting to send email to {email}...", flush=True)
-        gmail_user = os.getenv("GMAIL").strip()
-        gmail_password = os.getenv("GMAIL_PASSWORD").strip()
-        
-        if gmail_user and gmail_password:
-            msg = MIMEMultipart()
-            msg['From'] = gmail_user
-            msg['To'] = email
-            msg['Subject'] = "Application Received – Gram Tarakki Foundation"
-            
-            msg.attach(MIMEText(html_body, 'html'))
-            
-            server = smtplib.SMTP('smtp.gmail.com', 587)
-            server.set_debuglevel(1)  # View SMTP logs in Render
-            server.starttls()
-            server.login(gmail_user, gmail_password)
-            server.send_message(msg)
-            server.quit()
-            print(f"Email sent successfully to {email}", flush=True)
-        else:
-            print("Gmail credentials not found in environment variables.", flush=True)
-    except Exception as e:
-        print(f"Failed to send confirmation email: {e}", flush=True)
-
 
 @app.route("/")
 def home():
@@ -252,6 +224,14 @@ def volunteer():
 @app.route("/partners")
 def partners():
   return render_template('partners.html')
+
+@app.route("/carrier")
+def carrier():
+  return render_template('carrier.html')
+
+@app.route("/login")
+def login():
+  return render_template('admin/login.html')
 
 if __name__ == "__main__":
     # Check if we should run in debug mode

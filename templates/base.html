@@ -45,6 +45,13 @@
                                 class="{{ 'active' if request.endpoint == 'gallery' else '' }}">Gallery</a></li>
                         <li><a href="{{ url_for('donate') }}"
                                 class="{{ 'active' if request.endpoint == 'donate' else '' }}">Donate</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropbtn">More</a>
+                            <div class="dropdown-content">
+                                <a href="/carrier">Carrier</a>
+                                <a href="/login">Admin</a>
+                            </div>
+                        </li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                     <div class="hamburger">

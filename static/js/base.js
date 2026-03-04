@@ -7,14 +7,26 @@ hamburger.addEventListener('click', () => {
     navMenu.classList.toggle('active');
     hamburgerIcon.classList.toggle('fa-bars');
     hamburgerIcon.classList.toggle('fa-times');
+
+    // Close dropdowns if the menu is being closed
+    if (!navMenu.classList.contains('active')) {
+        document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active-dropdown'));
+    }
 });
 
 // Close mobile menu when clicking on a link
 document.querySelectorAll('.nav-menu a').forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        hamburgerIcon.classList.add('fa-bars');
-        hamburgerIcon.classList.remove('fa-times');
+    link.addEventListener('click', (e) => {
+        if (!link.classList.contains('dropbtn')) {
+            navMenu.classList.remove('active');
+            hamburgerIcon.classList.add('fa-bars');
+            hamburgerIcon.classList.remove('fa-times');
+            // Close any open dropdowns
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active-dropdown'));
+        } else {
+            e.preventDefault();
+            link.parentElement.classList.toggle('active-dropdown');
+        }
     });
 });
 
@@ -42,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }, { threshold: 0.3 });
-        
+
         observer.observe(contactSection);
     }
 });
