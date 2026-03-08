@@ -28,15 +28,37 @@ function handleLogin(event) {
         return false;
     }
 
-    // Simulate authentication (in real scenario, you'd send to server)
-    if (username === 'admin@gtfoundation.in' && password === 'admin123') {
-        // Success – redirect or show success (demo)
-        alert('Login successful! (Demo)');
-        // window.location.href = 'dashboard.html';
-    } else {
-        errorText.innerText = 'Invalid email or password.';
-        errorDiv.classList.add('show');
-    }
+    const loginBtn = document.querySelector('.login-btn');
+    const originalText = loginBtn.innerText;
+    loginBtn.innerText = 'Signing In...';
+    loginBtn.disabled = true;
+
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                window.location.href = data.redirect;
+            } else {
+                errorText.innerText = data.message || 'Invalid email or password.';
+                errorDiv.classList.add('show');
+                loginBtn.innerText = originalText;
+                loginBtn.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error during login:', error);
+            errorText.innerText = 'An error occurred. Please try again.';
+            errorDiv.classList.add('show');
+            loginBtn.innerText = originalText;
+            loginBtn.disabled = false;
+        });
+
     return false;
 }
 

@@ -1,11 +1,11 @@
 import os
 import threading
-from datetime import datetime
+from datetime import datetime, timedelta
 import mysql.connector
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, jsonify
-
-from core.email_sender import send_email_async
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, make_response
+from core.email_sender import send_email_sync
+from admin.login import verify_admin_login
 
 # Load environment variables from .env file (if it exists)
 # In production platforms (like Render/Railway), variables are usually 
@@ -16,6 +16,7 @@ if os.path.exists(".env"):
 app = Flask(__name__)
 # Use a secret key from environment for session management/security
 app.secret_key = os.getenv("SECRET_KEY", "fallback_dev_secret_key_change_in_prod")
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
 
 def init_db():
     try:
@@ -65,6 +66,16 @@ def init_db():
             cursor.execute("ALTER TABLE join_requests MODIFY phone VARCHAR(50) NULL")
         except mysql.connector.Error:
             pass
+
+        # Create admin table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS admin (
+                id VARCHAR(255) PRIMARY KEY,
+                email VARCHAR(255) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL
+            )
+        """)
+        
         connection.commit()
         cursor.close()
         connection.close()
@@ -177,7 +188,7 @@ def join():
         cursor.close()
         conn.close()
 
-        # Send confirmation email asynchronously
+        # Send confirmation email synchronously
         if email:
             try:
                 current_date = datetime.now().strftime("%d %B %Y")
@@ -189,10 +200,9 @@ def join():
                                             program=program, 
                                             date=current_date)
                 
-                email_thread = threading.Thread(target=send_email_async, args=(email, html_body))
-                email_thread.start()
+                send_email_sync(email, html_body)
             except Exception as e:
-                print(f"Failed to prepare confirmation email: {e}")
+                print(f"Failed to prepare or send confirmation email: {e}")
 
         return jsonify({"status": "success"})
     except Exception as e:
@@ -229,9 +239,46 @@ def partners():
 def carrier():
   return render_template('carrier.html')
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-  return render_template('admin/login.html')
+    if request.method == "POST":
+        data = request.get_json() or {}
+        username = data.get("username", "").strip()
+        password = data.get("password", "").strip()
+
+        if not username or not password:
+            return jsonify({"status": "error", "message": "Username and password are required"}), 400
+
+        result = verify_admin_login(username, password)
+        
+        if result["status"] == "success":
+            session.permanent = True
+            session['admin_logged_in'] = True
+            session['admin_id'] = result['admin_id']
+            return jsonify({"status": "success", "redirect": url_for("dashboard")})
+        else:
+            return jsonify({"status": result["status"], "message": result["message"]}), result.get("code", 401)
+
+    if session.get('admin_logged_in'):
+        return redirect(url_for("dashboard"))
+
+    return render_template('admin/login.html')
+
+@app.route("/dashboard")
+def dashboard():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
+        
+    response = make_response(render_template('admin/dashboard.html'))
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 if __name__ == "__main__":
     # Check if we should run in debug mode

@@ -3,7 +3,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def send_email_async(email, html_body):
+def send_email_sync(email, html_body):
     try:
         print(f"Starting to send email to {email}...")
         gmail_user = os.getenv("GMAIL").strip()

@@ -224,7 +224,7 @@
     programCb.forEach(cb => {
         cb.addEventListener('change', function () {
             const pgGroup = document.querySelector('.program-group');
-            if(pgGroup) pgGroup.style.border = 'none';
+            if (pgGroup) pgGroup.style.border = 'none';
         });
     });
 
