@@ -1,3 +1,16 @@
+:root {
+    --earth-green: #2C7A4B;
+    --warm-terracotta: #D9733B;
+    --soft-beige: #F6F2EC;
+    --dark-text: #1F2D2E;
+    --light-text: #5A6C6D;
+    --white: #FFFFFF;
+    --shadow: rgba(44, 122, 75, 0.1);
+    --card-bg: #FFFFFF;
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
 /* Header & Navigation */
 header {
     background-color: var(--white);

@@ -1,0 +1,122 @@
+[
+    {
+        "id": 1,
+        "title": "Software Developer (Python)",
+        "department": "Tech",
+        "type": "Full Time",
+        "location": "Remote",
+        "salary": "Negotiable",
+        "posted": "10 March 2026",
+        "desc": "Build and maintain web applications for rural education and health projects.",
+        "tags": [
+            "Remote",
+            "Full Time",
+            "Engineering"
+        ],
+        "responsibilities": [
+            "Work closely with team members",
+            "Implement project activities",
+            "Report progress to supervisor"
+        ],
+        "requirements": [
+            "Bachelor's degree or equivalent experience",
+            "Passion for social impact"
+        ]
+    },
+    {
+        "id": 2,
+        "title": "Education Program Coordinator",
+        "department": "Education",
+        "type": "Full Time",
+        "location": "Kolkata",
+        "salary": "₹25k - ₹35k",
+        "posted": "8 March 2026",
+        "desc": "Coordinate after-school programs and teacher training in rural areas.",
+        "tags": [
+            "Kolkata",
+            "Full Time",
+            "Education"
+        ],
+        "responsibilities": [
+            "Work closely with team members",
+            "Implement project activities",
+            "Report progress to supervisor"
+        ],
+        "requirements": [
+            "Bachelor's degree or equivalent experience",
+            "Passion for social impact"
+        ]
+    },
+    {
+        "id": 3,
+        "title": "Social Media Intern",
+        "department": "Marketing",
+        "type": "Internship",
+        "location": "Remote",
+        "salary": "Stipend",
+        "posted": "5 March 2026",
+        "desc": "Help manage our social media presence and create engaging content.",
+        "tags": [
+            "Remote",
+            "Internship",
+            "Marketing"
+        ],
+        "responsibilities": [
+            "Work closely with team members",
+            "Implement project activities",
+            "Report progress to supervisor"
+        ],
+        "requirements": [
+            "Bachelor's degree or equivalent experience",
+            "Passion for social impact"
+        ]
+    },
+    {
+        "id": 4,
+        "title": "Field Operations Volunteer",
+        "department": "Operations",
+        "type": "Volunteer",
+        "location": "Rural",
+        "salary": "Unpaid",
+        "posted": "1 March 2026",
+        "desc": "Assist in on-ground activities, events, and community engagement.",
+        "tags": [
+            "Rural",
+            "Volunteer",
+            "Operations"
+        ],
+        "responsibilities": [
+            "Work closely with team members",
+            "Implement project activities",
+            "Report progress to supervisor"
+        ],
+        "requirements": [
+            "Bachelor's degree or equivalent experience",
+            "Passion for social impact"
+        ]
+    },
+    {
+        "id": 5,
+        "title": "Fundraising Associate",
+        "department": "Marketing",
+        "type": "Part Time",
+        "location": "Remote",
+        "salary": "Negotiable",
+        "posted": "7 March 2026",
+        "desc": "Develop fundraising campaigns and donor relationships.",
+        "tags": [
+            "Remote",
+            "Part Time",
+            "Marketing"
+        ],
+        "responsibilities": [
+            "Work closely with team members",
+            "Implement project activities",
+            "Report progress to supervisor"
+        ],
+        "requirements": [
+            "Bachelor's degree or equivalent experience",
+            "Passion for social impact"
+        ]
+    }
+]

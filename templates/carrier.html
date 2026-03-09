@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/carrier.css') }}">{% endblock %}
+
+{% block content %}
+<!-- 1️⃣ Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Join Our Mission<br>Build a Better Future with Gram Tarakki Foundation</h1>
+            <p>We are looking for passionate individuals who want to bring real change in rural communities. Join
+                our team and help us make impact.</p>
+            <div class="hero-buttons">
+                <a href="#open-positions" class="btn">View Open Positions</a>
+                <a href="{{ url_for('volunteer') }}" class="btn btn-outline">Volunteer With Us</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&auto=format" alt="Volunteers">
+        </div>
+    </div>
+</section>
+
+<!-- 2️⃣ Why Work With Us -->
+<section>
+    <div class="container">
+        <h2 class="section-title">Why Work With Us</h2>
+        <div class="why-grid">
+            <div class="why-card">
+                <i class="fas fa-globe-asia"></i>
+                <h3>Real Impact</h3>
+                <p>Help transform rural communities through education, healthcare and technology.</p>
+            </div>
+            <div class="why-card">
+                <i class="fas fa-book-open"></i>
+                <h3>Continuous Learning</h3>
+                <p>Work with talented people and gain real-world experience.</p>
+            </div>
+            <div class="why-card">
+                <i class="fas fa-handshake"></i>
+                <h3>Collaborative Culture</h3>
+                <p>A friendly environment where everyone's ideas matter.</p>
+            </div>
+            <div class="why-card">
+                <i class="fas fa-rocket"></i>
+                <h3>Career Growth</h3>
+                <p>Opportunity to grow with a mission-driven organization.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3️⃣ Open Positions + Filter -->
+<section id="open-positions">
+    <div class="container">
+        <h2 class="section-title">Open Positions</h2>
+        <!-- Filter bar -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search jobs...">
+            </div>
+            <div class="filter-group">
+                <select id="deptFilter" class="filter-select">
+                    <option value="all">All Departments</option>
+                    <option value="Tech">Tech</option>
+                    <option value="Education">Education</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Operations">Operations</option>
+                </select>
+                <select id="typeFilter" class="filter-select">
+                    <option value="all">All Types</option>
+                    <option value="Full Time">Full Time</option>
+                    <option value="Part Time">Part Time</option>
+                    <option value="Internship">Internship</option>
+                    <option value="Volunteer">Volunteer</option>
+                </select>
+                <select id="locationFilter" class="filter-select">
+                    <option value="all">All Locations</option>
+                    <option value="Remote">Remote</option>
+                    <option value="Kolkata">Kolkata</option>
+                    <option value="Rural">Rural</option>
+                </select>
+            </div>
+        </div>
+        <!-- Jobs grid -->
+        <div class="jobs-grid" id="jobsContainer"></div>
+    </div>
+</section>
+
+<!-- 4️⃣ Job Details Modal -->
+<div id="jobModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeJobModal()">&times;</span>
+        <div id="jobModalContent"></div>
+    </div>
+</div>
+
+<!-- 5️⃣ Application Form Modal -->
+<div id="applyModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeApplyModal()">&times;</span>
+        <h2>Apply for <span id="applyJobTitle"></span></h2>
+        <form id="applicationForm" onsubmit="handleApply(event)">
+            <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" required>
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" required>
+            </div>
+            <div class="form-group">
+                <label>Phone *</label>
+                <input type="tel" required>
+            </div>
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text">
+            </div>
+            <div class="form-group">
+                <label>LinkedIn Profile</label>
+                <input type="url" placeholder="https://linkedin.com/in/...">
+            </div>
+            <div class="form-group">
+                <label>Resume Upload *</label>
+                <div class="file-upload" onclick="document.getElementById('resume').click()">
+                    <i class="fas fa-cloud-upload-alt"></i> Click to upload
+                    <input type="file" id="resume" style="display: none;" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Cover Letter</label>
+                <textarea rows="4"></textarea>
+            </div>
+            <button type="submit" class="btn" style="width: 100%;">Submit Application</button>
+        </form>
+    </div>
+</div>
+
+<!-- 7️⃣ Life at Gram Tarakki Foundation -->
+<section>
+    <div class="container">
+        <h2 class="section-title">Life at Gram Tarakki Foundation</h2>
+        <p style="text-align: center; max-width: 700px; margin: 0 auto 30px;">Our team believes in compassion,
+            collaboration and community impact.</p>
+        <div class="image-grid">
+            <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&auto=format" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&auto=format" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&auto=format" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&auto=format" loading="lazy">
+        </div>
+    </div>
+</section>
+
+<!-- 8️⃣ Internship / Volunteer Section -->
+<section id="volunteer">
+    <div class="container">
+        <div class="volunteer-block">
+            <h2>Become a Volunteer</h2>
+            <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto;">Even if there are no open roles, you can
+                still join our mission as a volunteer.</p>
+            <a href="{{ url_for('volunteer') }}" class="btn">Apply as Volunteer</a>
+        </div>
+    </div>
+</section>
+
+<!-- 9️⃣ FAQ Section -->
+<section>
+    <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>How long does the hiring process take?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Typically 1-2 weeks from application to decision. We'll keep you updated.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Can I apply for multiple roles?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Yes, you can apply for as many roles as you're interested in.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Do you offer internships?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Yes, we have internships in various departments. Check open positions.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 🔟 Final CTA -->
+<section>
+    <div class="container">
+        <div class="final-cta">
+            <h2>Ready to Make an Impact?</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 20px;">Join our team and help transform rural lives.</p>
+            <a href="#open-positions" class="btn">Explore Open Positions</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='js/carrier.js') }}"></script>
+{% endblock %}
