@@ -2,7 +2,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 
 def verify_admin_login(username, password):
-    from app import get_db_connection
+    from core.db import get_db_connection
     
     try:
         conn = get_db_connection()

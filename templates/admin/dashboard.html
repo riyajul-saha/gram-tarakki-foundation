@@ -1,226 +1,162 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'admin/base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
-    <title>Admin Dashboard | Gram Tarakki Foundation</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@600;700&display=swap"
-        rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/dashboard.css') }}">
-</head>
+{% block title %}Admin Dashboard | Gram Tarakki Foundation{% endblock %}
 
-<body>
-    <div class="dashboard">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-leaf"></i>
-                </div>
-                <div class="title">
-                    <h2>Gram Tarakki Foundation</h2>
-                    <p>Admin Panel</p>
-                </div>
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="#" class="nav-link active"><i class="fas fa-tachometer-alt"></i>
-                        Dashboard</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-users"></i> Volunteers</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-envelope"></i> Join Requests</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-donate"></i> Donations</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Reports</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-blog"></i> Blog / Updates</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a></li>
-                <li class="nav-item"><a href="/logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                </li>
-            </ul>
-        </aside>
+{% block head %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/dashboard.css') }}">
+{% endblock %}
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Topbar -->
-            <header class="topbar">
-                <div class="topbar-left">
-                    <button class="menu-toggle" id="menuToggle">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search volunteer, donation, request...">
-                    </div>
-                </div>
-                <div class="topbar-right">
-                    <button class="icon-btn"><i class="fas fa-bell"></i></button>
-                    <button class="icon-btn"><i class="fas fa-envelope"></i></button>
-                    <div class="profile dropdown">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Admin">
-                        <div class="dropdown-menu">
-                            <a href="#">Profile</a>
-                            <a href="#">Settings</a>
-                            <a href="/logout">Logout</a>
-                        </div>
-                    </div>
-                </div>
-            </header>
+{% block dashboard_active %}active{% endblock %}
 
-            <!-- Main Content Area -->
-            <main class="content">
-                <!-- Welcome Card -->
-                <div class="welcome-card">
-                    <div class="welcome-text">
-                        <h2>Welcome Back, Admin 👋</h2>
-                        <p>Here's what's happening in Gram Tarakki Foundation today.</p>
-                    </div>
-                    <div class="date-badge">
-                        <i class="fas fa-calendar-alt"></i> Saturday, 7 March 2026
-                    </div>
-                </div>
-
-                <!-- Statistics Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-left">
-                            <h3>1,250</h3>
-                            <p>Total Volunteers</p>
-                        </div>
-                        <div class="stat-right">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-left">
-                            <h3>342</h3>
-                            <p>Join Requests</p>
-                        </div>
-                        <div class="stat-right">
-                            <i class="fas fa-file-signature"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-left">
-                            <h3>₹8.2L</h3>
-                            <p>Total Donations</p>
-                        </div>
-                        <div class="stat-right">
-                            <i class="fas fa-hand-holding-heart"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-left">
-                            <h3>28</h3>
-                            <p>Total Projects</p>
-                        </div>
-                        <div class="stat-right">
-                            <i class="fas fa-tree"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Join Requests -->
-                <div class="section-header">
-                    <h3>Recent Join Requests</h3>
-                    <a href="#" style="color: #2563eb; font-size: 14px;">View all</a>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Location</th>
-                                <th>Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Rahim Sheikh</td>
-                                <td>rahim@example.com</td>
-                                <td>Kolkata</td>
-                                <td>6 Mar 2026</td>
-                                <td class="action-btns">
-                                    <button class="btn-approve">Approve</button>
-                                    <button class="btn-reject">Reject</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Priya Das</td>
-                                <td>priya.das@example.com</td>
-                                <td>Rampurhat</td>
-                                <td>5 Mar 2026</td>
-                                <td class="action-btns">
-                                    <button class="btn-approve">Approve</button>
-                                    <button class="btn-reject">Reject</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Arjun Singh</td>
-                                <td>arjun@example.com</td>
-                                <td>Birbhum</td>
-                                <td>4 Mar 2026</td>
-                                <td class="action-btns">
-                                    <button class="btn-approve">Approve</button>
-                                    <button class="btn-reject">Reject</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Donation Overview + Recent Activities -->
-                <div class="row-2col">
-                    <!-- Donation Chart -->
-                    <div class="chart-card">
-                        <h3 style="margin-bottom: 16px;">Donation Overview</h3>
-                        <canvas id="donationChart"></canvas>
-                    </div>
-
-                    <!-- Recent Activities -->
-                    <div class="activities-card">
-                        <h3 style="margin-bottom: 16px;">Recent Activities</h3>
-                        <ul class="activities-list">
-                            <li class="activity-item">
-                                <div class="activity-icon"><i class="fas fa-user-plus"></i></div>
-                                <div class="activity-text">New volunteer registered</div>
-                                <div class="activity-time">5 min ago</div>
-                            </li>
-                            <li class="activity-item">
-                                <div class="activity-icon"><i class="fas fa-donate"></i></div>
-                                <div class="activity-text">Donation received ₹5,000</div>
-                                <div class="activity-time">2 hours ago</div>
-                            </li>
-                            <li class="activity-item">
-                                <div class="activity-icon"><i class="fas fa-file-alt"></i></div>
-                                <div class="activity-text">New join request from Kolkata</div>
-                                <div class="activity-time">3 hours ago</div>
-                            </li>
-                            <li class="activity-item">
-                                <div class="activity-icon"><i class="fas fa-pencil-alt"></i></div>
-                                <div class="activity-text">Admin updated project status</div>
-                                <div class="activity-time">5 hours ago</div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Footer -->
-                <footer class="footer">
-                    <p>© 2026 Gram Tarakki Foundation — Admin Dashboard</p>
-                </footer>
-            </main>
+{% block content %}
+<main class="content">
+    <!-- Welcome Card -->
+    <div class="welcome-card">
+        <div class="welcome-text">
+            <h2>Welcome Back, Admin 👋</h2>
+            <p>Here's what's happening in Gram Tarakki Foundation today.</p>
+        </div>
+        <div class="date-badge">
+            <i class="fas fa-calendar-alt"></i> Saturday, 7 March 2026
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/admin/dashboard.js') }}"></script>
-</body>
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-left">
+                <h3>1,250</h3>
+                <p>Total Volunteers</p>
+            </div>
+            <div class="stat-right">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-left">
+                <h3>342</h3>
+                <p>Join Requests</p>
+            </div>
+            <div class="stat-right">
+                <i class="fas fa-file-signature"></i>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-left">
+                <h3>₹8.2L</h3>
+                <p>Total Donations</p>
+            </div>
+            <div class="stat-right">
+                <i class="fas fa-hand-holding-heart"></i>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-left">
+                <h3>28</h3>
+                <p>Total Projects</p>
+            </div>
+            <div class="stat-right">
+                <i class="fas fa-tree"></i>
+            </div>
+        </div>
+    </div>
 
-</html>
+    <!-- Recent Join Requests -->
+    <div class="section-header">
+        <h3>Recent Join Requests</h3>
+        <a href="#" style="color: #2563eb; font-size: 14px;">View all</a>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Rahim Sheikh</td>
+                    <td>rahim@example.com</td>
+                    <td>Kolkata</td>
+                    <td>6 Mar 2026</td>
+                    <td class="action-btns">
+                        <button class="btn-approve">Approve</button>
+                        <button class="btn-reject">Reject</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Priya Das</td>
+                    <td>priya.das@example.com</td>
+                    <td>Rampurhat</td>
+                    <td>5 Mar 2026</td>
+                    <td class="action-btns">
+                        <button class="btn-approve">Approve</button>
+                        <button class="btn-reject">Reject</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Arjun Singh</td>
+                    <td>arjun@example.com</td>
+                    <td>Birbhum</td>
+                    <td>4 Mar 2026</td>
+                    <td class="action-btns">
+                        <button class="btn-approve">Approve</button>
+                        <button class="btn-reject">Reject</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Donation Overview + Recent Activities -->
+    <div class="row-2col">
+        <!-- Donation Chart -->
+        <div class="chart-card">
+            <h3 style="margin-bottom: 16px;">Donation Overview</h3>
+            <canvas id="donationChart"></canvas>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="activities-card">
+            <h3 style="margin-bottom: 16px;">Recent Activities</h3>
+            <ul class="activities-list">
+                <li class="activity-item">
+                    <div class="activity-icon"><i class="fas fa-user-plus"></i></div>
+                    <div class="activity-text">New volunteer registered</div>
+                    <div class="activity-time">5 min ago</div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-icon"><i class="fas fa-donate"></i></div>
+                    <div class="activity-text">Donation received ₹5,000</div>
+                    <div class="activity-time">2 hours ago</div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="activity-text">New join request from Kolkata</div>
+                    <div class="activity-time">3 hours ago</div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-icon"><i class="fas fa-pencil-alt"></i></div>
+                    <div class="activity-text">Admin updated project status</div>
+                    <div class="activity-time">5 hours ago</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 Gram Tarakki Foundation — Admin Dashboard</p>
+    </footer>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin/dashboard.js') }}"></script>
+{% endblock %}

@@ -154,36 +154,37 @@
                     </div>
                 </div>
 
-                <form id="volunteerForm" class="registration-form scroll-stagger-container">
+                <form id="volunteerForm" class="registration-form scroll-stagger-container" method="POST"
+                    action="/volunteer_join" enctype="multipart/form-data">
                     <div class="form-grid scroll-animate-item">
                         <div class="form-group">
                             <label class="form-label">Full Name *</label>
-                            <input required type="text" class="form-input" placeholder="John Doe"
+                            <input required type="text" class="form-input" placeholder="John Doe" name="fullname"
                                 title="Please fill with your full name">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Email *</label>
-                            <input required type="email" inputmode="email" class="form-input"
+                            <input required type="email" inputmode="email" class="form-input" name="email"
                                 placeholder="john@example.com" title="Please fill with your valid email address">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Phone *</label>
                             <input required type="tel" inputmode="tel" class="form-input" placeholder="+91 98765 43210"
-                                title="Please fill with your valid Phone number">
+                                name="phone" title="Please fill with your valid Phone number">
                         </div>
                         <div class="form-group">
                             <label class="form-label">City *</label>
-                            <input required type="text" class="form-input" placeholder="Your City"
+                            <input required type="text" class="form-input" placeholder="Your City" name="city"
                                 title="Please fill with your current city">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Age</label>
-                            <input type="number" inputmode="numeric" class="form-input" placeholder="25"
+                            <input type="number" inputmode="numeric" class="form-input" placeholder="25" name="age"
                                 title="Please provide your age in years (Optional)">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Preferred Role *</label>
-                            <select id="role-select" class="form-select" required
+                            <select id="role-select" class="form-select" required name="role"
                                 title="Please select a preferred role from the available options">
                                 <option value="" disabled selected>-- Select a Role --</option>
                                 <option value="Teacher">Teacher</option>
@@ -196,7 +197,7 @@
 
                     <div class="form-group-full scroll-animate-item">
                         <label class="form-label">Skills & Experience *</label>
-                        <textarea required rows="4" class="form-textarea"
+                        <textarea required rows="4" class="form-textarea" name="skills"
                             placeholder="Tell us your skills or experience..."
                             title="Please provide a brief description of your relevant skills or experience"></textarea>
                     </div>
@@ -223,9 +224,8 @@
                         <label class="form-label">Upload Documents (Optional)</label>
                         <div class="file-upload-box" id="fileUploadBox">
                             <i data-lucide="upload-cloud" class="upload-icon"></i>
-                            <p class="upload-text">Click to upload Resume or ID proof</p>
-                            <input type="file" id="fileInput" class="file-input" multiple
-                                accept=".pdf,.doc,.docx,.jpg,.png">
+                            <p class="upload-text">Click to upload Resume or ID proof (Max 1MB, PDF only)</p>
+                            <input type="file" id="fileInput" class="file-input" name="resume" accept=".pdf">
                         </div>
                     </div>
 
@@ -280,16 +280,16 @@
             <div class="help-container scroll-animate-item">
                 <h2 class="help-title">Have Questions?</h2>
                 <div class="help-buttons">
-                    <a href="https://wa.me/919876543210?text=Hello!%20GTFoundation%20team,%20I%20have%20a%20question...."
+                    <a href="https://wa.me/919475321004?text=Hello!%20GTFoundation%20team,%20I%20have%20a%20question...."
                         target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
                         <i data-lucide="message-circle" class="btn-icon"></i>
                         WhatsApp
                     </a>
-                    <a href="tel:+919876543210" class="btn btn-call">
+                    <a href="tel:+919475321004" class="btn btn-call">
                         <i data-lucide="phone" class="btn-icon"></i>
                         Call Us
                     </a>
-                    <a href="mailto:contact@gtfoundation.org?subject=Volunteer%20Inquiry" class="btn btn-email">
+                    <a href="mailto:info@gtfoundations.in?subject=Volunteer%20Inquiry" class="btn btn-email">
                         <i data-lucide="mail" class="btn-icon"></i>
                         Email
                     </a>

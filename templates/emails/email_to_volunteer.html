@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer Registration Confirmation</title>
+  <style>
+    /* Basic reset & fallback styles */
+    .ExternalClass,
+    .ReadMsgBody {
+      width: 100%;
+      background-color: #ffffff;
+    }
+
+    body,
+    table,
+    td,
+    p,
+    a {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    table {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+
+    img {
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+
+    .yshortcuts a {
+      border-bottom: none !important;
+    }
+
+    @media screen and (max-width: 600px) {
+      .email-container {
+        width: 100% !important;
+      }
+
+      .stack-cell {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+      }
+
+      .btn-container {
+        width: 100% !important;
+        text-align: center !important;
+      }
+
+      .btn {
+        display: inline-block !important;
+        width: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f4f4f4; font-family: Arial, Helvetica, sans-serif;">
+
+  <!-- MAIN CONTAINER -->
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" bgcolor="#f4f4f4"
+    style="background-color:#f4f4f4;">
+    <tr>
+      <td align="center" style="padding:20px 15px;">
+
+        <!-- INNER CARD (600px max) -->
+        <table class="email-container" width="100%" border="0" cellpadding="0" cellspacing="0" align="center"
+          style="max-width:600px; width:100%; background-color:#ffffff; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+
+          <!-- HEADER SECTION (logo + foundation name) -->
+          <tr>
+            <td align="center" bgcolor="#F5F5F5"
+              style="background-color:#F5F5F5; padding:25px 20px 15px 20px; border-radius:8px 8px 0 0;">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <!-- Logo placeholder (image with fallback) -->
+                    <img src="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp"
+                      alt="Gram Tarakki Foundation" width="80" height="80"
+                      style="display:block; width:80px; height:auto; margin-bottom:10px; border:0; background:#F5F5F5; color:#f4f4f4; font-size:14px;" />
+                    <h1 style="font-size:22px; font-weight:bold; color:#2E7D32; margin:0; padding:0;">Gram Tarakki
+                      Foundation</h1>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- GREETING & THANK YOU -->
+          <tr>
+            <td align="left" style="padding:25px 25px 10px 25px;">
+              <p style="font-size:16px; margin:0 0 8px 0; color:#333333;">Dear <strong>{{ fullname }}</strong>,</p>
+              <p style="font-size:15px; line-height:1.5; color:#444444; margin:0;">Thank you for registering as a
+                volunteer with <strong>Gram Tarakki Foundation</strong>. We are grateful for your willingness to
+                contribute your time and effort toward social development.</p>
+            </td>
+          </tr>
+
+          <!-- CONFIRMATION BANNER (✔ Application Successfully Received) -->
+          <tr>
+            <td align="center" style="padding:10px 25px 5px 25px;">
+              <table width="100%" border="0" cellpadding="12" cellspacing="0" bgcolor="#E8F5E9"
+                style="background-color:#E8F5E9; border:1px solid #A5D6A7; border-radius:5px;">
+                <tr>
+                  <td align="center" style="color:#1e5f2e; font-size:16px; font-weight:bold;">
+                    ✔ Application Successfully Received
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- CONFIRMATION MESSAGE -->
+          <tr>
+            <td align="left" style="padding:15px 25px 5px 25px;">
+              <p style="font-size:15px; line-height:1.5; color:#333333; margin:0;">We are pleased to inform you that
+                your <strong>volunteer application has been successfully received</strong>. Our team will review your
+                application and contact you soon regarding the next steps.</p>
+            </td>
+          </tr>
+
+          <!-- VOLUNTEER DETAILS SUMMARY (light grey background) -->
+          <tr>
+            <td align="left" style="padding:15px 25px 5px 25px;">
+              <table width="100%" border="0" cellpadding="12" cellspacing="0" bgcolor="#f8f8f8"
+                style="background-color:#f8f8f8; border-radius:4px;">
+                <tr>
+                  <td style="font-size:14px; color:#2e2e2e;">
+                    <span style="font-weight:bold; font-size:15px;">Volunteer Details</span>
+                    <hr style="border:0; border-top:1px solid #dddddd; margin:8px 0 12px 0;">
+                    <span style="display:block; margin-bottom:5px;"><strong>Name :</strong> {{ fullname }}</span>
+                    <span style="display:block; margin-bottom:5px;"><strong>Email :</strong>
+                      {{ email }}</span>
+                    <span style="display:block; margin-bottom:5px;"><strong>Skills & Experience :</strong>
+                      {{ skills }}</span>
+                    <span style="display:block; margin-bottom:5px;"><strong>Preferred Role:</strong>
+                      {{ role }}</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- CALL TO ACTION BUTTONS (stay connected) -->
+          <tr>
+            <td align="center" style="padding:15px 25px 10px 25px;">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="font-size:0;">
+                    <!-- Two buttons side by side (responsive: stack on mobile via media query) -->
+                    <table border="0" cellpadding="0" cellspacing="0"
+                      style="display:inline-table; width:auto; margin:0 5px 10px 5px;" class="btn-container">
+                      <tr>
+                        <td align="center" bgcolor="#2E7D32" style="background-color:#2E7D32; border-radius:4px;">
+                          <a href="#" target="_blank"
+                            style="display:inline-block; padding:10px 20px; color:#ffffff; text-decoration:none; font-size:15px; font-weight:normal;">Visit
+                            Website</a>
+                        </td>
+                      </tr>
+                    </table>
+                    <table border="0" cellpadding="0" cellspacing="0"
+                      style="display:inline-table; width:auto; margin:0 5px 10px 5px;" class="btn-container">
+                      <tr>
+                        <td align="center" bgcolor="#2E7D32" style="background-color:#2E7D32; border-radius:4px;">
+                          <a href="tel:+919475321004" target="_blank"
+                            style="display:inline-block; padding:10px 20px; color:#ffffff; text-decoration:none; font-size:15px; font-weight:normal;">Contact
+                            Us</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- FOOTER (NGO info + social links) -->
+          <tr>
+            <td align="center" bgcolor="#f0f0f0"
+              style="background-color:#f0f0f0; padding:20px 20px 15px 20px; border-radius:0 0 8px 8px;">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="font-size:13px; color:#666666; line-height:1.5;">
+                    <p style="margin:0 0 8px 0;"><strong>Gram Tarakki Foundation</strong><br>Working for Rural
+                      Development and Social Welfare</p>
+                    <p>MADHAKHALI BHUPATINAGAR, Bhupatinagar, East Midnapore, Bhupatinagar,West Bengal, India, 721425
+                    </p>
+                    <p style="margin:0; font-size:12px;">© 2026 Gram Tarakki Foundation. All Rights Reserved.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table> <!-- end inner card -->
+
+        <!-- tiny spacer note (for better mobile) -->
+        <table width="100%" style="max-width:600px;" align="center">
+          <tr>
+            <td style="font-size:10px; color:#aaaaaa; padding:5px; text-align:center;">This is an automated message,
+              please do not reply directly.</td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+  <!-- random detail note: placeholders like {{volunteer_name}} can be replaced later -->
+  <!-- design uses dummy data: Rahul Sharma etc. for visual reference -->
+</body>
+
+</html>

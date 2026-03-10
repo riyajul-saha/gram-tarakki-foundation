@@ -158,8 +158,35 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (isValid) {
-                showPopup('success', 'Success!', 'Your application has been submitted successfully. We will contact you soon.');
-                form.reset();
+                const formData = new FormData(form);
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+
+                submitBtn.textContent = 'Submitting...';
+                submitBtn.disabled = true;
+
+                fetch('/volunteer_join', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+
+                        if (data.status === 'success') {
+                            showPopup('success', 'Success!', data.message || 'Your application has been submitted successfully. We will contact you soon.');
+                            form.reset();
+                        } else {
+                            showPopup('fail', 'Submission Failed', data.message || 'There was an error submitting your form.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error submitting form:', error);
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                        showPopup('fail', 'Error', 'Failed to connect to the server. Please check your connection and try again.');
+                    });
             } else {
                 showPopup('fail', 'Incomplete Form', 'Please fill all required fields and agree to the terms.');
             }
@@ -176,6 +203,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (this.type === 'checkbox') this.parentElement.style.color = '';
             });
         });
+
+        // 6. Handle file upload UI and validation (Max 1MB)
+        const fileInput = document.getElementById('fileInput');
+        const uploadText = document.querySelector('.upload-text');
+        const uploadBox = document.getElementById('fileUploadBox');
+
+        if (fileInput && uploadText) {
+            fileInput.addEventListener('change', function () {
+                if (this.files && this.files.length > 0) {
+                    const file = this.files[0];
+                    const fileSizeMB = file.size / (1024 * 1024);
+
+                    if (fileSizeMB > 1) {
+                        // File too large
+                        showPopup('fail', 'File Too Large', 'Please upload a file smaller than 1MB.');
+                        this.value = ''; // clear input
+                        uploadText.textContent = 'Click to upload Resume or ID proof (Max 1MB, PDF only)';
+                        uploadText.style.color = '#dc2626';
+                        if (uploadBox) uploadBox.style.borderColor = '#dc2626';
+                    } else if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                        // Not a PDF
+                        showPopup('fail', 'Invalid File Type', 'Only PDF files are allowed.');
+                        this.value = ''; // clear input
+                        uploadText.textContent = 'Click to upload Resume or ID proof (Max 1MB, PDF only)';
+                        uploadText.style.color = '#dc2626';
+                        if (uploadBox) uploadBox.style.borderColor = '#dc2626';
+                    } else {
+                        // Display filename
+                        uploadText.textContent = `Selected: ${file.name}`;
+                        uploadText.style.color = 'var(--color-green)';
+                        if (uploadBox) uploadBox.style.borderColor = 'var(--color-green)';
+                    }
+                } else {
+                    uploadText.textContent = 'Click to upload Resume or ID proof (Max 1MB, PDF only)';
+                    uploadText.style.color = '';
+                    if (uploadBox) uploadBox.style.borderColor = '';
+                }
+            });
+        }
     }
 
     // 5. Hero Animations initialization

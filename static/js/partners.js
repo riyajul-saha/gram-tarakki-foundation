@@ -99,18 +99,53 @@
             return;
         }
 
-        // Simulate loading
+        // Retrieve all checkboxes for support type
+        const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
+        const supportTypeValues = Array.from(checkboxes).map(cb => cb.value).join(', ');
+
+        const formData = new FormData();
+        formData.append('orgName', document.getElementById('orgName').value);
+        formData.append('contactPerson', document.getElementById('contactPerson').value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('phone', document.getElementById('phone').value);
+        formData.append('city', document.getElementById('city').value);
+        formData.append('partnerType', document.getElementById('partnerType').value);
+        formData.append('otherType', document.getElementById('otherType').value);
+        formData.append('supportType', supportTypeValues);
+        formData.append('message', document.getElementById('message').value);
+
+        const fileInput = document.getElementById('logoUpload');
+        if (fileInput.files.length > 0) {
+            formData.append('logoUpload', fileInput.files[0]);
+        }
+
+        // Send via fetch
         submitBtn.disabled = true;
         submitBtn.textContent = 'Processing... ⏳';
 
-        setTimeout(() => {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Become a Partner';
-            showPopup('success', 'Request Sent!', 'We will contact you within 48 hours.');
-            form.reset();
-            otherGroup.style.display = 'none';
-            fileArea.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Click or drag to upload';
-        }, 1500);
+        fetch('/partner_join', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Become a Partner';
+                if (data.status === 'success') {
+                    showPopup('success', 'Request Sent!', data.message || 'We will contact you within 48 hours.');
+                    form.reset();
+                    otherGroup.style.display = 'none';
+                    fileArea.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Click or drag to upload';
+                } else {
+                    showPopup('error', 'Submission Failed', data.message || 'Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Become a Partner';
+                showPopup('error', 'Error', 'Failed to submit. Please try again later.');
+            });
     });
 
     // Remove red border on input

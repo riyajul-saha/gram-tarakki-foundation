@@ -1,11 +1,7 @@
 import os
-import threading
-from datetime import datetime, timedelta
-import mysql.connector
+from datetime import timedelta
+from flask import Flask
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, make_response
-from core.email_sender import send_email_sync
-from admin.login import verify_admin_login
 
 # Load environment variables from .env file (if it exists)
 # In production platforms (like Render/Railway), variables are usually 
@@ -18,267 +14,22 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "fallback_dev_secret_key_change_in_prod")
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
 
-def init_db():
-    try:
-        connection = mysql.connector.connect(
-            host=os.getenv("DB_HOST", "localhost"),
-            # WARNING: In production, do NOT use the 'root' user.
-            # Create a user with limited privileges.
-            port=int(os.getenv("DB_PORT", 3306)),
-            user=os.getenv("DB_USER", "root"),
-            password=os.getenv("DB_PASSWORD", "")
-        )
-        cursor = connection.cursor()
-        db_name = os.getenv("DB_NAME", "gram_tarakki")
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name}")
-        cursor.execute(f"USE {db_name}")
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS join_requests (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                fullname VARCHAR(255) NOT NULL,
-                email VARCHAR(255) NOT NULL,
-                age INT,
-                gender VARCHAR(50),
-                school VARCHAR(255),
-                parent_name VARCHAR(255),
-                parent_contact VARCHAR(50),
-                phone VARCHAR(50),
-                address TEXT NOT NULL,
-                program VARCHAR(100) NOT NULL,
-                experience VARCHAR(10),
-                medical TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE(fullname, email)
-            )
-        """)
-        # Ensure unique constraint on fullname and email
-        try:
-            cursor.execute("ALTER TABLE join_requests ADD UNIQUE(fullname, email)")
-        except mysql.connector.Error:
-            pass
-        # Ensure email column exists if table was previously created
-        try:
-            cursor.execute("ALTER TABLE join_requests ADD COLUMN email VARCHAR(255) NOT NULL DEFAULT '' AFTER fullname")
-        except mysql.connector.Error:
-            pass
-        # Ensure phone allows NULL/empty or optional
-        try:
-            cursor.execute("ALTER TABLE join_requests MODIFY phone VARCHAR(50) NULL")
-        except mysql.connector.Error:
-            pass
+# Set up upload folder for resumes and partner logos
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload', 'resume')
+PARTNER_LOGO_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload', 'partner_logo')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(PARTNER_LOGO_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['PARTNER_LOGO_FOLDER'] = PARTNER_LOGO_FOLDER
 
-        # Create admin table
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS admin (
-                id VARCHAR(255) PRIMARY KEY,
-                email VARCHAR(255) NOT NULL UNIQUE,
-                password VARCHAR(255) NOT NULL
-            )
-        """)
-        
-        connection.commit()
-        cursor.close()
-        connection.close()
-    except mysql.connector.Error as err:
-        print(f"Error initializing DB: {err}")
-
+from core.db import init_db
 init_db()
 
-def get_db_connection():
-    try:
-        connection = mysql.connector.connect(
-            host=os.getenv("DB_HOST", "localhost"),
-            port=int(os.getenv("DB_PORT", 3306)),
-            user=os.getenv("DB_USER", "root"),
-            password=os.getenv("DB_PASSWORD", ""),
-            database=os.getenv("DB_NAME", "gram_tarakki")
-        )
-        return connection
-    except mysql.connector.Error as err:
-        print(f"Error connecting to database: {err}")
-        return None
-
-@app.route("/")
-def home():
-  return render_template('index.html')
-
-
-@app.route("/about")
-def about():
-  return render_template('about.html')
-
-
-@app.route("/programs")
-def programs():
-  return render_template('programs.html')
-
-
-@app.route("/join", methods=["GET", "POST"])
-def join():
-  if request.method == "POST":
-    fullname = request.form.get("fullname")
-    email = request.form.get("email")
-    age = request.form.get("age")
-    gender = request.form.get("gender")
-    school = request.form.get("school")
-    parent_name = request.form.get("parentName")
-    parent_contact = request.form.get("parentContact")
-    phone = request.form.get("phone")
-    address = request.form.get("address")
-    programs_list = request.form.getlist("program")
-    program = ", ".join(programs_list) if programs_list else ""
-    experience = request.form.get("experience")
-    medical = request.form.get("medical")
-
-    def validate_opt(val):
-        return val if (val and val.strip() != "") else "NaN"
-
-    try:
-        conn = get_db_connection()
-        if not conn:
-            init_db()  # Try to initialize if connection fails
-            conn = get_db_connection()
-            if not conn:
-                return jsonify({"status": "error", "message": "Database connection failed"}), 500
-
-        cursor = conn.cursor()
-        
-        try:
-            # Check if exists
-            cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND email = %s", (fullname, email))
-        except mysql.connector.Error as err:
-            if err.errno == 1146: # Table doesn't exist
-                init_db()
-                # Get a fresh connection after initialization
-                cursor.close()
-                conn.close()
-                conn = get_db_connection()
-                if not conn:
-                    return jsonify({"status": "error", "message": "Database connection failed after init"}), 500
-                cursor = conn.cursor()
-                cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND email = %s", (fullname, email))
-            else:
-                raise
-
-        if cursor.fetchone():
-            cursor.close()
-            conn.close()
-            return jsonify({"status": "exists", "message": "You already joined, for any help contact us"})
-        
-        # Insert (save optional fields as NaN if they are empty string / None in Python, but DB schema expects string)
-        # We will save string "NaN" for optional empty values as requested by user.
-        cursor.execute("""
-            INSERT INTO join_requests (fullname, email, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (
-            fullname,
-            email,
-            int(age) if age else None,
-            gender,
-            validate_opt(school),
-            validate_opt(parent_name),
-            validate_opt(parent_contact),
-            validate_opt(phone),
-            address,
-            program,
-            experience,
-            validate_opt(medical)
-        ))
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-        # Send confirmation email synchronously
-        if email:
-            try:
-                current_date = datetime.now().strftime("%d %B %Y")
-                if current_date.startswith("0"):
-                    current_date = current_date[1:]
-                    
-                html_body = render_template('emails/student_join_mail.html', 
-                                            fullname=fullname, 
-                                            program=program, 
-                                            date=current_date)
-                
-                send_email_sync(email, html_body)
-            except Exception as e:
-                print(f"Failed to prepare or send confirmation email: {e}")
-
-        return jsonify({"status": "success"})
-    except Exception as e:
-        print(f"Error handling join request: {e}")
-        return jsonify({"status": "error", "message": "Failed to submit. Please try again later."}), 500
-
-  return render_template('join.html')
-
-@app.route("/karate")
-def karate():
-  return render_template('programs/programs-karate.html')
-
-@app.route("/yoga")
-def yoga():
-  return render_template('programs/programs-yoga.html')
-
-@app.route("/donate")
-def donate():
-  return render_template('donate.html')
-
-@app.route("/gallery")
-def gallery():
-  return render_template('gallery.html')
-
-@app.route("/volunteer")
-def volunteer():
-  return render_template('volunteer.html')
-
-@app.route("/partners")
-def partners():
-  return render_template('partners.html')
-
-@app.route("/carrier")
-def carrier():
-  return render_template('carrier.html')
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        data = request.get_json() or {}
-        username = data.get("username", "").strip()
-        password = data.get("password", "").strip()
-
-        if not username or not password:
-            return jsonify({"status": "error", "message": "Username and password are required"}), 400
-
-        result = verify_admin_login(username, password)
-        
-        if result["status"] == "success":
-            session.permanent = True
-            session['admin_logged_in'] = True
-            session['admin_id'] = result['admin_id']
-            return jsonify({"status": "success", "redirect": url_for("dashboard")})
-        else:
-            return jsonify({"status": result["status"], "message": result["message"]}), result.get("code", 401)
-
-    if session.get('admin_logged_in'):
-        return redirect(url_for("dashboard"))
-
-    return render_template('admin/login.html')
-
-@app.route("/dashboard")
-def dashboard():
-    if not session.get('admin_logged_in'):
-        return redirect(url_for('login'))
-        
-    response = make_response(render_template('admin/dashboard.html'))
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for('login'))
+# Import routes from core and admin modules
+import core.routes
+import admin.routes
+core.routes.init_routes(app)
+admin.routes.init_routes(app)
 
 if __name__ == "__main__":
     # Check if we should run in debug mode
