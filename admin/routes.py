@@ -32,7 +32,32 @@ def init_routes(app):
         if not session.get('admin_logged_in'):
             return redirect(url_for('login'))
 
-        response = make_response(render_template('admin/dashboard.html'))
+        volunteer_count = 0
+        join_requests_count = 0
+        try:
+            from core.db import get_db_connection
+            conn = get_db_connection()
+            if conn:
+                cursor = conn.cursor(dictionary=True)
+                
+                # Fetch volunteer count
+                cursor.execute("SELECT COUNT(*) as count FROM join_volunteer WHERE status IN ('approve', 'approved')")
+                result = cursor.fetchone()
+                if result:
+                    volunteer_count = result.get('count', 0)
+                
+                # Fetch join requests count
+                cursor.execute("SELECT COUNT(*) as count FROM join_requests")
+                result = cursor.fetchone()
+                if result:
+                    join_requests_count = result.get('count', 0)
+                    
+                cursor.close()
+                conn.close()
+        except Exception as e:
+            print(f"Error fetching dashboard counts: {e}")
+
+        response = make_response(render_template('admin/dashboard.html', volunteer_count=volunteer_count, join_requests_count=join_requests_count))
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'

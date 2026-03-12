@@ -28,6 +28,7 @@ def init_db():
                 program VARCHAR(100) NOT NULL,
                 experience VARCHAR(10),
                 medical TEXT,
+                status VARCHAR(50) DEFAULT 'pending',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(fullname, email)
             )
@@ -42,6 +43,10 @@ def init_db():
             pass
         try:
             cursor.execute("ALTER TABLE join_requests MODIFY phone VARCHAR(50) NULL")
+        except mysql.connector.Error:
+            pass
+        try:
+            cursor.execute("ALTER TABLE join_requests ADD COLUMN status VARCHAR(50) DEFAULT 'pending' AFTER medical")
         except mysql.connector.Error:
             pass
 

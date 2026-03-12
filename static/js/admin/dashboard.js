@@ -1,5 +1,11 @@
 // Donation Chart
 window.onload = function () {
+    const dateElement = document.getElementById('current-date');
+    if (dateElement) {
+        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        dateElement.textContent = new Date().toLocaleDateString('en-GB', options);
+    }
+
     const canvas = document.getElementById('donationChart');
     if (canvas) {
         const ctx = canvas.getContext('2d');

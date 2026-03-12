@@ -19,7 +19,7 @@
             <p>Here's what's happening in Gram Tarakki Foundation today.</p>
         </div>
         <div class="date-badge">
-            <i class="fas fa-calendar-alt"></i> Saturday, 7 March 2026
+            <i class="fas fa-calendar-alt"></i> <span id="current-date"></span>
         </div>
     </div>
 
@@ -27,7 +27,7 @@
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-left">
-                <h3>1,250</h3>
+                <h3>{{ volunteer_count }}</h3>
                 <p>Total Volunteers</p>
             </div>
             <div class="stat-right">
@@ -36,7 +36,7 @@
         </div>
         <div class="stat-card">
             <div class="stat-left">
-                <h3>342</h3>
+                <h3>{{ join_requests_count }}</h3>
                 <p>Join Requests</p>
             </div>
             <div class="stat-right">
@@ -50,15 +50,6 @@
             </div>
             <div class="stat-right">
                 <i class="fas fa-hand-holding-heart"></i>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-left">
-                <h3>28</h3>
-                <p>Total Projects</p>
-            </div>
-            <div class="stat-right">
-                <i class="fas fa-tree"></i>
             </div>
         </div>
     </div>

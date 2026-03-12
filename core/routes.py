@@ -75,8 +75,8 @@ def init_routes(app):
             # Insert (save optional fields as NaN if they are empty string / None in Python, but DB schema expects string)
             # We will save string "NaN" for optional empty values as requested by user.
             cursor.execute("""
-                INSERT INTO join_requests (fullname, email, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO join_requests (fullname, email, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical, status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending')
             """, (
                 fullname,
                 email,
