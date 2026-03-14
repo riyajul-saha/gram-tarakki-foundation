@@ -137,6 +137,24 @@ td {
     cursor: pointer;
 }
 
+.status-label {
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-label.approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-label.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
 /* Donation chart + recent activities */
 .row-2col {
     display: grid;

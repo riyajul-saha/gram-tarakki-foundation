@@ -34,6 +34,7 @@ def init_routes(app):
 
         volunteer_count = 0
         join_requests_count = 0
+        recent_requests = []
         try:
             from core.db import get_db_connection
             conn = get_db_connection()
@@ -51,17 +52,52 @@ def init_routes(app):
                 result = cursor.fetchone()
                 if result:
                     join_requests_count = result.get('count', 0)
+
+                # Fetch latest 3 join requests
+                cursor.execute("SELECT id, fullname, email, address as location, DATE_FORMAT(created_at, '%e %b %Y') as date, status FROM join_requests ORDER BY created_at DESC LIMIT 3")
+                recent_requests = cursor.fetchall()
                     
                 cursor.close()
                 conn.close()
         except Exception as e:
-            print(f"Error fetching dashboard counts: {e}")
+            print(f"Error fetching dashboard data: {e}")
 
-        response = make_response(render_template('admin/dashboard.html', volunteer_count=volunteer_count, join_requests_count=join_requests_count))
+        response = make_response(render_template('admin/dashboard.html', 
+                                              volunteer_count=volunteer_count, 
+                                              join_requests_count=join_requests_count,
+                                              recent_requests=recent_requests))
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'
         return response
+
+    @app.route("/admin/update-request-status", methods=["POST"])
+    def update_request_status():
+        if not session.get('admin_logged_in'):
+            return jsonify({"status": "error", "message": "Unauthorized"}), 401
+        
+        data = request.get_json()
+        request_id = data.get('id')
+        new_status = data.get('status')
+        
+        if not request_id or not new_status:
+            return jsonify({"status": "error", "message": "Missing ID or status"}), 400
+            
+        try:
+            from core.db import get_db_connection
+            conn = get_db_connection()
+            if conn:
+                cursor = conn.cursor()
+                cursor.execute("UPDATE join_requests SET status = %s WHERE id = %s", (new_status, request_id))
+                conn.commit()
+                cursor.close()
+                conn.close()
+                return jsonify({"status": "success", "message": f"Request {new_status}ed successfully"})
+        except Exception as e:
+            print(f"Error updating request status: {e}")
+            return jsonify({"status": "error", "message": str(e)}), 500
+            
+        return jsonify({"status": "error", "message": "Database connection failed"}), 500
 
     @app.route("/logout")
     def logout():

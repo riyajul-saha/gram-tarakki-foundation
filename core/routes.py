@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 from flask import render_template, request, jsonify
 from werkzeug.utils import secure_filename
-from core.email_sender import send_email_sync
+from core.email_sender import send_email_async
 from core.db import get_db_connection, init_db
 import mysql.connector
 

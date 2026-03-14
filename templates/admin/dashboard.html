@@ -71,36 +71,29 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Rahim Sheikh</td>
-                    <td>rahim@example.com</td>
-                    <td>Kolkata</td>
-                    <td>6 Mar 2026</td>
+                {% for request in recent_requests %}
+                <tr data-id="{{ request.id }}">
+                    <td>{{ request.fullname }}</td>
+                    <td>{{ request.email }}</td>
+                    <td>{{ request.location }}</td>
+                    <td>{{ request.date }}</td>
                     <td class="action-btns">
-                        <button class="btn-approve">Approve</button>
-                        <button class="btn-reject">Reject</button>
+                        {% if request.status == 'pending' %}
+                        <button class="btn-approve" data-id="{{ request.id }}" data-action="approve">Approve</button>
+                        <button class="btn-reject" data-id="{{ request.id }}" data-action="reject">Reject</button>
+                        {% elif request.status == 'approve' or request.status == 'approved' %}
+                        <span class="status-label approved">Approved</span>
+                        {% elif request.status == 'reject' or request.status == 'rejected' %}
+                        <span class="status-label rejected">Rejected</span>
+                        {% endif %}
                     </td>
                 </tr>
+                {% endfor %}
+                {% if not recent_requests %}
                 <tr>
-                    <td>Priya Das</td>
-                    <td>priya.das@example.com</td>
-                    <td>Rampurhat</td>
-                    <td>5 Mar 2026</td>
-                    <td class="action-btns">
-                        <button class="btn-approve">Approve</button>
-                        <button class="btn-reject">Reject</button>
-                    </td>
+                    <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">No recent join requests found.</td>
                 </tr>
-                <tr>
-                    <td>Arjun Singh</td>
-                    <td>arjun@example.com</td>
-                    <td>Birbhum</td>
-                    <td>4 Mar 2026</td>
-                    <td class="action-btns">
-                        <button class="btn-approve">Approve</button>
-                        <button class="btn-reject">Reject</button>
-                    </td>
-                </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>
