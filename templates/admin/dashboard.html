@@ -57,7 +57,7 @@
     <!-- Recent Join Requests -->
     <div class="section-header">
         <h3>Recent Join Requests</h3>
-        <a href="#" style="color: #2563eb; font-size: 14px;">View all</a>
+        <a href="/admin/our-students" style="color: #2563eb; font-size: 14px;">View all</a>
     </div>
     <div class="table-wrapper">
         <table>
@@ -91,7 +91,8 @@
                 {% endfor %}
                 {% if not recent_requests %}
                 <tr>
-                    <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">No recent join requests found.</td>
+                    <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">No recent join requests
+                        found.</td>
                 </tr>
                 {% endif %}
             </tbody>
