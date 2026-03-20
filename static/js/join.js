@@ -25,6 +25,81 @@
     // initial call
     ageInput.addEventListener('input', toggleGuardianFields);
     toggleGuardianFields(); // run on page load
+
+    // ---------- IMAGE UPLOAD (PASSPORT SIZE PHOTO) ----------
+    const imageUploadArea = document.getElementById('imageUploadArea');
+    const studentImageInput = document.getElementById('studentImage');
+    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const removeImageBtn = document.getElementById('removeImageBtn');
+
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+    const MAX_SIZE_MB = 2;
+
+    // Click to open file picker
+    imageUploadArea.addEventListener('click', function (e) {
+        if (e.target.closest('.remove-image-btn')) return; // don't re-open picker when clicking remove
+        studentImageInput.click();
+    });
+
+    // Drag & drop
+    imageUploadArea.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        imageUploadArea.classList.add('dragover');
+    });
+    imageUploadArea.addEventListener('dragleave', function () {
+        imageUploadArea.classList.remove('dragover');
+    });
+    imageUploadArea.addEventListener('drop', function (e) {
+        e.preventDefault();
+        imageUploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            studentImageInput.files = files;
+            handleImageFile(files[0]);
+        }
+    });
+
+    // File input change
+    studentImageInput.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            handleImageFile(this.files[0]);
+        }
+    });
+
+    function handleImageFile(file) {
+        // Validate type
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            showPopup('fail', 'Invalid File', 'Please upload a JPEG, PNG or WebP image.');
+            studentImageInput.value = '';
+            return;
+        }
+        // Validate size
+        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+            showPopup('fail', 'File Too Large', `Image must be under ${MAX_SIZE_MB} MB.`);
+            studentImageInput.value = '';
+            return;
+        }
+        // Read and preview
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+            uploadPlaceholder.style.display = 'none';
+            imagePreviewContainer.style.display = 'flex';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Remove image
+    removeImageBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        studentImageInput.value = '';
+        imagePreview.src = '';
+        imagePreviewContainer.style.display = 'none';
+        uploadPlaceholder.style.display = 'flex';
+    });
+
     // ✅ Define experienceRadios here (global within the IIFE)
     const experienceRadios = document.getElementsByName('experience');
 
@@ -161,6 +236,10 @@
                     } else if (data.status === 'success') {
                         showPopup('success', 'Success!', 'Your application has been submitted successfully. We will contact you soon.');
                         form.reset();
+                        // Reset image preview
+                        imagePreview.src = '';
+                        imagePreviewContainer.style.display = 'none';
+                        uploadPlaceholder.style.display = 'flex';
                         setTimeout(() => {
                             toggleGuardianFields();
                         }, 50);

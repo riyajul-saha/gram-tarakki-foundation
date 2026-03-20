@@ -27,7 +27,7 @@ def init_routes(app):
 
         return render_template('admin/login.html')
 
-    @app.route("/dashboard")
+    @app.route("/admin/dashboard")
     def dashboard():
         if not session.get('admin_logged_in'):
             return redirect(url_for('login'))
@@ -98,6 +98,12 @@ def init_routes(app):
             return jsonify({"status": "error", "message": str(e)}), 500
             
         return jsonify({"status": "error", "message": "Database connection failed"}), 500
+
+    @app.route("/admin/our-students")
+    def our_students():
+        if not session.get('admin_logged_in'):
+            return redirect(url_for('login'))
+        return render_template('admin/student.html')
 
     @app.route("/logout")
     def logout():

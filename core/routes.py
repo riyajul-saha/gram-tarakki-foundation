@@ -37,6 +37,21 @@ def init_routes(app):
         experience = request.form.get("experience")
         medical = request.form.get("medical")
 
+        # Handle student image upload
+        image_path = ""
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename != '':
+                filename = secure_filename(file.filename)
+                # Validate extension
+                allowed_ext = {'jpg', 'jpeg', 'png', 'webp'}
+                ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                if ext in allowed_ext:
+                    unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                    file_path = os.path.join(app.config['STUDENT_IMAGE_FOLDER'], unique_filename)
+                    file.save(file_path)
+                    image_path = f"/upload/student_image/{unique_filename}"
+
         def validate_opt(val):
             return val if (val and val.strip() != "") else "NaN"
 
@@ -75,8 +90,8 @@ def init_routes(app):
             # Insert (save optional fields as NaN if they are empty string / None in Python, but DB schema expects string)
             # We will save string "NaN" for optional empty values as requested by user.
             cursor.execute("""
-                INSERT INTO join_requests (fullname, email, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical, status)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending')
+                INSERT INTO join_requests (fullname, email, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical, image, status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending')
             """, (
                 fullname,
                 email,
@@ -89,7 +104,8 @@ def init_routes(app):
                 address,
                 program,
                 experience,
-                validate_opt(medical)
+                validate_opt(medical),
+                image_path if image_path else None
             ))
             conn.commit()
             cursor.close()

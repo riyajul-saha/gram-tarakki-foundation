@@ -468,6 +468,212 @@ input[type="checkbox"]:hover {
     transform: translateY(-2px);
 }
 
+/* ======= ENROLLMENT HEADER (heading + upload side by side) ======= */
+.enrollment-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.8rem;
+}
+
+.enrollment-header h2 {
+    flex: 1;
+}
+
+/* Compact upload box in header (desktop) */
+.image-upload-header {
+    max-width: 200px;
+    flex-shrink: 0;
+}
+
+.image-upload-header .image-upload-area {
+    min-height: 140px;
+    border-radius: 16px;
+}
+
+.image-upload-header .upload-placeholder {
+    padding: 1rem 0.8rem;
+    gap: 0.4rem;
+}
+
+.image-upload-header .upload-placeholder i {
+    font-size: 1.8rem;
+}
+
+.image-upload-header .upload-text {
+    font-size: 0.8rem;
+}
+
+.image-upload-header .upload-hint {
+    font-size: 0.65rem;
+}
+
+.image-upload-header .image-preview {
+    width: 100px;
+    height: 130px;
+    border-radius: 10px;
+}
+
+.image-upload-header .image-preview-container {
+    padding: 0.8rem;
+}
+
+.image-upload-header .preview-badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+}
+
+.image-upload-header .remove-image-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+    top: 0.4rem;
+    right: 0.4rem;
+}
+
+.image-upload-header label {
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+/* ======= IMAGE UPLOAD AREA ======= */
+.image-upload-group {
+    max-width: 320px;
+}
+
+.image-upload-area {
+    position: relative;
+    border: 2.5px dashed var(--input-border);
+    border-radius: 20px;
+    background: linear-gradient(145deg, #f8fdf8, #f0f9f0);
+    cursor: pointer;
+    transition: var(--transition);
+    overflow: hidden;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-upload-area:hover {
+    border-color: var(--deep-green);
+    background: linear-gradient(145deg, #eef8ee, #e4f2e4);
+    box-shadow: 0 6px 20px rgba(44, 122, 75, 0.1);
+    transform: translateY(-2px);
+}
+
+.image-upload-area.dragover {
+    border-color: var(--deep-green);
+    background: linear-gradient(145deg, #dcf0dc, #c8e6c8);
+    box-shadow: 0 8px 28px rgba(44, 122, 75, 0.18);
+    transform: scale(1.02);
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 2rem 1.5rem;
+    text-align: center;
+}
+
+.upload-placeholder i {
+    font-size: 2.8rem;
+    color: var(--deep-green);
+    opacity: 0.7;
+    transition: var(--transition);
+}
+
+.image-upload-area:hover .upload-placeholder i {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.upload-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.upload-hint {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+/* Preview container */
+.image-preview-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.2rem;
+    width: 100%;
+    animation: fadeInPreview 0.4s ease;
+}
+
+@keyframes fadeInPreview {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.image-preview {
+    width: 140px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 3px solid var(--deep-green);
+    box-shadow: 0 8px 24px rgba(44, 122, 75, 0.18);
+}
+
+.preview-overlay {
+    position: absolute;
+    bottom: 1.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.preview-badge {
+    background: var(--deep-green);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    box-shadow: 0 3px 10px rgba(44, 122, 75, 0.3);
+    white-space: nowrap;
+}
+
+.remove-image-btn {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: #ef4444;
+    color: white;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    box-shadow: 0 3px 8px rgba(239, 68, 68, 0.3);
+}
+
+.remove-image-btn:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
 /* mobile adjustments */
 @media (max-width: 768px) {
     h1 {
@@ -492,6 +698,70 @@ input[type="checkbox"]:hover {
 
     .contact-btn {
         width: 100%;
+    }
+
+    /* Stack header and upload vertically on mobile */
+    .enrollment-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .enrollment-header h2 {
+        margin-bottom: 1rem;
+    }
+
+    .image-upload-header {
+        max-width: 100%;
+    }
+
+    .image-upload-header .image-upload-area {
+        min-height: 200px;
+        border-radius: 20px;
+    }
+
+    .image-upload-header .upload-placeholder {
+        padding: 2rem 1.5rem;
+        gap: 0.6rem;
+    }
+
+    .image-upload-header .upload-placeholder i {
+        font-size: 2.8rem;
+    }
+
+    .image-upload-header .upload-text {
+        font-size: 1rem;
+    }
+
+    .image-upload-header .upload-hint {
+        font-size: 0.8rem;
+    }
+
+    .image-upload-header .image-preview {
+        width: 140px;
+        height: 180px;
+        border-radius: 14px;
+    }
+
+    .image-upload-header .image-preview-container {
+        padding: 1.2rem;
+    }
+
+    .image-upload-header .preview-badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.8rem;
+    }
+
+    .image-upload-header .remove-image-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+        top: 0.6rem;
+        right: 0.6rem;
+    }
+
+    .image-upload-header label {
+        font-size: 0.95rem;
+        text-align: left;
     }
 }
 

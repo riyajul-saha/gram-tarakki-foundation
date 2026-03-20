@@ -17,10 +17,13 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
 # Set up upload folder for resumes and partner logos
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload', 'resume')
 PARTNER_LOGO_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload', 'partner_logo')
+STUDENT_IMAGE_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload', 'student_image')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PARTNER_LOGO_FOLDER, exist_ok=True)
+os.makedirs(STUDENT_IMAGE_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['PARTNER_LOGO_FOLDER'] = PARTNER_LOGO_FOLDER
+app.config['STUDENT_IMAGE_FOLDER'] = STUDENT_IMAGE_FOLDER
 
 from core.db import init_db
 init_db()
