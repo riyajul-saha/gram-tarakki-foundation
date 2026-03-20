@@ -105,6 +105,12 @@ def init_routes(app):
             return redirect(url_for('login'))
         return render_template('admin/student.html')
 
+    @app.route("/admin/our-team")
+    def our_team():
+        if not session.get('admin_logged_in'):
+            return redirect(url_for('login'))
+        return render_template('admin/team.html')
+
     @app.route("/logout")
     def logout():
         session.clear()

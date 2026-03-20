@@ -1,0 +1,187 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Team Management | Gram Tarakki Foundation{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/team.css') }}">
+{% endblock %}
+
+{% block our_team_active %}active{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-header-content">
+        <div class="header-left">
+            <div class="header-icon"><i class="fas fa-users-cog"></i></div>
+            <div class="header-title">
+                <h1>Team Management</h1>
+                <p>Manage staff and join requests</p>
+            </div>
+        </div>
+        <div class="header-buttons">
+            <button class="btn" onclick="openAddStaffModal()"><i class="fas fa-plus"></i> Add Staff</button>
+            <button class="btn btn-outline"><i class="fas fa-download"></i> Export CSV</button>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards (optional) -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-left">
+            <h3>38</h3>
+            <p>Total Team</p>
+        </div>
+        <div class="stat-right"><i class="fas fa-users"></i></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-left">
+            <h3>12</h3>
+            <p>Pending Requests</p>
+        </div>
+        <div class="stat-right"><i class="fas fa-hourglass-half"></i></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-left">
+            <h3>25</h3>
+            <p>Active Staff</p>
+        </div>
+        <div class="stat-right"><i class="fas fa-check-circle"></i></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-left">
+            <h3>1</h3>
+            <p>Inactive</p>
+        </div>
+        <div class="stat-right"><i class="fas fa-user-clock"></i></div>
+    </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs-container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('pending')">Pending Requests <span
+                class="badge">12</span></button>
+        <button class="tab-btn" onclick="switchTab('active')">Active Staff <span class="badge">25</span></button>
+        <button class="tab-btn" onclick="switchTab('all')">All <span class="badge">38</span></button>
+    </div>
+
+    <!-- Filter Bar (common) -->
+    <div class="filter-bar">
+        <div class="filter-left">
+            <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by name, email, phone...">
+            </div>
+            <select class="filter-select" id="roleFilter">
+                <option value="">All Roles</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Volunteer">Volunteer</option>
+                <option value="Admin">Admin</option>
+            </select>
+            <select class="filter-select" id="statusFilter">
+                <option value="">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn btn-sm btn-outline" onclick="applyFilters()">Apply Filters</button>
+        </div>
+    </div>
+
+    <!-- Table View (Desktop) -->
+    <div class="table-wrapper" id="tableView">
+        <table id="teamTable">
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Name / Contact</th>
+                    <th>Role</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Rows will be populated by JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Cards View (Mobile) -->
+    <div class="cards-view" id="cardsView">
+        <!-- Cards will be populated by JS -->
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+</div>
+
+<!-- View Details Modal -->
+<div id="viewModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('viewModal')">&times;</span>
+        <div id="viewModalContent"></div>
+    </div>
+</div>
+
+<!-- Add Staff Modal -->
+<div id="addStaffModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('addStaffModal')">&times;</span>
+        <h2>Add New Staff</h2>
+        <form onsubmit="handleAddStaff(event)">
+            <div class="form-group"><label>Full Name *</label><input type="text" required></div>
+            <div class="form-group"><label>Email *</label><input type="email" required></div>
+            <div class="form-group"><label>Phone *</label><input type="tel" required></div>
+            <div class="form-group"><label>Role</label>
+                <select>
+                    <option>Teacher</option>
+                    <option>Volunteer</option>
+                    <option>Admin</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Address</label><textarea rows="2"></textarea></div>
+            <div class="form-group"><label>Upload Photo</label>
+                <div class="file-upload"><i class="fas fa-cloud-upload-alt"></i> Click to upload</div>
+            </div>
+            <div class="form-group"><label>Upload Documents</label>
+                <div class="file-upload"><i class="fas fa-cloud-upload-alt"></i> Click to upload</div>
+            </div>
+            <button type="submit" class="btn" style="width:100%">Add Staff</button>
+        </form>
+    </div>
+</div>
+
+<!-- Confirm Modal -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <h3 id="confirmTitle">Confirm Action</h3>
+        <p id="confirmMessage">Are you sure?</p>
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button class="btn" id="confirmYes">Yes</button>
+            <button class="btn btn-outline" onclick="closeModal('confirmModal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" style="display: none;">
+    <i class="fas fa-check-circle" style="color: #22c55e;"></i>
+    <span id="toastMessage">Action completed</span>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin/team.js') }}"></script>
+{% endblock %}
