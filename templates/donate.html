@@ -78,27 +78,27 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label class="required">Full Name</label>
-                    <input type="text" placeholder="As on PAN card" required>
+                    <input type="text" id="donorName" placeholder="As on PAN card" required>
                 </div>
                 <div class="form-group">
                     <label class="required">Email</label>
-                    <input type="email" placeholder="you@example.com" required>
+                    <input type="email" id="donorEmail" placeholder="you@example.com" required>
                 </div>
                 <div class="form-group">
                     <label class="required">Phone</label>
-                    <input type="tel" placeholder="10-digit mobile" required>
+                    <input type="tel" id="donorPhone" placeholder="10-digit mobile" required>
                 </div>
                 <div class="form-group">
                     <label>City (optional)</label>
-                    <input type="text" placeholder="Your city">
+                    <input type="text" id="donorCity" placeholder="Your city">
                 </div>
                 <div class="form-group">
                     <label>PAN (optional)</label>
-                    <input type="text" placeholder="For 80G certificate">
+                    <input type="text" id="donorPan" placeholder="For 80G certificate">
                 </div>
                 <div class="form-group">
                     <label>Message (optional)</label>
-                    <textarea rows="2" placeholder="Write something..."></textarea>
+                    <textarea id="donorMessage" rows="2" placeholder="Write something..."></textarea>
                 </div>
             </div>
         </div>
@@ -110,10 +110,10 @@
     <div class="container">
         <h2 class="reveal">Payment methods</h2>
         <div class="payment-grid reveal">
-            <div class="payment-item"><i class="fa-brands fa-google-pay"></i><span>UPI</span></div>
-            <div class="payment-item"><i class="fas fa-university"></i><span>Net Banking</span></div>
-            <div class="payment-item"><i class="fas fa-credit-card"></i><span>Card</span></div>
-            <div class="payment-item"><i class="fas fa-building-columns"></i><span>Bank Transfer</span></div>
+            <div class="payment-item" id="payUpi"><i class="fa-brands fa-google-pay"></i><span>UPI</span></div>
+            <div class="payment-item" id="payNetBanking"><i class="fas fa-university"></i><span>Net Banking</span></div>
+            <div class="payment-item" id="payCard"><i class="fas fa-credit-card"></i><span>Card</span></div>
+            <div class="payment-item" id="payBank"><i class="fas fa-building-columns"></i><span>Bank Transfer</span></div>
         </div>
     </div>
 </section>
@@ -204,6 +204,103 @@
         </div>
     </div>
 </section>
+
+<!-- Payment Modals -->
+<div class="payment-modal-overlay" id="paymentModalOverlay">
+    <!-- UPI Modal -->
+    <div class="payment-modal" id="upiModal">
+        <div class="modal-header">
+            <h3>Pay via UPI</h3>
+            <button class="close-modal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="upi-tabs">
+                <button class="upi-tab active" data-target="qrCodeSection">QR Code</button>
+                <button class="upi-tab" data-target="upiIdSection">UPI ID</button>
+            </div>
+            
+            <div id="qrCodeSection" class="upi-section active">
+                <p>Scan the QR code below using any UPI app</p>
+                <div class="qr-box">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=GTFoundation" alt="UPI QR Code">
+                </div>
+                <button class="btn btn-full" id="qrPaidBtn">I have Paid</button>
+            </div>
+            
+            <div id="upiIdSection" class="upi-section">
+                <p>Enter your Virtual Payment Address (VPA)</p>
+                <div class="form-group" style="margin-top:1rem; text-align:left;">
+                    <label>UPI ID</label>
+                    <input type="text" id="upiIdInput" placeholder="example@upi">
+                </div>
+                <button class="btn btn-full" id="upiIdPayBtn" style="margin-top:1.5rem;">Pay Now</button>
+            </div>
+        </div>
+        
+        <!-- Processing State -->
+        <div class="modal-processing" id="upiProcessing" style="display: none;">
+            <div class="loader-spinner"></div>
+            <h4 style="margin-top:1rem; color:var(--text-dark);">Waiting for payment...</h4>
+            <p style="color:var(--text-muted); margin-bottom:1rem;">Please do not close this page.</p>
+            <p class="timer" id="upiTimer" style="font-size:1.5rem; font-weight:bold; color:var(--primary);">05:00</p>
+        </div>
+        
+        <!-- Result State -->
+        <div class="modal-result" id="upiResult" style="display: none;">
+            <div class="result-icon success" style="font-size:3rem; color:#25D366; margin-bottom:1rem;"><i class="fas fa-check-circle"></i></div>
+            <h4 style="color:var(--text-dark); margin-bottom:0.5rem;">Payment Successful!</h4>
+            <p style="color:var(--text-muted); margin-bottom:1rem;">Thank you for your generous donation.</p>
+            <p class="transaction-ref" style="font-size:0.9rem; color:#888; margin-bottom:1.5rem;">Ref: <span id="upiTxnRef"></span></p>
+            <button class="btn btn-full close-modal-btn">Close</button>
+        </div>
+    </div>
+
+    <!-- Card Modal -->
+    <div class="payment-modal" id="cardModal">
+        <div class="modal-header">
+            <h3>Pay via Card</h3>
+            <button class="close-modal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="cardFormBody">
+            <div class="form-group" style="text-align:left;">
+                <label>Card Number</label>
+                <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19">
+            </div>
+            <div class="form-row" style="display: flex; gap: 1rem; margin-top: 1rem; text-align:left;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Expiry (MM/YY)</label>
+                    <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>CVV</label>
+                    <input type="password" id="cardCvv" placeholder="123" maxlength="4">
+                </div>
+            </div>
+            <div class="form-group" style="margin-top: 1rem; text-align:left;">
+                <label>Name on Card</label>
+                <input type="text" id="cardName" placeholder="Cardholder Name">
+            </div>
+            <button class="btn btn-full" id="cardPayBtn" style="margin-top:1.5rem;">Pay Securely</button>
+        </div>
+        
+        <!-- Processing State -->
+        <div class="modal-processing" id="cardProcessing" style="display: none;">
+            <div class="loader-spinner"></div>
+            <h4 style="margin-top:1rem; color:var(--text-dark);">Processing payment...</h4>
+            <p style="color:var(--text-muted);">Authenticating securely with Razorpay...</p>
+        </div>
+        
+        <!-- Result State -->
+        <div class="modal-result" id="cardResult" style="display: none;">
+            <div class="result-icon success" style="font-size:3rem; color:#25D366; margin-bottom:1rem;"><i class="fas fa-check-circle"></i></div>
+            <h4 style="color:var(--text-dark); margin-bottom:0.5rem;">Payment Successful!</h4>
+            <p style="color:var(--text-muted); margin-bottom:1rem;">Thank you for your generous donation.</p>
+            <p class="transaction-ref" style="font-size:0.9rem; color:#888; margin-bottom:1.5rem;">Ref: <span id="cardTxnRef"></span></p>
+            <button class="btn btn-full close-modal-btn">Close</button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 {% block js %}
 <script src="{{ url_for('static', filename='js/donate.js') }}"></script>{% endblock %}

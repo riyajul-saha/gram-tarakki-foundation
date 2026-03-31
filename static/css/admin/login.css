@@ -215,6 +215,38 @@ body {
     font-size: 1.1rem;
 }
 
+/* Cancel / Go back link */
+.cancel-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    color: #6B7280;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+}
+
+.cancel-back:hover {
+    color: #1F2D2E;
+    background: #f0f1f3;
+    transform: translateX(-3px);
+}
+
+.cancel-back i {
+    font-size: 0.8rem;
+    transition: transform 0.25s ease;
+}
+
+.cancel-back:hover i {
+    transform: translateX(-3px);
+}
+
 /* Demo note */
 .demo-note {
     text-align: center;

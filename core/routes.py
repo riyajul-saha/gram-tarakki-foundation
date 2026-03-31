@@ -302,6 +302,103 @@ def init_routes(app):
             print(f"Error handling partnership request: {e}")
             return jsonify({"status": "error", "message": "Failed to submit. Please try again later."}), 500
 
+    @app.route("/api/donate/initiate", methods=["POST"])
+    def initiate_donation():
+        data = request.json
+        if not data:
+            return jsonify({"status": "error", "message": "No data provided"}), 400
+            
+        fullname = data.get("fullname")
+        email = data.get("email")
+        phone = data.get("phone")
+        city = data.get("city", "")
+        pan = data.get("pan", "")
+        message = data.get("message", "")
+        amount = data.get("amount")
+        payment_method = data.get("paymentMethod")
+        
+        if not all([fullname, email, phone, amount, payment_method]):
+            return jsonify({"status": "error", "message": "Missing required fields"}), 400
+            
+        try:
+            conn = get_db_connection()
+            if not conn:
+                init_db()
+                conn = get_db_connection()
+                if not conn:
+                    return jsonify({"status": "error", "message": "Database error"}), 500
+                    
+            cursor = conn.cursor()
+            
+            # Ensure table exists
+            try:
+                cursor.execute("SELECT id FROM donate LIMIT 1")
+                cursor.fetchall()
+            except mysql.connector.Error as err:
+                if err.errno == 1146:
+                    init_db()
+                    cursor.close()
+                    conn.close()
+                    conn = get_db_connection()
+                    cursor = conn.cursor()
+                else:
+                    raise
+            
+            # Check if a pending donation with same email, phone, and amount already exists
+            cursor.execute("""
+                SELECT id FROM donate WHERE email = %s AND phone = %s AND amount = %s AND status = 'pending'
+            """, (email, phone, amount))
+            existing = cursor.fetchone()
+            
+            if existing:
+                donation_id = existing[0]
+            else:
+                cursor.execute("""
+                    INSERT INTO donate (fullname, email, phone, city, pan, message, amount, payment_method, status)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'pending')
+                """, (fullname, email, phone, city, pan, message, amount, payment_method))
+                donation_id = cursor.lastrowid
+                conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return jsonify({"status": "success", "donation_id": donation_id})
+            
+        except Exception as e:
+            print(f"Error initiating donation: {e}")
+            return jsonify({"status": "error", "message": "Failed to initiate donation"}), 500
+
+    @app.route("/api/donate/verify", methods=["POST"])
+    def verify_donation():
+        data = request.json
+        donation_id = data.get("donation_id")
+        status = data.get("status")
+        transaction_id = data.get("transaction_id", "")
+        
+        if not donation_id or not status:
+            return jsonify({"status": "error", "message": "Missing required fields"}), 400
+            
+        try:
+            conn = get_db_connection()
+            if not conn:
+                return jsonify({"status": "error", "message": "Database error"}), 500
+                
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE donate SET status = %s, transaction_id = %s WHERE id = %s
+            """, (status, transaction_id, donation_id))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return jsonify({"status": "success", "message": "Donation verified"})
+            
+        except Exception as e:
+            print(f"Error verifying donation: {e}")
+            return jsonify({"status": "error", "message": "Failed to verify donation"}), 500
+
     @app.route("/karate")
     def karate():
       return render_template('programs/programs-karate.html')

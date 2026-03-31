@@ -100,6 +100,24 @@ def init_db():
             )
         """)
         
+        # Create donate table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS donate (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                fullname VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                phone VARCHAR(50) NOT NULL,
+                city VARCHAR(100),
+                pan VARCHAR(50),
+                message TEXT,
+                amount DECIMAL(10, 2) NOT NULL,
+                payment_method VARCHAR(50) NOT NULL,
+                status VARCHAR(50) DEFAULT 'pending',
+                transaction_id VARCHAR(255) DEFAULT '',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        
         connection.commit()
         cursor.close()
         connection.close()
