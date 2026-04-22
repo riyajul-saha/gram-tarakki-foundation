@@ -157,6 +157,18 @@ def init_routes(app):
                 # Store relative path for DB
                 resume_path = f"/upload/resume/{unique_filename}"
 
+        profile_photo_path = ""
+        if 'profile_photo' in request.files:
+            file = request.files['profile_photo']
+            if file and file.filename != '':
+                filename = secure_filename(file.filename)
+                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                volunteer_upload_dir = os.path.join(os.getcwd(), 'upload', 'voluteer')
+                os.makedirs(volunteer_upload_dir, exist_ok=True)
+                file_path = os.path.join(volunteer_upload_dir, unique_filename)
+                file.save(file_path)
+                profile_photo_path = f"/upload/voluteer/{unique_filename}"
+
         try:
             conn = get_db_connection()
             if not conn:
@@ -190,8 +202,8 @@ def init_routes(app):
             # It's better to just insert it.
 
             cursor.execute("""
-                INSERT INTO join_volunteer (fullname, email, phone, city, age, role, skills, availability, resume_path, status)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending')
+                INSERT INTO join_volunteer (fullname, email, phone, city, age, role, skills, availability, resume_path, profile_photo, status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending')
             """, (
                 fullname,
                 email,
@@ -201,7 +213,8 @@ def init_routes(app):
                 role,
                 skills,
                 availability,
-                resume_path
+                resume_path,
+                profile_photo_path
             ))
             conn.commit()
             cursor.close()

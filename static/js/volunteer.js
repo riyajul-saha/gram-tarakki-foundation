@@ -242,6 +242,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+
+        // 7. Handle photo upload UI and validation (Max 2MB, Images only)
+        const photoInput = document.getElementById('photoInput');
+        const photoUploadBox = document.getElementById('photoUploadBox');
+        const photoPreview = document.getElementById('photoPreview');
+        const photoUploadText = document.getElementById('photoUploadText');
+
+        if (photoInput) {
+            photoInput.addEventListener('change', function () {
+                if (this.files && this.files.length > 0) {
+                    const file = this.files[0];
+                    const fileSizeMB = file.size / (1024 * 1024);
+
+                    if (fileSizeMB > 2) {
+                        showPopup('fail', 'File Too Large', 'Please upload a photo smaller than 2MB.');
+                        this.value = '';
+                        resetPhotoPreview();
+                    } else if (!file.type.startsWith('image/')) {
+                        showPopup('fail', 'Invalid File Type', 'Only image files (JPG/PNG/WEBP) are allowed.');
+                        this.value = '';
+                        resetPhotoPreview();
+                    } else {
+                        // Display filename
+                        photoUploadText.textContent = file.name;
+                        photoUploadText.style.color = 'var(--color-green)';
+                        if (photoUploadBox) photoUploadBox.style.borderColor = 'var(--color-green)';
+                        
+                        // Show preview
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            photoPreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                } else {
+                    resetPhotoPreview();
+                }
+            });
+        }
+
+        function resetPhotoPreview() {
+            if (photoUploadText) {
+                photoUploadText.textContent = 'Click to upload photo';
+                photoUploadText.style.color = '';
+            }
+            if (photoUploadBox) photoUploadBox.style.borderColor = '';
+            if (photoPreview) {
+                photoPreview.innerHTML = '<i data-lucide="user" class="user-icon"></i>';
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            }
+        }
     }
 
     // 5. Hero Animations initialization

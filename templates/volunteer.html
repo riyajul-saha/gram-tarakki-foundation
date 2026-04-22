@@ -221,6 +221,22 @@
                     </div>
 
                     <div class="form-group-full scroll-animate-item">
+                        <label class="form-label">Passport Size Photo *</label>
+                        <div class="photo-upload-container">
+                            <div class="photo-upload-box" id="photoUploadBox">
+                                <div class="photo-preview" id="photoPreview">
+                                    <i data-lucide="user" class="user-icon" id="defaultUserIcon"></i>
+                                </div>
+                                <div class="photo-upload-text">
+                                    <p class="upload-text" id="photoUploadText">Click to upload photo</p>
+                                    <p class="upload-subtext">(Max 2MB, JPG/PNG)</p>
+                                </div>
+                                <input required type="file" id="photoInput" class="file-input" name="profile_photo" accept="image/jpeg, image/png, image/webp">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-full scroll-animate-item">
                         <label class="form-label">Upload Documents (Optional)</label>
                         <div class="file-upload-box" id="fileUploadBox">
                             <i data-lucide="upload-cloud" class="upload-icon"></i>

@@ -77,10 +77,15 @@ def init_db():
                 skills TEXT,
                 availability VARCHAR(50),
                 resume_path VARCHAR(255),
+                profile_photo VARCHAR(255),
                 status VARCHAR(50) DEFAULT 'pending',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        try:
+            cursor.execute("ALTER TABLE join_volunteer ADD COLUMN profile_photo VARCHAR(255) AFTER resume_path")
+        except mysql.connector.Error:
+            pass
         
         # Create join_partner table
         cursor.execute("""
