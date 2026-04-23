@@ -28,6 +28,14 @@ app.config['STUDENT_IMAGE_FOLDER'] = STUDENT_IMAGE_FOLDER
 from core.db import init_db
 init_db()
 
+# Serve uploaded files (student images, resumes, logos, etc.)
+from flask import send_from_directory
+UPLOAD_BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload')
+
+@app.route('/upload/<path:filename>')
+def serve_upload(filename):
+    return send_from_directory(UPLOAD_BASE, filename)
+
 # Import routes from core and admin modules
 import core.routes
 import admin.routes

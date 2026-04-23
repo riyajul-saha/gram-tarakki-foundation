@@ -1,0 +1,351 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/programs/programs-internship.css') }}">{% endblock %}
+{% block content %}
+<!-- 1. Hero Section -->
+<section class="hero-section">
+    <div class="hero-bg-accent"></div>
+    <div class="hero-container">
+        <!-- Text Content -->
+        <div class="hero-text fade-in-left">
+            <span class="badge">Launch Your Career</span>
+            <h1 class="hero-title">
+                Internship Program
+            </h1>
+            <p class="hero-tagline">
+                Technical • Non-Technical • Mentorship • Real-World Experience
+            </p>
+
+            <!-- Feature Box -->
+            <div class="feature-box">
+                <ul class="feature-list">
+                    <li>
+                        <i data-lucide="check-circle-2" class="icon-brand"></i>
+                        <span>Hands-on project experience</span>
+                    </li>
+                    <li>
+                        <i data-lucide="check-circle-2" class="icon-brand"></i>
+                        <span>Certificate of completion</span>
+                    </li>
+                    <li>
+                        <i data-lucide="check-circle-2" class="icon-brand"></i>
+                        <span>Flexible remote & on-site options</span>
+                    </li>
+                </ul>
+                <div class="hero-cta-wrapper">
+                    <a href="{{ url_for('join') }}" class="btn btn-primary">
+                        Apply Now
+                        <i data-lucide="arrow-right" class="icon-sm"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Image -->
+        <div class="hero-image-wrapper fade-in-scale">
+            <div class="hero-image-container">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    alt="Internship Program" class="hero-image" />
+                <div class="hero-image-overlay"></div>
+            </div>
+            <!-- Floating Badge -->
+            <div class="floating-badge animate-bounce-slow">
+                <div class="badge-icon">
+                    <i data-lucide="briefcase" class="icon-secondary"></i>
+                </div>
+                <div>
+                    <p class="badge-subtitle">100+ Interns</p>
+                    <p class="badge-title">Placed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. About Program Section -->
+<section class="section about-section">
+    <div class="scroll-reveal">
+        <div class="section-header">
+            <h2 class="section-title">About the Program</h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="about-content">
+            <p>Gram Tarakki Foundation's Internship Program is designed to bridge the gap between education and
+                professional experience. We provide aspiring students and young professionals with meaningful
+                opportunities to develop skills, build networks and contribute to impactful community projects.</p>
+            <p>Our program offers two distinct tracks — <strong>Technical</strong> and <strong>Non-Technical</strong>
+                — ensuring that interns from all academic backgrounds can find a role that aligns with their
+                interests and career goals.</p>
+            <p>Interns work alongside experienced mentors on real projects, gaining practical knowledge that
+                enhances their resumes and prepares them for the professional world. Duration ranges from 1 to 6
+                months, with flexible scheduling options.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Internship Tracks Section -->
+<section class="section tracks-section">
+    <div class="container">
+        <div class="scroll-reveal">
+            <h2 class="section-title text-center mb-large">Internship Tracks</h2>
+
+            <!-- Technical Track -->
+            <div class="track-block">
+                <div class="track-visual">
+                    <div class="track-card-img">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=700&q=80"
+                            alt="Technical Internship" />
+                        <div class="track-overlay">
+                            <span class="track-label"><i data-lucide="code-2" class="icon-sm"></i> Technical</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="track-details">
+                    <h3><i data-lucide="code-2" class="icon-brand"></i> Technical Internship</h3>
+                    <p>Our Technical Internship track is ideal for students pursuing engineering, computer science
+                        or IT-related fields. Interns work on live projects that make a real difference.</p>
+                    <div class="track-roles">
+                        <div class="role-chip">
+                            <i data-lucide="globe" class="icon-xs"></i>
+                            <span>Web Development</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="smartphone" class="icon-xs"></i>
+                            <span>App Development</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="bar-chart-3" class="icon-xs"></i>
+                            <span>Data Analytics</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="palette" class="icon-xs"></i>
+                            <span>UI/UX Design</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="server" class="icon-xs"></i>
+                            <span>IT Support</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="database" class="icon-xs"></i>
+                            <span>Database Management</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="brain" class="icon-xs"></i>
+                            <span>Machine Learning</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="cpu" class="icon-xs"></i>
+                            <span>Artificial Intelligence</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="terminal" class="icon-xs"></i>
+                            <span>Programming</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="layout" class="icon-xs"></i>
+                            <span>System Design</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Non-Technical Track -->
+            <div class="track-block reverse">
+                <div class="track-visual">
+                    <div class="track-card-img">
+                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=700&q=80"
+                            alt="Non-Technical Internship" />
+                        <div class="track-overlay">
+                            <span class="track-label"><i data-lucide="users" class="icon-sm"></i>
+                                Non-Technical</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="track-details">
+                    <h3><i data-lucide="users" class="icon-brand"></i> Non-Technical Internship</h3>
+                    <p>Our Non-Technical track is perfect for students in management, arts, media, social sciences
+                        and humanities. Develop professional skills while making a community impact.</p>
+                    <div class="track-roles">
+                        <div class="role-chip">
+                            <i data-lucide="pen-tool" class="icon-xs"></i>
+                            <span>Content Writing</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="share-2" class="icon-xs"></i>
+                            <span>Social Media</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="calendar" class="icon-xs"></i>
+                            <span>Event Management</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="file-text" class="icon-xs"></i>
+                            <span>Research & Documentation</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="megaphone" class="icon-xs"></i>
+                            <span>Community Outreach</span>
+                        </div>
+                        <div class="role-chip">
+                            <i data-lucide="clipboard-list" class="icon-xs"></i>
+                            <span>HR & Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Benefits Section -->
+<section class="section benefits-section">
+    <div class="scroll-reveal">
+        <div class="section-header">
+            <h2 class="section-title">What You'll Gain</h2>
+            <div class="section-divider"></div>
+        </div>
+
+        <div class="benefits-grid">
+            <div class="benefit-card group">
+                <div class="card-icon-wrapper">
+                    <i data-lucide="award" class="card-icon"></i>
+                </div>
+                <h3 class="card-title">Certificate</h3>
+                <p>Official internship completion certificate recognised by industry.</p>
+            </div>
+            <div class="benefit-card group">
+                <div class="card-icon-wrapper">
+                    <i data-lucide="users" class="card-icon"></i>
+                </div>
+                <h3 class="card-title">Mentorship</h3>
+                <p>One-on-one guidance from experienced professionals in your field.</p>
+            </div>
+            <div class="benefit-card group">
+                <div class="card-icon-wrapper">
+                    <i data-lucide="briefcase" class="card-icon"></i>
+                </div>
+                <h3 class="card-title">Real Projects</h3>
+                <p>Work on live projects that make a tangible impact on communities.</p>
+            </div>
+            <div class="benefit-card group">
+                <div class="card-icon-wrapper">
+                    <i data-lucide="star" class="card-icon"></i>
+                </div>
+                <h3 class="card-title">Letter of Recommendation</h3>
+                <p>Top performers receive personalised recommendation letters.</p>
+            </div>
+            <div class="benefit-card group">
+                <div class="card-icon-wrapper">
+                    <i data-lucide="clock" class="card-icon"></i>
+                </div>
+                <h3 class="card-title">Flexible Schedule</h3>
+                <p>Choose between remote, on-site, or hybrid working arrangements.</p>
+            </div>
+            <div class="benefit-card group">
+                <div class="card-icon-wrapper">
+                    <i data-lucide="network" class="card-icon"></i>
+                </div>
+                <h3 class="card-title">Networking</h3>
+                <p>Connect with industry professionals and like-minded peers.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. How It Works -->
+<section class="section process-section">
+    <div class="container">
+        <div class="scroll-reveal">
+            <h2 class="section-title text-center mb-large">How It Works</h2>
+            <div class="process-timeline">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Apply Online</h3>
+                        <p>Fill out the application form and select your preferred track.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Selection & Onboarding</h3>
+                        <p>Our team reviews your application and assigns you a mentor.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Work on Projects</h3>
+                        <p>Collaborate on real projects with guidance and feedback.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Certification</h3>
+                        <p>Complete your internship and receive your official certificate.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. Who Can Join -->
+<section class="section join-info-section">
+    <div class="scroll-reveal">
+        <h2 class="section-title text-center mb-large">Who Can Join?</h2>
+        <div class="join-grid">
+            <div class="join-card">
+                <i data-lucide="graduation-cap" class="icon-brand-lg"></i>
+                <span>College Students</span>
+            </div>
+            <div class="join-card">
+                <i data-lucide="briefcase" class="icon-brand-lg"></i>
+                <span>Fresh Graduates</span>
+            </div>
+            <div class="join-card">
+                <i data-lucide="code-2" class="icon-brand-lg"></i>
+                <span>Tech Enthusiasts</span>
+            </div>
+            <div class="join-card">
+                <i data-lucide="heart" class="icon-brand-lg"></i>
+                <span>Community Advocates</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. Footer CTA -->
+<section class="footer-cta">
+    <!-- Decorative Circles -->
+    <div class="circle-deco circle-1"></div>
+    <div class="circle-deco circle-2"></div>
+
+    <div class="scroll-reveal">
+        <div class="cta-content">
+            <h2 class="cta-title">
+                Ready to kickstart your career with us?
+            </h2>
+            <p class="cta-subtitle">
+                Join our internship program and gain industry-ready skills while making a real impact.
+            </p>
+            <div class="cta-actions">
+                <a href="{{ url_for('join') }}" class="btn btn-white">
+                    Apply Now
+                </a>
+                <a href="tel:+919475321004" class="btn btn-white">
+                    Contact Now
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block js %}
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="{{ url_for('static', filename='js/programs/programs-internship.js') }}"></script>
+<script>
+    lucide.createIcons();
+</script>
+{% endblock %}

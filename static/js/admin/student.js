@@ -53,8 +53,38 @@ function showToast(message, type) {
 // Handle Form Submit
 function handleAddStudent(e) {
     e.preventDefault();
-    showToast('Student added successfully', 'success');
-    closeModal('addStudentModal');
+
+    const formData = new FormData();
+    formData.append('fullname', document.getElementById('addStudentName').value.trim());
+    formData.append('email', document.getElementById('addStudentEmail').value.trim());
+    formData.append('phone', document.getElementById('addStudentPhone').value.trim());
+    formData.append('age', document.getElementById('addStudentAge').value.trim());
+    formData.append('program', document.getElementById('addStudentCourse').value);
+    formData.append('address', document.getElementById('addStudentAddress').value.trim());
+    
+    const imageInput = document.getElementById('addStudentImage');
+    if (imageInput && imageInput.files[0]) {
+        formData.append('image', imageInput.files[0]);
+    }
+
+    fetch('/admin/add-student', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.status === 'success') {
+            showToast('Student added successfully', 'success');
+            closeModal('addStudentModal');
+            setTimeout(() => { location.reload(); }, 1000);
+        } else {
+            showToast(result.message || 'Failed to add student', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('An error occurred while adding the student', 'error');
+    });
 }
 
 // Filter tabs active state

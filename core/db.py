@@ -14,7 +14,7 @@ def init_db():
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name}")
         cursor.execute(f"USE {db_name}")
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS join_requests (
+            CREATE TABLE IF NOT EXISTS join_student (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 fullname VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL,
@@ -35,23 +35,23 @@ def init_db():
             )
         """)
         try:
-            cursor.execute("ALTER TABLE join_requests ADD UNIQUE(fullname, email)")
+            cursor.execute("ALTER TABLE join_student ADD UNIQUE(fullname, email)")
         except mysql.connector.Error:
             pass
         try:
-            cursor.execute("ALTER TABLE join_requests ADD COLUMN email VARCHAR(255) NOT NULL DEFAULT '' AFTER fullname")
+            cursor.execute("ALTER TABLE join_student ADD COLUMN email VARCHAR(255) NOT NULL DEFAULT '' AFTER fullname")
         except mysql.connector.Error:
             pass
         try:
-            cursor.execute("ALTER TABLE join_requests MODIFY phone VARCHAR(50) NULL")
+            cursor.execute("ALTER TABLE join_student MODIFY phone VARCHAR(50) NULL")
         except mysql.connector.Error:
             pass
         try:
-            cursor.execute("ALTER TABLE join_requests ADD COLUMN status VARCHAR(50) DEFAULT 'pending' AFTER medical")
+            cursor.execute("ALTER TABLE join_student ADD COLUMN status VARCHAR(50) DEFAULT 'pending' AFTER medical")
         except mysql.connector.Error:
             pass
         try:
-            cursor.execute("ALTER TABLE join_requests ADD COLUMN image VARCHAR(255) AFTER medical")
+            cursor.execute("ALTER TABLE join_student ADD COLUMN image VARCHAR(255) AFTER medical")
         except mysql.connector.Error:
             pass
 

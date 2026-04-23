@@ -67,7 +67,7 @@ def init_routes(app):
 
             try:
                 # Check if exists
-                cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND email = %s", (fullname, email))
+                cursor.execute("SELECT id FROM join_student WHERE fullname = %s AND email = %s", (fullname, email))
             except mysql.connector.Error as err:
                 if err.errno == 1146: # Table doesn't exist
                     init_db()
@@ -78,7 +78,7 @@ def init_routes(app):
                     if not conn:
                         return jsonify({"status": "error", "message": "Database connection failed after init"}), 500
                     cursor = conn.cursor()
-                    cursor.execute("SELECT id FROM join_requests WHERE fullname = %s AND email = %s", (fullname, email))
+                    cursor.execute("SELECT id FROM join_student WHERE fullname = %s AND email = %s", (fullname, email))
                 else:
                     raise
 
@@ -90,7 +90,7 @@ def init_routes(app):
             # Insert (save optional fields as NaN if they are empty string / None in Python, but DB schema expects string)
             # We will save string "NaN" for optional empty values as requested by user.
             cursor.execute("""
-                INSERT INTO join_requests (fullname, email, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical, image, status)
+                INSERT INTO join_student (fullname, email, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical, image, status)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending')
             """, (
                 fullname,
@@ -419,6 +419,10 @@ def init_routes(app):
     @app.route("/yoga")
     def yoga():
       return render_template('programs/programs-yoga.html')
+
+    @app.route("/internship")
+    def internship():
+      return render_template('programs/programs-internship.html')
 
     @app.route("/donate")
     def donate():
