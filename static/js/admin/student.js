@@ -60,7 +60,10 @@ function handleAddStudent(e) {
     formData.append('phone', document.getElementById('addStudentPhone').value.trim());
     formData.append('age', document.getElementById('addStudentAge').value.trim());
     formData.append('program', document.getElementById('addStudentCourse').value);
+    formData.append('gender', document.getElementById('addStudentGender').value);
+    formData.append('school', document.getElementById('addStudentSchool').value.trim());
     formData.append('address', document.getElementById('addStudentAddress').value.trim());
+    formData.append('medical', document.getElementById('addStudentMedical').value.trim());
     
     const imageInput = document.getElementById('addStudentImage');
     if (imageInput && imageInput.files[0]) {
@@ -85,6 +88,31 @@ function handleAddStudent(e) {
         console.error('Error:', error);
         showToast('An error occurred while adding the student', 'error');
     });
+}
+
+// Filter students by status in Students List tab
+function filterStudents(filter) {
+    const rows = document.querySelectorAll('#studentsTableBody tr[data-status]');
+    const noRow = document.getElementById('noStudentsRow');
+    let visibleCount = 0;
+
+    // Update active tab
+    document.querySelectorAll('#studentFilterTabs .filter-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+
+    rows.forEach(row => {
+        if (filter === 'all' || row.getAttribute('data-status') === filter) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Show/hide "no students" message
+    if (noRow) {
+        noRow.style.display = visibleCount === 0 ? '' : 'none';
+    }
 }
 
 // Filter tabs active state

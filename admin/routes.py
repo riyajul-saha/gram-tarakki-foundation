@@ -109,7 +109,10 @@ def init_routes(app):
         phone = request.form.get('phone', '').strip()
         age = request.form.get('age', '')
         program = request.form.get('program', '').strip()
+        gender = request.form.get('gender', '').strip()
+        school = request.form.get('school', '').strip()
         address = request.form.get('address', '').strip()
+        medical = request.form.get('medical', '').strip()
 
         if not fullname or not email or not phone or not age:
             return jsonify({"status": "error", "message": "Name, email, phone and age are required"}), 400
@@ -141,9 +144,9 @@ def init_routes(app):
             if conn:
                 cursor = conn.cursor()
                 cursor.execute("""
-                    INSERT INTO join_student (fullname, email, phone, age, program, address, status, image)
-                    VALUES (%s, %s, %s, %s, %s, %s, 'active', %s)
-                """, (fullname, email, phone, age, program, address, image_path if image_path else None))
+                    INSERT INTO join_student (fullname, email, phone, age, program, gender, school, address, medical, status, image)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', %s)
+                """, (fullname, email, phone, age, program, gender or None, school or None, address, medical or None, image_path if image_path else None))
                 conn.commit()
                 cursor.close()
                 conn.close()
@@ -163,6 +166,7 @@ def init_routes(app):
             
         active_students = []
         pending_students = []
+        rejected_students = []
         total_active = 0
         total_pending = 0
         approved_this_month = 0
@@ -189,6 +193,13 @@ def init_routes(app):
                 for s in pending_students:
                     s['date'] = s['created_at'].strftime('%d %b %Y') if s.get('created_at') else ''
                 
+                # Rejected Students
+                cursor.execute("SELECT id, fullname, email, phone, program, created_at, image, status, address, experience, medical, parent_name, parent_contact, school, age, gender FROM join_student WHERE status = 'rejected' ORDER BY created_at DESC")
+                rejected_students = cursor.fetchall()
+                total_rejected = len(rejected_students)
+                for s in rejected_students:
+                    s['date'] = s['created_at'].strftime('%d %b %Y') if s.get('created_at') else ''
+                
                 # Approved This Month
                 cursor.execute("""
                     SELECT COUNT(*) as count FROM join_student 
@@ -200,12 +211,6 @@ def init_routes(app):
                 if res:
                     approved_this_month = res.get('count', 0)
                 
-                # Rejected Students
-                cursor.execute("SELECT COUNT(*) as count FROM join_student WHERE status = 'rejected'")
-                res = cursor.fetchone()
-                if res:
-                    total_rejected = res.get('count', 0)
-                
                 cursor.close()
                 conn.close()
         except Exception as e:
@@ -214,6 +219,7 @@ def init_routes(app):
         return render_template('admin/student.html', 
                                active_students=active_students,
                                pending_students=pending_students,
+                               rejected_students=rejected_students,
                                total_active=total_active,
                                total_pending=total_pending,
                                total_rejected=total_rejected,
