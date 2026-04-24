@@ -105,7 +105,8 @@
                         <td>
                             <div class="student-photo"
                                 style="display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;font-size:20px;width:40px;height:40px;border-radius:50%;">
-                                <i class="fas fa-user"></i></div>
+                                <i class="fas fa-user"></i>
+                            </div>
                         </td>
                         {% endif %}
                         <td>
@@ -148,10 +149,10 @@
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search student...">
                 </div>
-                <div class="filter-tabs" id="studentFilterTabs">
-                    <span class="filter-tab active" onclick="filterStudents('all')">All</span>
-                    <span class="filter-tab" onclick="filterStudents('active')">Active</span>
-                    <span class="filter-tab" onclick="filterStudents('rejected')">Inactive</span>
+                <div class="filter-tabs">
+                    <span class="filter-tab active">All</span>
+                    <span class="filter-tab">Active</span>
+                    <span class="filter-tab">Inactive</span>
                 </div>
             </div>
             <div>
@@ -172,16 +173,18 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="studentsTableBody">
+                <tbody>
+                    {% if active_students %}
                     {% for student in active_students %}
-                    <tr data-status="active">
+                    <tr>
                         {% if student.image %}
                         <td><img src="{{ student.image }}" class="student-photo"></td>
                         {% else %}
                         <td>
                             <div class="student-photo"
                                 style="display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;font-size:20px;width:40px;height:40px;border-radius:50%;">
-                                <i class="fas fa-user"></i></div>
+                                <i class="fas fa-user"></i>
+                            </div>
                         </td>
                         {% endif %}
                         <td>STU10{{ student.id }}</td>
@@ -204,40 +207,9 @@
                         </td>
                     </tr>
                     {% endfor %}
-                    {% for student in rejected_students %}
-                    <tr data-status="rejected">
-                        {% if student.image %}
-                        <td><img src="{{ student.image }}" class="student-photo"></td>
-                        {% else %}
-                        <td>
-                            <div class="student-photo"
-                                style="display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;font-size:20px;width:40px;height:40px;border-radius:50%;">
-                                <i class="fas fa-user"></i></div>
-                        </td>
-                        {% endif %}
-                        <td>STU10{{ student.id }}</td>
-                        <td>
-                            <div class="name-email"><span class="name">{{ student.fullname }}</span><br><span
-                                    class="email">{{ student.email }}</span></div>
-                        </td>
-                        <td>{{ student.program }}</td>
-                        <td>{{ student.date }}</td>
-                        <td><span class="status-badge status-rejected">Rejected</span></td>
-                        <td>
-                            <div class="action-btns">
-                                <button class="action-btn view"
-                                    onclick='openStudentDetails({{ student | tojson | safe }})'><i
-                                        class="fas fa-eye"></i></button>
-                                <button class="action-btn approve"
-                                    onclick="updateStudentStatus('{{ student.id }}', 'active')"><i
-                                        class="fas fa-check"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {% if not active_students and not rejected_students %}
-                    <tr id="noStudentsRow">
-                        <td colspan="7" style="text-align: center; padding: 20px;">No students found.</td>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 20px;">No active students currently.</td>
                     </tr>
                     {% endif %}
                 </tbody>
@@ -320,9 +292,11 @@
                     <option value="Other">Other</option>
                 </select>
             </div>
-            <div class="form-group"><label>School / College</label><input type="text" id="addStudentSchool" placeholder="Enter school or college name"></div>
+            <div class="form-group"><label>School / College</label><input type="text" id="addStudentSchool"
+                    placeholder="Enter school or college name"></div>
             <div class="form-group"><label>Address</label><textarea rows="2" id="addStudentAddress"></textarea></div>
-            <div class="form-group"><label>Medical Info</label><textarea rows="2" id="addStudentMedical" placeholder="Any medical conditions or allergies"></textarea></div>
+            <div class="form-group"><label>Medical Info</label><textarea rows="2" id="addStudentMedical"
+                    placeholder="Any medical conditions or allergies"></textarea></div>
             <div class="form-group"><label>Upload Photo</label>
                 <div class="file-upload" onclick="document.getElementById('addStudentImage').click()"
                     style="cursor: pointer;">

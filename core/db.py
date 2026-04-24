@@ -123,6 +123,27 @@ def init_db():
             )
         """)
         
+        # Create join_staff table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS join_staff (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                fullname VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                phone VARCHAR(50),
+                location VARCHAR(255),
+                linkedin VARCHAR(255),
+                cover_letter TEXT,
+                position VARCHAR(50),
+                experience VARCHAR(255),
+                resume VARCHAR(255),
+                photo VARCHAR(255),
+                skills TEXT,
+                notes TEXT,
+                status VARCHAR(50) DEFAULT 'applied',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        
         connection.commit()
         cursor.close()
         connection.close()

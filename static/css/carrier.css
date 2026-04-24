@@ -428,10 +428,107 @@ section {
 
 .file-upload {
     border: 2px dashed #ccc;
-    border-radius: 30px;
-    padding: 15px;
+    border-radius: 16px;
+    padding: 20px;
     text-align: center;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #888;
+    transition: all 0.3s ease;
+    background: #fafafa;
+}
+
+.file-upload:hover {
+    border-color: #2E7D32;
+    background: #f0faf0;
+    color: #2E7D32;
+}
+
+.file-upload.uploaded {
+    border-color: #2E7D32;
+    border-style: solid;
+    background: #E8F5E9;
+    color: #2E7D32;
+}
+
+.file-upload.uploaded i {
+    color: #2E7D32;
+}
+
+/* Apply modal enhancements */
+.apply-modal-content {
+    max-width: 720px;
+    padding: 36px 40px;
+}
+
+.apply-modal-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.apply-modal-header > i {
+    font-size: 2.4rem;
+    color: #2E7D32;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.apply-modal-header h2 {
+    font-size: 1.6rem;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+}
+
+.apply-modal-subtitle {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.form-hint i {
+    margin-right: 4px;
+    color: #2E7D32;
+}
+
+.form-group label i {
+    color: #2E7D32;
+    width: 18px;
+    margin-right: 4px;
+}
+
+.apply-submit-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    .apply-modal-content {
+        padding: 24px 20px;
+    }
 }
 
 /* Life at foundation image grid */

@@ -21,7 +21,9 @@
         "requirements": [
             "Bachelor's degree or equivalent experience",
             "Passion for social impact"
-        ]
+        ],
+        "status": "active",
+        "deadline": "2026-12-31"
     },
     {
         "id": 2,
@@ -29,7 +31,7 @@
         "department": "Education",
         "type": "Full Time",
         "location": "Kolkata",
-        "salary": "₹25k - ₹35k",
+        "salary": "\u20b925k - \u20b935k",
         "posted": "8 March 2026",
         "desc": "Coordinate after-school programs and teacher training in rural areas.",
         "tags": [
@@ -45,7 +47,9 @@
         "requirements": [
             "Bachelor's degree or equivalent experience",
             "Passion for social impact"
-        ]
+        ],
+        "status": "active",
+        "deadline": "2026-12-31"
     },
     {
         "id": 3,
@@ -69,7 +73,9 @@
         "requirements": [
             "Bachelor's degree or equivalent experience",
             "Passion for social impact"
-        ]
+        ],
+        "status": "active",
+        "deadline": "2026-12-31"
     },
     {
         "id": 4,
@@ -93,7 +99,9 @@
         "requirements": [
             "Bachelor's degree or equivalent experience",
             "Passion for social impact"
-        ]
+        ],
+        "status": "active",
+        "deadline": "2026-12-31"
     },
     {
         "id": 5,
@@ -117,6 +125,8 @@
         "requirements": [
             "Bachelor's degree or equivalent experience",
             "Passion for social impact"
-        ]
+        ],
+        "status": "active",
+        "deadline": "2026-12-31"
     }
 ]

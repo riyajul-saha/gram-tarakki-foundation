@@ -443,3 +443,112 @@ def init_routes(app):
     @app.route("/carrier")
     def carrier():
       return render_template('carrier.html')
+
+    @app.route("/apply-job", methods=["POST"])
+    def apply_job():
+        import re
+        import os
+        import uuid
+        from werkzeug.utils import secure_filename
+        
+        def sanitize(text):
+            if not text:
+                return text
+            # Remove any html tags to prevent XSS
+            text = re.sub(r'<[^>]*>', '', text)
+            # Remove potentially dangerous sql fragments or script tags (though parameterized queries protect SQL)
+            text = re.sub(r'(?i)(<script>|javascript:|onerror=|onload=)', '', text)
+            return text.strip()
+
+        job_id = request.form.get("jobId")
+        fullname = sanitize(request.form.get("fullname"))
+        email = sanitize(request.form.get("email"))
+        phone = sanitize(request.form.get("phone"))
+        location = sanitize(request.form.get("location"))
+        linkedin = sanitize(request.form.get("linkedin"))
+        cover_letter = sanitize(request.form.get("cover_letter"))
+        skills = sanitize(request.form.get("skills"))
+        
+        # Experience must be a non-negative integer
+        experience_raw = request.form.get("experience", "0")
+        try:
+            experience = int(experience_raw)
+            if experience < 0:
+                experience = 0
+        except (ValueError, TypeError):
+            experience = 0
+
+        if not fullname or not email or not phone or not job_id:
+            return jsonify({"status": "error", "message": "Missing required fields"}), 400
+
+        # Handle resume upload
+        resume_path = ""
+        if 'resume' in request.files:
+            file = request.files['resume']
+            if file and file.filename != '':
+                filename = secure_filename(file.filename)
+                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                resume_upload_dir = os.path.join(os.getcwd(), 'upload', 'resume')
+                os.makedirs(resume_upload_dir, exist_ok=True)
+                file_path = os.path.join(resume_upload_dir, unique_filename)
+                file.save(file_path)
+                resume_path = f"/upload/resume/{unique_filename}"
+        else:
+            return jsonify({"status": "error", "message": "Resume is required"}), 400
+
+        # Handle photo upload
+        photo_path = ""
+        if 'photo' in request.files:
+            file = request.files['photo']
+            if file and file.filename != '':
+                filename = secure_filename(file.filename)
+                allowed_ext = {'jpg', 'jpeg', 'png', 'webp'}
+                ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                if ext in allowed_ext:
+                    unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                    photo_upload_dir = os.path.join(os.getcwd(), 'upload', 'staff_photo')
+                    os.makedirs(photo_upload_dir, exist_ok=True)
+                    file_path = os.path.join(photo_upload_dir, unique_filename)
+                    file.save(file_path)
+                    photo_path = f"/upload/staff_photo/{unique_filename}"
+
+        try:
+            conn = get_db_connection()
+            if not conn:
+                init_db()
+                conn = get_db_connection()
+                if not conn:
+                    return jsonify({"status": "error", "message": "Database error"}), 500
+
+            cursor = conn.cursor()
+
+            try:
+                # Check if table exists
+                cursor.execute("SELECT id FROM join_staff LIMIT 1")
+                cursor.fetchall()
+            except mysql.connector.Error as err:
+                if err.errno == 1146: # Table doesn't exist
+                    init_db()
+                    cursor.close()
+                    conn.close()
+                    conn = get_db_connection()
+                    if not conn:
+                        return jsonify({"status": "error", "message": "Database error after init"}), 500
+                    cursor = conn.cursor()
+                else:
+                    raise
+
+            cursor.execute("""
+                INSERT INTO join_staff (fullname, email, phone, location, linkedin, cover_letter, position, resume, photo, experience, skills, status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'applied')
+            """, (fullname, email, phone, location, linkedin, cover_letter, job_id, resume_path, photo_path, str(experience), skills))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return jsonify({"status": "success", "message": "Application submitted"})
+        except Exception as e:
+            print(f"Error handling job application: {e}")
+            return jsonify({"status": "error", "message": "Failed to submit application"}), 500
+
