@@ -36,6 +36,11 @@ UPLOAD_BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload')
 def serve_upload(filename):
     return send_from_directory(UPLOAD_BASE, filename)
 
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'sitemap.xml')
+
 # Import routes from core and admin modules
 import core.routes
 import admin.routes
