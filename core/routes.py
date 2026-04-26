@@ -1,7 +1,7 @@
 import os
 import uuid
 from datetime import datetime
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, send_file, abort
 from werkzeug.utils import secure_filename
 from core.email_sender import send_email_async
 from core.db import get_db_connection, init_db
@@ -439,6 +439,17 @@ def init_routes(app):
     @app.route("/partners")
     def partners():
       return render_template('partners.html')
+
+    @app.route("/api/data/<filename>")
+    def serve_data_file(filename):
+        """Serve JSON data files from the root data/ folder (not publicly accessible via /static)."""
+        ALLOWED_FILES = {'carrier.json', 'program_info.json'}
+        if filename not in ALLOWED_FILES:
+            abort(404)
+        file_path = os.path.join(app.root_path, 'data', filename)
+        if not os.path.exists(file_path):
+            abort(404)
+        return send_file(file_path, mimetype='application/json')
 
     @app.route("/carrier")
     def carrier():

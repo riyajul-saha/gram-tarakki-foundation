@@ -3,7 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
 
-def send_email_async(email, html_body):
+def send_email_async(email, html_body, subject="Application Received – Gram Tarakki Foundation"):
     try:
         print(f"Starting to send email to {email}...", flush=True)
         gmail_user = os.getenv("GMAIL")
@@ -16,7 +16,7 @@ def send_email_async(email, html_body):
             msg = MIMEMultipart()
             msg['From'] = gmail_user
             msg['To'] = email
-            msg['Subject'] = "Application Received – Gram Tarakki Foundation"
+            msg['Subject'] = subject
             
             msg.attach(MIMEText(html_body, 'html'))
             

@@ -1,7 +1,7 @@
 let jobs = [];
 
 // Fetch job data from JSON file
-fetch('/static/data/carrier.json')
+fetch('/api/data/carrier.json')
     .then(response => response.json())
     .then(data => {
         jobs = data;
@@ -87,9 +87,75 @@ function closeJobModal() {
 
 // Apply modal
 function openApplyModal(jobId, jobTitle) {
+    // Check if the job is closed before opening apply form
+    const job = jobs.find(j => j.id === jobId);
+    if (job && job.status === 'closed') {
+        showJobClosedPopup(jobTitle);
+        return;
+    }
+
     document.getElementById('applyJobTitle').innerText = jobTitle;
     document.getElementById('applyJobId').value = jobId;
     document.getElementById('applyModal').classList.add('active');
+}
+
+function showJobClosedPopup(jobTitle) {
+    // Remove any existing popup
+    const existing = document.getElementById('jobClosedOverlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'jobClosedOverlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.65);z-index:2000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);animation:fadeIn .3s ease;padding:20px';
+
+    const popup = document.createElement('div');
+    popup.style.cssText = 'background:white;border-radius:24px;padding:44px 36px;text-align:center;max-width:460px;width:100%;box-shadow:0 25px 60px rgba(0,0,0,0.2);animation:modalFadeIn .4s ease';
+    popup.innerHTML = `
+        <div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#fef2f2,#fee2e2);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;animation:pulseIcon 1.8s ease infinite">
+            <i class="fas fa-lock" style="font-size:1.8rem;color:#dc2626;"></i>
+        </div>
+        <h3 style="font-size:1.45rem;margin-bottom:8px;color:#1e293b;font-weight:700;">Position Closed</h3>
+        <p style="color:#64748b;margin-bottom:6px;font-size:0.95rem;line-height:1.7;">
+            Sorry, the position <strong style="color:#1e293b;">${jobTitle}</strong> is currently not accepting applications.
+        </p>
+        <p style="color:#94a3b8;font-size:0.88rem;line-height:1.6;margin-bottom:28px;">
+            This role may re-open soon. Please explore other openings or check back in a few days.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <button onclick="document.getElementById('jobClosedOverlay').remove()" class="btn btn-outline" style="padding:11px 28px;border-radius:12px;font-weight:600;">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </button>
+            <button onclick="document.getElementById('jobClosedOverlay').remove();window.scrollTo({top:document.getElementById('jobsContainer').offsetTop-100,behavior:'smooth'})" class="btn" style="padding:11px 28px;border-radius:12px;font-weight:600;">
+                <i class="fas fa-search"></i> Browse Jobs
+            </button>
+        </div>
+    `;
+
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+    // Inject keyframe if not already present
+    if (!document.getElementById('jobClosedStyles')) {
+        const style = document.createElement('style');
+        style.id = 'jobClosedStyles';
+        style.textContent = `
+            @keyframes pulseIcon {
+                0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.15); }
+                50% { box-shadow: 0 0 0 14px rgba(220,38,38,0); }
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; } to { opacity: 1; }
+            }
+            @keyframes modalFadeIn {
+                from { opacity: 0; transform: translateY(20px) scale(0.96); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
 }
 
 function closeApplyModal() {

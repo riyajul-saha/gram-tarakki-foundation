@@ -319,7 +319,7 @@
     // I put it in base.html in the previous step, so it should be available.
     // However, JS runs on join.html. base.html wraps it.
 
-    const jsonUrl = configEl ? configEl.getAttribute('data-url') : '/static/data/program_info.json';
+    const jsonUrl = configEl ? configEl.getAttribute('data-url') : '/api/data/program_info.json';
 
     // Mappings: JSON Key -> Element
     let programData = null;

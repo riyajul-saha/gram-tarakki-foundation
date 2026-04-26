@@ -1,0 +1,42 @@
+[
+    {
+        "title": "Machine Learning and AI developement ",
+        "department": "Tech",
+        "type": "Internship",
+        "location": "Remote",
+        "salary": "Stiphen ",
+        "desc": "Student learn AI and ML. Also Learn Real World Project Making. ",
+        "requirements": [
+            "Basic Python.",
+            "Basic Machine Learning"
+        ],
+        "deadline": "2026-10-28",
+        "status": "active",
+        "posted": "2026-04-25",
+        "id": 1,
+        "responsibilities": [],
+        "tags": []
+    },
+    {
+        "title": "System Design",
+        "department": "Tech",
+        "type": "Internship",
+        "location": "Remote",
+        "salary": "Negotiable",
+        "desc": "System Software Engineer, Operating Systems Developer, Systems Engineer, Low-Level Software Engineer, Kernel / OS Developer.",
+        "requirements": [
+            "Pursuing B.Tech / BSc in Computer Science or related field.",
+            "Basic knowledge of C / C++",
+            "Understanding of Operating System fundamentals (process, memory, file system)",
+            "Basic knowledge of Data Structures & Algorithms",
+            "Familiarity with Linux / Unix environment",
+            "Problem-solving mindset and willingness to learn"
+        ],
+        "deadline": "2026-04-30",
+        "status": "active",
+        "posted": "2026-04-26",
+        "id": 2,
+        "responsibilities": [],
+        "tags": []
+    }
+]

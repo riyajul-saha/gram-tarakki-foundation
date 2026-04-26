@@ -1,4 +1,5 @@
 from flask import render_template, request, jsonify, redirect, url_for, session, make_response
+import mysql.connector
 from admin.login import verify_admin_login
 
 def init_routes(app):
@@ -232,7 +233,7 @@ def init_routes(app):
             
         import json
         import os
-        json_path = os.path.join(app.root_path, 'static', 'data', 'carrier.json')
+        json_path = os.path.join(app.root_path, 'data', 'carrier.json')
         
         if request.method == "GET":
             if os.path.exists(json_path):
@@ -245,49 +246,64 @@ def init_routes(app):
             return jsonify([])
             
         if request.method == "POST":
-            data = request.json
-            action = data.get('action') # 'create', 'update', 'status'
-            job_data = data.get('job')
-            
-            jobs = []
-            if os.path.exists(json_path):
-                with open(json_path, 'r', encoding='utf-8') as f:
-                    try:
-                        jobs = json.load(f)
-                    except json.JSONDecodeError:
-                        pass
-                        
-            if action == 'create':
-                new_id = max([j.get('id', 0) for j in jobs], default=0) + 1
-                job_data['id'] = new_id
-                # Map requirements and responsibilities correctly
-                if isinstance(job_data.get('requirements'), str):
-                    job_data['requirements'] = [r.strip() for r in job_data['requirements'].split('\n') if r.strip()]
-                if 'responsibilities' not in job_data:
-                    job_data['responsibilities'] = []
-                if 'tags' not in job_data:
-                    job_data['tags'] = []
-                jobs.append(job_data)
-            elif action == 'update':
-                job_id = job_data.get('id')
-                for i, j in enumerate(jobs):
-                    if j.get('id') == job_id:
-                        if isinstance(job_data.get('requirements'), str):
-                            job_data['requirements'] = [r.strip() for r in job_data['requirements'].split('\n') if r.strip()]
-                        jobs[i].update(job_data)
-                        break
-            elif action == 'status':
-                job_id = data.get('id')
-                new_status = data.get('status')
-                for i, j in enumerate(jobs):
-                    if j.get('id') == job_id:
-                        jobs[i]['status'] = new_status
-                        break
-            
-            with open(json_path, 'w', encoding='utf-8') as f:
-                json.dump(jobs, f, indent=4)
+            try:
+                data = request.json
+                if not data:
+                    return jsonify({"status": "error", "message": "Invalid request data"}), 400
+                    
+                action = data.get('action') # 'create', 'update', 'status'
+                job_data = data.get('job')
                 
-            return jsonify({"status": "success", "jobs": jobs})
+                if action == 'create' and not job_data:
+                    return jsonify({"status": "error", "message": "Job data is required"}), 400
+                
+                jobs = []
+                if os.path.exists(json_path):
+                    with open(json_path, 'r', encoding='utf-8') as f:
+                        try:
+                            jobs = json.load(f)
+                        except json.JSONDecodeError:
+                            pass
+                            
+                if action == 'create':
+                    new_id = max([j.get('id', 0) for j in jobs], default=0) + 1
+                    job_data['id'] = new_id
+                    # Map requirements and responsibilities correctly
+                    if isinstance(job_data.get('requirements'), str):
+                        job_data['requirements'] = [r.strip() for r in job_data['requirements'].split('\n') if r.strip()]
+                    if 'responsibilities' not in job_data:
+                        job_data['responsibilities'] = []
+                    if 'tags' not in job_data:
+                        job_data['tags'] = []
+                    jobs.append(job_data)
+                elif action == 'update':
+                    job_id = job_data.get('id')
+                    for i, j in enumerate(jobs):
+                        if j.get('id') == job_id:
+                            if isinstance(job_data.get('requirements'), str):
+                                job_data['requirements'] = [r.strip() for r in job_data['requirements'].split('\n') if r.strip()]
+                            jobs[i].update(job_data)
+                            break
+                elif action == 'status':
+                    job_id = data.get('id')
+                    new_status = data.get('status')
+                    for i, j in enumerate(jobs):
+                        if j.get('id') == job_id:
+                            jobs[i]['status'] = new_status
+                            break
+                elif action == 'delete':
+                    job_id = data.get('id')
+                    jobs = [j for j in jobs if j.get('id') != job_id]
+                else:
+                    return jsonify({"status": "error", "message": f"Unknown action: {action}"}), 400
+                
+                with open(json_path, 'w', encoding='utf-8') as f:
+                    json.dump(jobs, f, indent=4)
+                    
+                return jsonify({"status": "success", "jobs": jobs})
+            except Exception as e:
+                print(f"Error in api_jobs POST: {e}")
+                return jsonify({"status": "error", "message": str(e)}), 500
 
     @app.route("/admin/api/applicants", methods=["GET", "POST"])
     def api_applicants():
@@ -327,6 +343,59 @@ def init_routes(app):
                 conn.close()
         except Exception as e:
             print(f"Error handling applicants API: {e}")
+            return jsonify({"status": "error", "message": str(e)}), 500
+            
+        return jsonify({"status": "error", "message": "Database error"}), 500
+
+    @app.route("/admin/api/schedule_interview", methods=["POST"])
+    def api_schedule_interview():
+        if not session.get('admin_logged_in'):
+            return jsonify({"status": "error", "message": "Unauthorized"}), 401
+            
+        data = request.json
+        if not data:
+            return jsonify({"status": "error", "message": "Missing request data"}), 400
+            
+        applicant_id = data.get('id')
+        name = data.get('name')
+        email = data.get('email')
+        job_title = data.get('jobTitle')
+        i_type = data.get('type')
+        date = data.get('date')
+        time = data.get('time')
+        link_or_address = data.get('link_or_address')
+        message = data.get('message')
+        
+        if not all([applicant_id, email, i_type, date, time]):
+            return jsonify({"status": "error", "message": "Missing required fields"}), 400
+            
+        try:
+            from core.db import get_db_connection
+            conn = get_db_connection()
+            if conn:
+                cursor = conn.cursor()
+                cursor.execute("UPDATE join_staff SET status = 'interview' WHERE id = %s", (applicant_id,))
+                conn.commit()
+                cursor.close()
+                conn.close()
+                
+                # Send Email
+                from core.email_sender import send_email_async
+                html_body = render_template('email/interview_invite.html', 
+                                            name=name, 
+                                            job_title=job_title, 
+                                            type=i_type, 
+                                            date=date, 
+                                            time=time, 
+                                            link_or_address=link_or_address, 
+                                            message=message)
+                
+                subject = f"Interview Invitation: {job_title} at Gram Tarakki Foundation"
+                send_email_async(email, html_body, subject=subject)
+                
+                return jsonify({"status": "success"})
+        except Exception as e:
+            print(f"Error scheduling interview: {e}")
             return jsonify({"status": "error", "message": str(e)}), 500
             
         return jsonify({"status": "error", "message": "Database error"}), 500

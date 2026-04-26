@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <title>Interview Invitation – Gram Tarakki Foundation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #F3F4F6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+
+        .header {
+            background-color: #0F766E;
+            padding: 32px 30px;
+            color: white;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-text h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .header-text p {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .content {
+            padding: 40px 30px;
+            background: white;
+        }
+
+        .greeting {
+            margin-bottom: 28px;
+        }
+
+        .greeting h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0F766E;
+            margin-bottom: 8px;
+        }
+
+        .greeting p {
+            font-size: 1rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .highlight-box {
+            background-color: #E6F7F0;
+            border-left: 6px solid #10B981;
+            border-radius: 16px;
+            padding: 22px 20px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .highlight-box i {
+            color: #10B981;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .highlight-box p {
+            font-size: 1.05rem;
+            color: #1f2e2e;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .summary-card {
+            background-color: #F9FAFB;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .summary-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0F766E;
+            margin-bottom: 18px;
+            letter-spacing: -0.01em;
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: baseline;
+            padding: 10px 0;
+            border-bottom: 1px dashed #E5E7EB;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            width: 140px;
+            font-size: 0.9rem;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            flex: 1;
+            font-weight: 600;
+            color: #374151;
+            font-size: 1rem;
+        }
+
+        .message-box {
+            background-color: #F3F4F6;
+            border-radius: 12px;
+            padding: 16px;
+            font-style: italic;
+            color: #4B5563;
+            margin-top: 16px;
+            border-left: 4px solid #9CA3AF;
+        }
+
+        .footer {
+            background-color: #F3F4F6;
+            padding: 28px 30px;
+            color: #6B7280;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            text-align: center;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .footer p {
+            margin-bottom: 6px;
+        }
+
+        .footer .cin {
+            font-family: monospace;
+            background: #fff;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="header-content">
+                <img src="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp" alt="GT"
+                    style="width: 50px; height: 50px; border-radius: 12px; object-fit: contain; background-color: white; border: 2px solid white;">
+                <div class="header-text">
+                    <h1>Gram Tarakki Foundation</h1>
+                    <p>Interview Invitation</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="greeting">
+                <h2>Dear {{ name }},</h2>
+                <p>We are pleased to invite you for an interview for the <strong>{{ job_title }}</strong> position at
+                    Gram Tarakki Foundation.</p>
+            </div>
+            <div class="highlight-box">
+                <i class="fas fa-calendar-check" style="font-family: sans-serif;">📅</i>
+                <p>Your application has been shortlisted and we would love to discuss your qualifications further.</p>
+            </div>
+            <div class="summary-card">
+                <div class="summary-title">📝 Interview Details</div>
+                <div class="summary-row">
+                    <span class="summary-label">Date: </span>
+                    <span class="summary-value">{{ date }}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Time: </span>
+                    <span class="summary-value">{{ time }}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Format: </span>
+                    <span class="summary-value">{{ type }}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">{% if type == 'Online' %}Meeting Link{% else %}Location / Address{%
+                        endif %}: </span>
+                    <span class="summary-value">{% if link_or_address %}{{ link_or_address }}{% else %}To be provided{%
+                        endif %}</span>
+                </div>
+                {% if message %}
+                <div class="message-box">
+                    "{{ message }}"
+                </div>
+                {% endif %}
+            </div>
+            <p style="color: #374151; font-size: 1rem; line-height: 1.5; margin-bottom: 24px;">
+                Please let us know if you have any questions or need to reschedule. We look forward to meeting with you.
+            </p>
+        </div>
+        <div class="footer">
+            <p><strong>Gram Tarakki Foundation</strong></p>
+            <p>MADHAKHALI BHUPATINAGAR, Bhupatinagar, East Midnapore, West Bengal, India, 721425</p>
+            <p class="cin">CIN: U88900WB2026NPL286268</p>
+            <p>&copy; 2026 Gram Tarakki Foundation. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>
