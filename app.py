@@ -41,6 +41,10 @@ def serve_upload(filename):
 def sitemap():
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'sitemap.xml')
 
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'robots.txt')
+
 # Import routes from core and admin modules
 import core.routes
 import admin.routes
