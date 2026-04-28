@@ -1,12 +1,4 @@
-// Sample team data
-let teamData = [
-    { id: 1, photo: 'https://randomuser.me/api/portraits/men/1.jpg', name: 'Rahim Khan', email: 'rahim@email.com', phone: '9876543210', role: 'Teacher', status: 'Pending', appliedDate: '2026-03-10', address: 'Kolkata', documents: ['ID Proof', 'Certificate'] },
-    { id: 2, photo: 'https://randomuser.me/api/portraits/women/2.jpg', name: 'Priya Das', email: 'priya@email.com', phone: '9876543211', role: 'Volunteer', status: 'Active', appliedDate: '2026-02-15', address: 'Rampurhat', documents: ['ID Proof'] },
-    { id: 3, photo: 'https://randomuser.me/api/portraits/men/3.jpg', name: 'Sourav Ghosh', email: 'sourav@email.com', phone: '9876543212', role: 'Admin', status: 'Active', appliedDate: '2026-01-20', address: 'Birbhum', documents: ['ID Proof', 'Resume'] },
-    { id: 4, photo: 'https://randomuser.me/api/portraits/women/4.jpg', name: 'Rina Ghosh', email: 'rina@email.com', phone: '9876543213', role: 'Teacher', status: 'Pending', appliedDate: '2026-03-12', address: 'Kolkata', documents: ['ID Proof'] },
-    { id: 5, photo: 'https://randomuser.me/api/portraits/men/5.jpg', name: 'Arjun Singh', email: 'arjun@email.com', phone: '9876543214', role: 'Volunteer', status: 'Active', appliedDate: '2026-02-28', address: 'Rural', documents: [] },
-];
-
+let teamData = [];
 let currentTab = 'pending'; // pending, active, all
 let filteredData = [];
 
@@ -14,11 +6,20 @@ function filterData() {
     const search = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase() : '';
     const role = document.getElementById('roleFilter') ? document.getElementById('roleFilter').value : '';
     const status = document.getElementById('statusFilter') ? document.getElementById('statusFilter').value : '';
+    
     filteredData = teamData.filter(item => {
         let match = true;
-        if (currentTab === 'pending' && item.status !== 'Pending') match = false;
-        if (currentTab === 'active' && item.status !== 'Active') match = false;
-        if (search && !item.name.toLowerCase().includes(search) && !item.email.toLowerCase().includes(search) && !item.phone.includes(search)) match = false;
+        const itemStatus = item.status ? item.status.toLowerCase() : '';
+        
+        if (currentTab === 'pending') {
+            if (itemStatus !== 'pending') match = false;
+        } else if (currentTab === 'active') {
+            if (itemStatus !== 'active' && itemStatus !== 'approved' && itemStatus !== 'selected') match = false;
+        } else if (currentTab === 'all') {
+            if (!['selected', 'active', 'approved', 'resign', 'resigned', 'pending'].includes(itemStatus)) match = false;
+        }
+        
+        if (search && (!item.name || !item.name.toLowerCase().includes(search)) && (!item.email || !item.email.toLowerCase().includes(search)) && (!item.phone || !item.phone.includes(search))) match = false;
         if (role && item.role !== role) match = false;
         if (status && item.status !== status) match = false;
         return match;
@@ -32,31 +33,62 @@ function renderTable() {
     if (!tableBody || !cardsView) return;
 
     let tableHtml = '', cardsHtml = '';
+    
+    if (filteredData.length === 0) {
+        const emptyIcon = currentTab === 'pending' ? 'fa-inbox' : 'fa-users-slash';
+        const emptyTitle = currentTab === 'pending' ? 'No Pending Requests' : 'No Records Found';
+        const emptyMsg = currentTab === 'pending' ? 'All volunteer requests have been reviewed.' : 'No team members match this filter.';
+        const emptyHtml = `<div class="empty-state"><i class="fas ${emptyIcon}"></i><h4>${emptyTitle}</h4><p>${emptyMsg}</p></div>`;
+        tableHtml = `<tr><td colspan="6">${emptyHtml}</td></tr>`;
+        cardsHtml = emptyHtml;
+    }
 
     filteredData.forEach(item => {
-        const statusClass = item.status === 'Pending' ? 'status-pending' : (item.status === 'Active' ? 'status-active' : 'status-inactive');
-        const actions = item.status === 'Pending' ? `
+        const itemStatus = item.status ? item.status.toLowerCase() : '';
+        const statusDisplay = item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : 'Unknown';
+        const statusClass = itemStatus === 'pending' ? 'status-pending' : ((itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected') ? 'status-active' : 'status-inactive');
+        
+        let actions = `
             <div class="action-btns">
-                <button class="action-btn view" onclick="viewDetails(${item.id})"><i class="fas fa-eye"></i></button>
-                <button class="action-btn approve" onclick="confirmApprove(${item.id})"><i class="fas fa-check"></i></button>
-                <button class="action-btn reject" onclick="confirmReject(${item.id})"><i class="fas fa-times"></i></button>
-            </div>
-        ` : `
-            <div class="action-btns">
-                <button class="action-btn view" onclick="viewDetails(${item.id})"><i class="fas fa-eye"></i></button>
-                <button class="action-btn edit" onclick="editStaff(${item.id})"><i class="fas fa-edit"></i></button>
-                <button class="action-btn remove" onclick="confirmRemove(${item.id})"><i class="fas fa-trash"></i></button>
-            </div>
+                <button class="action-btn view" onclick="viewDetails('${item.source}', ${item.id})"><i class="fas fa-eye"></i></button>
         `;
+        if (itemStatus === 'pending') {
+            actions += `
+                <button class="action-btn approve" onclick="confirmApprove('${item.source}', ${item.id})"><i class="fas fa-check"></i></button>
+                <button class="action-btn reject" onclick="confirmReject('${item.source}', ${item.id})"><i class="fas fa-times"></i></button>
+            `;
+        } else if (itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected') {
+            actions += `
+                <button class="action-btn edit" onclick="editStaff('${item.source}', ${item.id})"><i class="fas fa-edit"></i></button>
+                <button class="action-btn reject" onclick="confirmReject('${item.source}', ${item.id})"><i class="fas fa-times" title="Reject"></i></button>
+            `;
+        } else {
+            actions += `
+                <button class="action-btn remove" onclick="confirmRemove('${item.source}', ${item.id})"><i class="fas fa-trash" title="Delete"></i></button>
+            `;
+        }
+        actions += `</div>`;
+
+        let displayRole = item.role || 'N/A';
+        const roleLower = displayRole.toLowerCase();
+        const jt = (item.job_type || '').toLowerCase();
+        
+        if (jt === 'volunteer' || (item.source === 'volunteer' && !roleLower.includes('intern'))) {
+             displayRole += ' <small>(vol)</small>';
+        } else if (jt === 'internship' || (item.source === 'volunteer' && roleLower.includes('intern'))) {
+             displayRole += ' <small>(intern)</small>';
+        } else if (jt === 'staff' || item.source === 'staff') {
+             displayRole += ' <small>(staff)</small>';
+        }
 
         // Table row
         tableHtml += `
             <tr>
                 <td><img src="${item.photo}" class="team-photo"></td>
                 <td><div class="name-role"><span class="name">${item.name}</span><br><span class="email">${item.email}</span></div></td>
-                <td>${item.role}</td>
-                <td>${item.phone}</td>
-                <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+                <td>${displayRole}</td>
+                <td>${item.phone || 'N/A'}</td>
+                <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
                 <td>${actions}</td>
             </tr>
         `;
@@ -67,16 +99,18 @@ function renderTable() {
                 <div class="card-photo"><img src="${item.photo}"></div>
                 <div class="card-info">
                     <h4>${item.name}</h4>
-                    <p>${item.role}</p>
-                    <span class="status-badge ${statusClass}">${item.status}</span>
+                    <p>${displayRole}</p>
+                    <span class="status-badge ${statusClass}">${statusDisplay}</span>
                 </div>
                 <div class="card-actions">
-                    <button class="action-btn view" onclick="viewDetails(${item.id})"><i class="fas fa-eye"></i></button>
-                    ${item.status === 'Pending' ?
-                `<button class="action-btn approve" onclick="confirmApprove(${item.id})"><i class="fas fa-check"></i></button>
-                         <button class="action-btn reject" onclick="confirmReject(${item.id})"><i class="fas fa-times"></i></button>` :
-                `<button class="action-btn edit" onclick="editStaff(${item.id})"><i class="fas fa-edit"></i></button>
-                         <button class="action-btn remove" onclick="confirmRemove(${item.id})"><i class="fas fa-trash"></i></button>`
+                    <button class="action-btn view" onclick="viewDetails('${item.source}', ${item.id})"><i class="fas fa-eye"></i></button>
+                    ${itemStatus === 'pending' ?
+                `<button class="action-btn approve" onclick="confirmApprove('${item.source}', ${item.id})"><i class="fas fa-check"></i></button>
+                         <button class="action-btn reject" onclick="confirmReject('${item.source}', ${item.id})"><i class="fas fa-times"></i></button>` :
+                (itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected' ?
+                `<button class="action-btn edit" onclick="editStaff('${item.source}', ${item.id})"><i class="fas fa-edit"></i></button>
+                         <button class="action-btn reject" onclick="confirmReject('${item.source}', ${item.id})"><i class="fas fa-times"></i></button>` :
+                `<button class="action-btn remove" onclick="confirmRemove('${item.source}', ${item.id})"><i class="fas fa-trash"></i></button>`)
             }
                 </div>
             </div>
@@ -85,6 +119,38 @@ function renderTable() {
 
     tableBody.innerHTML = tableHtml;
     cardsView.innerHTML = cardsHtml;
+}
+
+function updateCounts() {
+    let pendingVolunteer = 0;
+    let activeBoth = 0;
+    let rejectedBoth = 0;
+    let allCount = 0;
+
+    teamData.forEach(item => {
+        const status = item.status ? item.status.toLowerCase() : '';
+        const isVolunteer = item.source === 'volunteer';
+        const isStaff = item.source === 'staff';
+
+        if (status === 'pending') pendingVolunteer++;
+        if (status === 'active' || status === 'approved' || status === 'selected') activeBoth++;
+        if (status === 'rejected') rejectedBoth++;
+        
+        if (['selected', 'active', 'approved', 'resign', 'resigned', 'pending'].includes(status)) {
+            allCount++;
+        }
+    });
+
+    const totalTeam = activeBoth + rejectedBoth;
+
+    if (document.getElementById('countTotalTeam')) document.getElementById('countTotalTeam').innerText = totalTeam;
+    if (document.getElementById('countPending')) document.getElementById('countPending').innerText = pendingVolunteer;
+    if (document.getElementById('countActive')) document.getElementById('countActive').innerText = activeBoth;
+    if (document.getElementById('countRejected')) document.getElementById('countRejected').innerText = rejectedBoth;
+
+    if (document.getElementById('badgePending')) document.getElementById('badgePending').innerText = pendingVolunteer;
+    if (document.getElementById('badgeActive')) document.getElementById('badgeActive').innerText = activeBoth;
+    if (document.getElementById('badgeAll')) document.getElementById('badgeAll').innerText = allCount;
 }
 
 function switchTab(tab) {
@@ -105,30 +171,68 @@ function applyFilters() {
 }
 
 // View Details Modal
-function viewDetails(id) {
-    const item = teamData.find(i => i.id === id);
+function viewDetails(source, id) {
+    const item = teamData.find(i => i.id === id && i.source === source);
+    if (!item) return;
+    
+    let displayRole = item.role || 'N/A';
+    const roleLower = displayRole.toLowerCase();
+    const jt = (item.job_type || '').toLowerCase();
+    
+    if (jt === 'volunteer' || (item.source === 'volunteer' && !roleLower.includes('intern'))) {
+         displayRole += ' <small>(vol)</small>';
+    } else if (jt === 'internship' || (item.source === 'volunteer' && roleLower.includes('intern'))) {
+         displayRole += ' <small>(intern)</small>';
+    } else if (jt === 'staff' || item.source === 'staff') {
+         displayRole += ' <small>(staff)</small>';
+    }
+    
+    const itemStatus = item.status ? item.status.toLowerCase() : '';
+    const statusDisplay = item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : 'Unknown';
+    const statusClass = itemStatus === 'pending' ? 'status-pending' : ((itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected') ? 'status-active' : 'status-inactive');
+
     const content = `
-        <h2>${item.name}</h2>
-        <div style="display: flex; gap: 20px; margin: 20px 0;">
-            <img src="${item.photo}" style="width: 100px; height: 100px; border-radius: 50%;">
+        <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 24px;">
+            <img src="${item.photo}" style="width: 72px; height: 72px; border-radius: 16px; object-fit: cover; border: 3px solid #f1f5f9;">
             <div>
-                <p><strong>Email:</strong> ${item.email}</p>
-                <p><strong>Phone:</strong> ${item.phone}</p>
-                <p><strong>Role:</strong> ${item.role}</p>
-                <p><strong>Address:</strong> ${item.address}</p>
-                <p><strong>Applied:</strong> ${item.appliedDate}</p>
+                <h2 style="margin:0 0 4px;">${item.name}</h2>
+                <span class="status-badge ${statusClass}">${statusDisplay}</span>
             </div>
         </div>
-        <h3>Documents</h3>
-        <div style="display: flex; gap: 10px; margin: 10px 0;">
-            ${item.documents.map(d => `<button class="doc-btn"><i class="fas fa-file"></i> ${d}</button>`).join('')}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px;">
+            <div style="background:#f8fafc; padding:12px 14px; border-radius:12px;">
+                <p style="margin:0;font-size:0.75rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Email</p>
+                <p style="margin:4px 0 0;font-weight:600;color:#1e293b;font-size:0.9rem;">${item.email}</p>
+            </div>
+            <div style="background:#f8fafc; padding:12px 14px; border-radius:12px;">
+                <p style="margin:0;font-size:0.75rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Phone</p>
+                <p style="margin:4px 0 0;font-weight:600;color:#1e293b;font-size:0.9rem;">${item.phone || 'N/A'}</p>
+            </div>
+            <div style="background:#f8fafc; padding:12px 14px; border-radius:12px;">
+                <p style="margin:0;font-size:0.75rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Role</p>
+                <p style="margin:4px 0 0;font-weight:600;color:#1e293b;font-size:0.9rem;">${displayRole}</p>
+            </div>
+            <div style="background:#f8fafc; padding:12px 14px; border-radius:12px;">
+                <p style="margin:0;font-size:0.75rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Address</p>
+                <p style="margin:4px 0 0;font-weight:600;color:#1e293b;font-size:0.9rem;">${item.address || 'N/A'}</p>
+            </div>
+            <div style="background:#f8fafc; padding:12px 14px; border-radius:12px; grid-column: span 2;">
+                <p style="margin:0;font-size:0.75rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Applied Date</p>
+                <p style="margin:4px 0 0;font-weight:600;color:#1e293b;font-size:0.9rem;">${item.appliedDate || 'N/A'}</p>
+            </div>
         </div>
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
-            ${item.status === 'Pending' ?
-            `<button class="btn" onclick="confirmApprove(${item.id})">Approve</button>
-                 <button class="btn btn-outline" onclick="confirmReject(${item.id})">Reject</button>` :
-            `<button class="btn" onclick="editStaff(${item.id})">Edit</button>
-                 <button class="btn btn-outline" onclick="confirmRemove(${item.id})">Remove</button>`
+        <h3 style="margin-bottom:10px;">Documents</h3>
+        <div style="display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;">
+            ${(item.documents && item.documents.length > 0) ? item.documents.map(d => `<button class="doc-btn"><i class="fas fa-file-alt"></i> ${d}</button>`).join('') : '<p style="color:#94a3b8;font-size:0.88rem;">No documents uploaded</p>'}
+        </div>
+        <div style="display: flex; gap: 10px;">
+            ${itemStatus === 'pending' ?
+            `<button class="btn" onclick="confirmApprove('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Approve</button>
+                 <button class="btn btn-danger" onclick="confirmReject('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-times"></i> Reject</button>` :
+            (itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected' ?
+            `<button class="btn" onclick="editStaff('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-edit"></i> Edit</button>
+                 <button class="btn btn-danger" onclick="confirmReject('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-times"></i> Reject</button>` :
+            `<button class="btn btn-danger" onclick="confirmRemove('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-trash"></i> Remove</button>`)
         }
         </div>
     `;
@@ -148,54 +252,103 @@ function handleAddStaff(e) {
 
 // Confirm actions
 let currentActionId = null;
-function confirmApprove(id) {
+let currentActionSource = null;
+
+function confirmApprove(source, id) {
     currentActionId = id;
+    currentActionSource = source;
     document.getElementById('confirmTitle').innerText = 'Approve Staff';
     document.getElementById('confirmMessage').innerText = 'Are you sure you want to approve this member?';
-    document.getElementById('confirmYes').onclick = function () { executeApprove(currentActionId); };
+    document.getElementById('confirmYes').onclick = function () { executeApprove(currentActionSource, currentActionId); };
     openModal('confirmModal');
 }
-function confirmReject(id) {
+function confirmReject(source, id) {
+    const item = teamData.find(i => i.id === id && i.source === source);
+    const itemStatus = item && item.status ? item.status.toLowerCase() : '';
+    const isSelected = ['active', 'approved', 'selected'].includes(itemStatus);
+
     currentActionId = id;
-    document.getElementById('confirmTitle').innerText = 'Reject Request';
-    document.getElementById('confirmMessage').innerText = 'Reject this request?';
-    document.getElementById('confirmYes').onclick = function () { executeReject(currentActionId); };
+    currentActionSource = source;
+    document.getElementById('confirmTitle').innerText = 'Reject ' + (isSelected ? 'Staff' : 'Request');
+    document.getElementById('confirmMessage').innerText = isSelected ? 'Are you sure you want to mark this staff as resigned?' : 'Reject this request?';
+    document.getElementById('confirmYes').onclick = function () { executeReject(currentActionSource, currentActionId, isSelected); };
     openModal('confirmModal');
 }
-function confirmRemove(id) {
+function confirmRemove(source, id) {
     currentActionId = id;
+    currentActionSource = source;
     document.getElementById('confirmTitle').innerText = 'Remove Staff';
     document.getElementById('confirmMessage').innerText = 'This action cannot be undone.';
-    document.getElementById('confirmYes').onclick = function () { executeRemove(currentActionId); };
+    document.getElementById('confirmYes').onclick = function () { executeRemove(currentActionSource, currentActionId); };
     openModal('confirmModal');
 }
 
-function executeApprove(id) {
-    const item = teamData.find(i => i.id === id);
-    if (item) {
-        item.status = 'Active';
+async function executeApprove(source, id) {
+    try {
+        const res = await fetch('/admin/api/team', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, source, status: 'active', action: 'update_status' })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+            showToast('Staff approved successfully', 'success');
+            closeModal('confirmModal');
+            closeModal('viewModal');
+            await fetchTeamData();
+        } else {
+            showToast(data.message || 'Failed to approve', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Error approving staff', 'error');
     }
-    showToast('Staff approved successfully', 'success');
-    closeModal('confirmModal');
-    closeModal('viewModal');
-    filterData();
 }
-function executeReject(id) {
-    teamData = teamData.filter(i => i.id !== id);
-    showToast('Request rejected', 'error');
-    closeModal('confirmModal');
-    closeModal('viewModal');
-    filterData();
+async function executeReject(source, id, isSelected) {
+    const newStatus = isSelected ? 'resign' : 'rejected';
+    try {
+        const res = await fetch('/admin/api/team', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, source, status: newStatus, action: 'update_status' })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+            showToast(isSelected ? 'Staff marked as resigned' : 'Request rejected', isSelected ? 'success' : 'error');
+            closeModal('confirmModal');
+            closeModal('viewModal');
+            await fetchTeamData();
+        } else {
+            showToast(data.message || 'Failed to reject', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Error rejecting', 'error');
+    }
 }
-function executeRemove(id) {
-    teamData = teamData.filter(i => i.id !== id);
-    showToast('Staff removed', 'error');
-    closeModal('confirmModal');
-    closeModal('viewModal');
-    filterData();
+async function executeRemove(source, id) {
+    try {
+        const res = await fetch('/admin/api/team', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, source, action: 'remove' })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+            showToast('Staff removed', 'error');
+            closeModal('confirmModal');
+            closeModal('viewModal');
+            await fetchTeamData();
+        } else {
+            showToast(data.message || 'Failed to remove', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Error removing staff', 'error');
+    }
 }
 
-function editStaff(id) {
+function editStaff(source, id) {
     alert('Edit functionality - would open edit form');
 }
 
@@ -220,6 +373,60 @@ function closeModal(id) {
 }
 
 // Initialize
+function populateRoleFilter() {
+    const roleFilter = document.getElementById('roleFilter');
+    if (!roleFilter) return;
+    
+    const currentVal = roleFilter.value;
+    const roles = new Set();
+    
+    teamData.forEach(item => {
+        if (item.role) {
+            // Some roles have appended text in display, but we want the base item.role
+            roles.add(item.role);
+        }
+    });
+    
+    const sortedRoles = Array.from(roles).sort();
+    let html = '<option value="">All Roles</option>';
+    sortedRoles.forEach(role => {
+        html += `<option value="${role}">${role}</option>`;
+    });
+    
+    roleFilter.innerHTML = html;
+    if (sortedRoles.includes(currentVal)) {
+        roleFilter.value = currentVal;
+    }
+}
+
+async function fetchTeamData() {
+    try {
+        const response = await fetch('/admin/api/team');
+        const data = await response.json();
+        if (data.status === 'success') {
+            teamData = data.team;
+            updateCounts();
+            populateRoleFilter();
+            filterData();
+        } else {
+            showToast('Failed to fetch team data', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Error loading data', 'error');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-    filterData();
+    fetchTeamData();
+    
+    // Setup real-time filters
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.addEventListener('input', filterData);
+    
+    const roleFilter = document.getElementById('roleFilter');
+    if (roleFilter) roleFilter.addEventListener('change', filterData);
+    
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) statusFilter.addEventListener('change', filterData);
 });

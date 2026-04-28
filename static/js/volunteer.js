@@ -206,8 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 6. Handle file upload UI and validation (Max 1MB)
         const fileInput = document.getElementById('fileInput');
-        const uploadText = document.querySelector('.upload-text');
         const uploadBox = document.getElementById('fileUploadBox');
+        const uploadText = uploadBox ? uploadBox.querySelector('.upload-text') : null;
 
         if (fileInput && uploadText) {
             fileInput.addEventListener('change', function () {

@@ -143,6 +143,32 @@ def init_db():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+
+        # Create our_staff table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS our_staff (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                fullname VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                phone VARCHAR(50),
+                city VARCHAR(100),
+                location VARCHAR(255),
+                age INT,
+                role VARCHAR(100),
+                position VARCHAR(50),
+                skills TEXT,
+                availability VARCHAR(50),
+                linkedin VARCHAR(255),
+                cover_letter TEXT,
+                experience VARCHAR(255),
+                resume VARCHAR(255),
+                photo VARCHAR(255),
+                notes TEXT,
+                job_type VARCHAR(50),
+                status VARCHAR(50) DEFAULT 'active',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
         
         connection.commit()
         cursor.close()

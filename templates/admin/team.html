@@ -30,31 +30,31 @@
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-left">
-            <h3>38</h3>
+            <h3 id="countTotalTeam">0</h3>
             <p>Total Team</p>
         </div>
         <div class="stat-right"><i class="fas fa-users"></i></div>
     </div>
     <div class="stat-card">
         <div class="stat-left">
-            <h3>12</h3>
+            <h3 id="countPending">0</h3>
             <p>Pending Requests</p>
         </div>
         <div class="stat-right"><i class="fas fa-hourglass-half"></i></div>
     </div>
     <div class="stat-card">
         <div class="stat-left">
-            <h3>25</h3>
+            <h3 id="countActive">0</h3>
             <p>Active Staff</p>
         </div>
         <div class="stat-right"><i class="fas fa-check-circle"></i></div>
     </div>
     <div class="stat-card">
         <div class="stat-left">
-            <h3>1</h3>
-            <p>Inactive</p>
+            <h3 id="countRejected">0</h3>
+            <p>Rejected</p>
         </div>
-        <div class="stat-right"><i class="fas fa-user-clock"></i></div>
+        <div class="stat-right"><i class="fas fa-user-times"></i></div>
     </div>
 </div>
 
@@ -62,9 +62,9 @@
 <div class="tabs-container">
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('pending')">Pending Requests <span
-                class="badge">12</span></button>
-        <button class="tab-btn" onclick="switchTab('active')">Active Staff <span class="badge">25</span></button>
-        <button class="tab-btn" onclick="switchTab('all')">All <span class="badge">38</span></button>
+                class="badge" id="badgePending">0</span></button>
+        <button class="tab-btn" onclick="switchTab('active')">Active Staff <span class="badge" id="badgeActive">0</span></button>
+        <button class="tab-btn" onclick="switchTab('all')">All <span class="badge" id="badgeAll">0</span></button>
     </div>
 
     <!-- Filter Bar (common) -->
@@ -82,9 +82,10 @@
             </select>
             <select class="filter-select" id="statusFilter">
                 <option value="">All Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                <option value="pending">Pending</option>
+                <option value="active">Active</option>
+                <option value="rejected">Rejected</option>
+                <option value="resign">Resign</option>
             </select>
         </div>
         <div>
@@ -164,12 +165,17 @@
 
 <!-- Confirm Modal -->
 <div id="confirmModal" class="modal">
-    <div class="modal-content" style="max-width: 400px; text-align: center;">
-        <h3 id="confirmTitle">Confirm Action</h3>
-        <p id="confirmMessage">Are you sure?</p>
-        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-            <button class="btn" id="confirmYes">Yes</button>
-            <button class="btn btn-outline" onclick="closeModal('confirmModal')">Cancel</button>
+    <div class="modal-content" style="max-width: 420px;">
+        <div style="text-align: center; padding: 8px 0;">
+            <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-exclamation-triangle" style="font-size:1.4rem;color:#f59e0b;"></i>
+            </div>
+            <h3 id="confirmTitle" style="margin-bottom:8px;">Confirm Action</h3>
+            <p id="confirmMessage" style="color:#64748b;">Are you sure?</p>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 24px;">
+                <button class="btn" id="confirmYes" style="min-width:100px;">Yes, Confirm</button>
+                <button class="btn btn-secondary" onclick="closeModal('confirmModal')" style="min-width:100px;">Cancel</button>
+            </div>
         </div>
     </div>
 </div>

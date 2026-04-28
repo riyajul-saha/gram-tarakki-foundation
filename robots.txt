@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
+Disallow: /upload/
 
 Sitemap: https://gram-tarakki-foundation.onrender.com/sitemap.xml

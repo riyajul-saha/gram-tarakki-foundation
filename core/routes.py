@@ -1,5 +1,6 @@
 import os
 import uuid
+import re
 from datetime import datetime
 from flask import render_template, request, jsonify, send_file, abort
 from werkzeug.utils import secure_filename
@@ -7,135 +8,197 @@ from core.email_sender import send_email_async
 from core.db import get_db_connection, init_db
 import mysql.connector
 
+# ==============================================================================
+# Initialization
+# ==============================================================================
 def init_routes(app):
+    """
+    Initializes all core application routes.
+    """
+
+    # ==========================================================================
+    # PUBLIC PAGE ROUTES
+    # Routes for rendering static/informational pages
+    # ==========================================================================
+    
     @app.route("/")
     def home():
-      return render_template('index.html')
+        """Render the home page."""
+        return render_template('index.html')
 
     @app.route("/about")
     def about():
-      return render_template('about.html')
+        """Render the about us page."""
+        return render_template('about.html')
 
     @app.route("/programs")
     def programs():
-      return render_template('programs.html')
+        """Render the main programs page."""
+        return render_template('programs.html')
+
+    @app.route("/gallery")
+    def gallery():
+        """Render the gallery page."""
+        return render_template('gallery.html')
+
+    @app.route("/volunteer")
+    def volunteer():
+        """Render the volunteer information page."""
+        return render_template('volunteer.html')
+
+    @app.route("/partners")
+    def partners():
+        """Render the partners information page."""
+        return render_template('partners.html')
+
+    # ==========================================================================
+    # PROGRAM SPECIFIC ROUTES
+    # Routes for individual program details
+    # ==========================================================================
+
+    @app.route("/karate")
+    def karate():
+        """Render the Karate program page."""
+        return render_template('programs/programs-karate.html')
+
+    @app.route("/yoga")
+    def yoga():
+        """Render the Yoga program page."""
+        return render_template('programs/programs-yoga.html')
+
+    @app.route("/internship")
+    def internship():
+        """Render the Internship program page."""
+        return render_template('programs/programs-internship.html')
+
+    # ==========================================================================
+    # REGISTRATION AND JOINING ROUTES
+    # Handling form submissions for students, volunteers, and partners
+    # ==========================================================================
 
     @app.route("/join", methods=["GET", "POST"])
     def join():
-      if request.method == "POST":
-        fullname = request.form.get("fullname")
-        email = request.form.get("email")
-        age = request.form.get("age")
-        gender = request.form.get("gender")
-        school = request.form.get("school")
-        parent_name = request.form.get("parentName")
-        parent_contact = request.form.get("parentContact")
-        phone = request.form.get("phone")
-        address = request.form.get("address")
-        programs_list = request.form.getlist("program")
-        program = ", ".join(programs_list) if programs_list else ""
-        experience = request.form.get("experience")
-        medical = request.form.get("medical")
+        """
+        Handle student enrollment requests.
+        GET: Renders the join form.
+        POST: Processes the form submission, saves to database, and sends confirmation email.
+        """
+        if request.method == "POST":
+            # Extract form data
+            fullname = request.form.get("fullname")
+            email = request.form.get("email")
+            age = request.form.get("age")
+            gender = request.form.get("gender")
+            school = request.form.get("school")
+            parent_name = request.form.get("parentName")
+            parent_contact = request.form.get("parentContact")
+            phone = request.form.get("phone")
+            address = request.form.get("address")
+            
+            # Combine multiple program selections into a comma-separated string
+            programs_list = request.form.getlist("program")
+            program = ", ".join(programs_list) if programs_list else ""
+            
+            experience = request.form.get("experience")
+            medical = request.form.get("medical")
 
-        # Handle student image upload
-        image_path = ""
-        if 'image' in request.files:
-            file = request.files['image']
-            if file and file.filename != '':
-                filename = secure_filename(file.filename)
-                # Validate extension
-                allowed_ext = {'jpg', 'jpeg', 'png', 'webp'}
-                ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
-                if ext in allowed_ext:
-                    unique_filename = f"{uuid.uuid4().hex}_{filename}"
-                    file_path = os.path.join(app.config['STUDENT_IMAGE_FOLDER'], unique_filename)
-                    file.save(file_path)
-                    image_path = f"/upload/student_image/{unique_filename}"
+            # Handle student image upload
+            image_path = ""
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and file.filename != '':
+                    filename = secure_filename(file.filename)
+                    # Validate file extension
+                    allowed_ext = {'jpg', 'jpeg', 'png', 'webp'}
+                    ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                    if ext in allowed_ext:
+                        unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                        os.makedirs(app.config['STUDENT_IMAGE_FOLDER'], exist_ok=True)
+                        file_path = os.path.join(app.config['STUDENT_IMAGE_FOLDER'], unique_filename)
+                        file.save(file_path)
+                        image_path = f"/upload/student_image/{unique_filename}"
 
-        def validate_opt(val):
-            return val if (val and val.strip() != "") else "NaN"
-
-        try:
-            conn = get_db_connection()
-            if not conn:
-                init_db()  # Try to initialize if connection fails
-                conn = get_db_connection()
-                if not conn:
-                    return jsonify({"status": "error", "message": "Database connection failed"}), 500
-
-            cursor = conn.cursor()
+            # Helper to replace empty strings with "NaN" as expected by the DB schema
+            def validate_opt(val):
+                return val if (val and val.strip() != "") else "NaN"
 
             try:
-                # Check if exists
-                cursor.execute("SELECT id FROM join_student WHERE fullname = %s AND email = %s", (fullname, email))
-            except mysql.connector.Error as err:
-                if err.errno == 1146: # Table doesn't exist
-                    init_db()
-                    # Get a fresh connection after initialization
-                    cursor.close()
-                    conn.close()
+                # Database connection
+                conn = get_db_connection()
+                if not conn:
+                    init_db()  # Try to initialize if connection fails
                     conn = get_db_connection()
                     if not conn:
-                        return jsonify({"status": "error", "message": "Database connection failed after init"}), 500
-                    cursor = conn.cursor()
-                    cursor.execute("SELECT id FROM join_student WHERE fullname = %s AND email = %s", (fullname, email))
-                else:
-                    raise
+                        return jsonify({"status": "error", "message": "Database connection failed"}), 500
 
-            if cursor.fetchone():
+                cursor = conn.cursor()
+
+                try:
+                    # Check if student already exists
+                    cursor.execute("SELECT id FROM join_student WHERE fullname = %s AND email = %s", (fullname, email))
+                except mysql.connector.Error as err:
+                    if err.errno == 1146: # Table doesn't exist
+                        init_db()
+                        # Get a fresh connection after initialization
+                        cursor.close()
+                        conn.close()
+                        conn = get_db_connection()
+                        if not conn:
+                            return jsonify({"status": "error", "message": "Database connection failed after init"}), 500
+                        cursor = conn.cursor()
+                        cursor.execute("SELECT id FROM join_student WHERE fullname = %s AND email = %s", (fullname, email))
+                    else:
+                        raise
+
+                if cursor.fetchone():
+                    cursor.close()
+                    conn.close()
+                    return jsonify({"status": "exists", "message": "You already joined, for any help contact us"})
+
+                # Insert new student record
+                cursor.execute("""
+                    INSERT INTO join_student (fullname, email, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical, image, status)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending')
+                """, (
+                    fullname, email, int(age) if age else None, gender,
+                    validate_opt(school), validate_opt(parent_name), validate_opt(parent_contact),
+                    validate_opt(phone), address, program, experience, validate_opt(medical),
+                    image_path if image_path else None
+                ))
+                conn.commit()
                 cursor.close()
                 conn.close()
-                return jsonify({"status": "exists", "message": "You already joined, for any help contact us"})
 
-            # Insert (save optional fields as NaN if they are empty string / None in Python, but DB schema expects string)
-            # We will save string "NaN" for optional empty values as requested by user.
-            cursor.execute("""
-                INSERT INTO join_student (fullname, email, age, gender, school, parent_name, parent_contact, phone, address, program, experience, medical, image, status)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending')
-            """, (
-                fullname,
-                email,
-                int(age) if age else None,
-                gender,
-                validate_opt(school),
-                validate_opt(parent_name),
-                validate_opt(parent_contact),
-                validate_opt(phone),
-                address,
-                program,
-                experience,
-                validate_opt(medical),
-                image_path if image_path else None
-            ))
-            conn.commit()
-            cursor.close()
-            conn.close()
+                # Send confirmation email
+                if email:
+                    try:
+                        current_date = datetime.now().strftime("%d %B %Y")
+                        if current_date.startswith("0"):
+                            current_date = current_date[1:]
 
-            # Send confirmation email synchronously
-            if email:
-                try:
-                    current_date = datetime.now().strftime("%d %B %Y")
-                    if current_date.startswith("0"):
-                        current_date = current_date[1:]
+                        html_body = render_template('emails/student_join_mail.html', 
+                                                    fullname=fullname, 
+                                                    program=program, 
+                                                    date=current_date)
 
-                    html_body = render_template('emails/student_join_mail.html', 
-                                                fullname=fullname, 
-                                                program=program, 
-                                                date=current_date)
+                        send_email_async(email, html_body)
+                    except Exception as e:
+                        print(f"Failed to prepare or send confirmation email: {e}")
 
-                    send_email_sync(email, html_body)
-                except Exception as e:
-                    print(f"Failed to prepare or send confirmation email: {e}")
+                return jsonify({"status": "success"})
+            except Exception as e:
+                print(f"Error handling join request: {e}")
+                return jsonify({"status": "error", "message": "Failed to submit. Please try again later."}), 500
 
-            return jsonify({"status": "success"})
-        except Exception as e:
-            print(f"Error handling join request: {e}")
-            return jsonify({"status": "error", "message": "Failed to submit. Please try again later."}), 500
-
-      return render_template('join.html')
+        # Render the join page on GET
+        return render_template('join.html')
 
     @app.route("/volunteer_join", methods=["POST"])
     def volunteer_join():
+        """
+        Handle volunteer registration form submissions.
+        """
+        # Extract form data
         fullname = request.form.get("fullname")
         email = request.form.get("email")
         phone = request.form.get("phone")
@@ -145,18 +208,19 @@ def init_routes(app):
         skills = request.form.get("skills")
         availability = request.form.get("availability")
 
+        # Handle resume file upload
         resume_path = ""
-        # Handle file upload
         if 'resume' in request.files:
             file = request.files['resume']
             if file and file.filename != '':
                 filename = secure_filename(file.filename)
                 unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
                 file.save(file_path)
-                # Store relative path for DB
                 resume_path = f"/upload/resume/{unique_filename}"
 
+        # Handle profile photo upload
         profile_photo_path = ""
         if 'profile_photo' in request.files:
             file = request.files['profile_photo']
@@ -170,6 +234,7 @@ def init_routes(app):
                 profile_photo_path = f"/upload/voluteer/{unique_filename}"
 
         try:
+            # Database connection
             conn = get_db_connection()
             if not conn:
                 init_db()  # Try to initialize if connection fails
@@ -180,7 +245,7 @@ def init_routes(app):
             cursor = conn.cursor()
 
             try:
-                # Check if joining with same email already exists in volunteers
+                # Ensure the table exists
                 cursor.execute("SELECT id FROM join_volunteer WHERE email = %s", (email,))
                 cursor.fetchall()
             except mysql.connector.Error as err:
@@ -192,35 +257,23 @@ def init_routes(app):
                     if not conn:
                         return jsonify({"status": "error", "message": "Database connection failed after init"}), 500
                     cursor = conn.cursor()
-                    cursor.execute("SELECT id FROM join_volunteer WHERE email = %s", (email,))
-                    cursor.fetchall()
                 else:
                     raise
 
-            # We can allow multiple registrations with same email or restrict. Here we allow or just check if same email + role
-            # Let's say we don't block them entirely unless they submitted recently. For now no blockage block since user didn't ask.
-            # It's better to just insert it.
-
+            # Insert new volunteer record
             cursor.execute("""
                 INSERT INTO join_volunteer (fullname, email, phone, city, age, role, skills, availability, resume_path, profile_photo, status)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending')
             """, (
-                fullname,
-                email,
-                phone,
-                city,
+                fullname, email, phone, city,
                 int(age) if age and str(age).strip() else None,
-                role,
-                skills,
-                availability,
-                resume_path,
-                profile_photo_path
+                role, skills, availability, resume_path, profile_photo_path
             ))
             conn.commit()
             cursor.close()
             conn.close()
 
-            # Send confirmation email synchronously
+            # Send confirmation email
             if email:
                 try:
                     html_body = render_template('emails/email_to_volunteer.html', 
@@ -229,7 +282,7 @@ def init_routes(app):
                                                 skills=skills,
                                                 role=role)
 
-                    send_email_sync(email, html_body)
+                    send_email_async(email, html_body)
                 except Exception as e:
                     print(f"Failed to prepare or send confirmation email: {e}")
 
@@ -240,12 +293,18 @@ def init_routes(app):
 
     @app.route("/partner_join", methods=["POST"])
     def partner_join():
+        """
+        Handle partnership inquiries form submissions.
+        """
+        # Extract form data
         org_name = request.form.get("orgName")
         contact_person = request.form.get("contactPerson")
         email = request.form.get("email")
         phone = request.form.get("phone")
         city = request.form.get("city")
         partner_type = request.form.get("partnerType")
+        
+        # Handle "Other" partner type
         other_type = request.form.get("otherType")
         if partner_type == "Other" and other_type:
             partner_type = other_type
@@ -253,17 +312,20 @@ def init_routes(app):
         support_type = request.form.get("supportType", "")
         message_content = request.form.get("message", "")
 
+        # Handle partner logo upload
         logo_path = ""
         if 'logoUpload' in request.files:
             file = request.files['logoUpload']
             if file and file.filename != '':
                 filename = secure_filename(file.filename)
                 unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                os.makedirs(app.config['PARTNER_LOGO_FOLDER'], exist_ok=True)
                 file_path = os.path.join(app.config['PARTNER_LOGO_FOLDER'], unique_filename)
                 file.save(file_path)
                 logo_path = f"/upload/partner_logo/{unique_filename}"
 
         try:
+            # Database connection
             conn = get_db_connection()
             if not conn:
                 init_db()
@@ -274,10 +336,11 @@ def init_routes(app):
             cursor = conn.cursor()
 
             try:
-                cursor.execute("SELECT id FROM join_partner WHERE email = %s", (email,))
+                # Ensure the table exists
+                cursor.execute("SELECT id FROM join_partner LIMIT 1")
                 cursor.fetchall()
             except mysql.connector.Error as err:
-                if err.errno == 1146:
+                if err.errno == 1146: # Table doesn't exist
                     init_db()
                     cursor.close()
                     conn.close()
@@ -285,192 +348,52 @@ def init_routes(app):
                     if not conn:
                         return jsonify({"status": "error", "message": "Database connection failed after init"}), 500
                     cursor = conn.cursor()
-                    cursor.execute("SELECT id FROM join_partner WHERE email = %s", (email,))
-                    cursor.fetchall()
                 else:
                     raise
 
+            # Insert new partner record
             cursor.execute("""
                 INSERT INTO join_partner (org_name, contact_person, email, phone, city, partner_type, support_type, message, logo_path, status)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending')
             """, (
-                org_name,
-                contact_person,
-                email,
-                phone,
-                city,
-                partner_type,
-                support_type,
-                message_content,
-                logo_path
+                org_name, contact_person, email, phone, city,
+                partner_type, support_type, message_content, logo_path
             ))
             conn.commit()
             cursor.close()
             conn.close()
 
-            # Send confirmation email if required later
+            # Note: Confirmation email could be added here in the future
 
             return jsonify({"status": "success", "message": "Your partnership application has been submitted successfully. We will contact you soon."})
         except Exception as e:
             print(f"Error handling partnership request: {e}")
             return jsonify({"status": "error", "message": "Failed to submit. Please try again later."}), 500
 
-    @app.route("/api/donate/initiate", methods=["POST"])
-    def initiate_donation():
-        data = request.json
-        if not data:
-            return jsonify({"status": "error", "message": "No data provided"}), 400
-            
-        fullname = data.get("fullname")
-        email = data.get("email")
-        phone = data.get("phone")
-        city = data.get("city", "")
-        pan = data.get("pan", "")
-        message = data.get("message", "")
-        amount = data.get("amount")
-        payment_method = data.get("paymentMethod")
-        
-        if not all([fullname, email, phone, amount, payment_method]):
-            return jsonify({"status": "error", "message": "Missing required fields"}), 400
-            
-        try:
-            conn = get_db_connection()
-            if not conn:
-                init_db()
-                conn = get_db_connection()
-                if not conn:
-                    return jsonify({"status": "error", "message": "Database error"}), 500
-                    
-            cursor = conn.cursor()
-            
-            # Ensure table exists
-            try:
-                cursor.execute("SELECT id FROM donate LIMIT 1")
-                cursor.fetchall()
-            except mysql.connector.Error as err:
-                if err.errno == 1146:
-                    init_db()
-                    cursor.close()
-                    conn.close()
-                    conn = get_db_connection()
-                    cursor = conn.cursor()
-                else:
-                    raise
-            
-            # Check if a pending donation with same email, phone, and amount already exists
-            cursor.execute("""
-                SELECT id FROM donate WHERE email = %s AND phone = %s AND amount = %s AND status = 'pending'
-            """, (email, phone, amount))
-            existing = cursor.fetchone()
-            
-            if existing:
-                donation_id = existing[0]
-            else:
-                cursor.execute("""
-                    INSERT INTO donate (fullname, email, phone, city, pan, message, amount, payment_method, status)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'pending')
-                """, (fullname, email, phone, city, pan, message, amount, payment_method))
-                donation_id = cursor.lastrowid
-                conn.commit()
-            cursor.close()
-            conn.close()
-            
-            return jsonify({"status": "success", "donation_id": donation_id})
-            
-        except Exception as e:
-            print(f"Error initiating donation: {e}")
-            return jsonify({"status": "error", "message": "Failed to initiate donation"}), 500
-
-    @app.route("/api/donate/verify", methods=["POST"])
-    def verify_donation():
-        data = request.json
-        donation_id = data.get("donation_id")
-        status = data.get("status")
-        transaction_id = data.get("transaction_id", "")
-        
-        if not donation_id or not status:
-            return jsonify({"status": "error", "message": "Missing required fields"}), 400
-            
-        try:
-            conn = get_db_connection()
-            if not conn:
-                return jsonify({"status": "error", "message": "Database error"}), 500
-                
-            cursor = conn.cursor()
-            
-            cursor.execute("""
-                UPDATE donate SET status = %s, transaction_id = %s WHERE id = %s
-            """, (status, transaction_id, donation_id))
-            
-            conn.commit()
-            cursor.close()
-            conn.close()
-            
-            return jsonify({"status": "success", "message": "Donation verified"})
-            
-        except Exception as e:
-            print(f"Error verifying donation: {e}")
-            return jsonify({"status": "error", "message": "Failed to verify donation"}), 500
-
-    @app.route("/karate")
-    def karate():
-      return render_template('programs/programs-karate.html')
-
-    @app.route("/yoga")
-    def yoga():
-      return render_template('programs/programs-yoga.html')
-
-    @app.route("/internship")
-    def internship():
-      return render_template('programs/programs-internship.html')
-
-    @app.route("/donate")
-    def donate():
-      return render_template('donate.html')
-
-    @app.route("/gallery")
-    def gallery():
-      return render_template('gallery.html')
-
-    @app.route("/volunteer")
-    def volunteer():
-      return render_template('volunteer.html')
-
-    @app.route("/partners")
-    def partners():
-      return render_template('partners.html')
-
-    @app.route("/api/data/<filename>")
-    def serve_data_file(filename):
-        """Serve JSON data files from the root data/ folder (not publicly accessible via /static)."""
-        ALLOWED_FILES = {'carrier.json', 'program_info.json'}
-        if filename not in ALLOWED_FILES:
-            abort(404)
-        file_path = os.path.join(app.root_path, 'data', filename)
-        if not os.path.exists(file_path):
-            abort(404)
-        return send_file(file_path, mimetype='application/json')
+    # ==========================================================================
+    # CAREER AND JOB APPLICATION ROUTES
+    # Handling job listings and applications
+    # ==========================================================================
 
     @app.route("/carrier")
     def carrier():
-      return render_template('carrier.html')
+        """Render the career page displaying available jobs."""
+        return render_template('carrier.html')
 
     @app.route("/apply-job", methods=["POST"])
     def apply_job():
-        import re
-        import os
-        import uuid
-        from werkzeug.utils import secure_filename
-        
+        """
+        Handle job applications submitted from the career portal.
+        """
+        # Helper to sanitize inputs and prevent XSS
         def sanitize(text):
             if not text:
                 return text
-            # Remove any html tags to prevent XSS
             text = re.sub(r'<[^>]*>', '', text)
-            # Remove potentially dangerous sql fragments or script tags (though parameterized queries protect SQL)
             text = re.sub(r'(?i)(<script>|javascript:|onerror=|onload=)', '', text)
             return text.strip()
 
+        # Extract and sanitize form data
         job_id = request.form.get("jobId")
         fullname = sanitize(request.form.get("fullname"))
         email = sanitize(request.form.get("email"))
@@ -480,7 +403,7 @@ def init_routes(app):
         cover_letter = sanitize(request.form.get("cover_letter"))
         skills = sanitize(request.form.get("skills"))
         
-        # Experience must be a non-negative integer
+        # Parse experience as integer
         experience_raw = request.form.get("experience", "0")
         try:
             experience = int(experience_raw)
@@ -489,10 +412,11 @@ def init_routes(app):
         except (ValueError, TypeError):
             experience = 0
 
+        # Validate required fields
         if not fullname or not email or not phone or not job_id:
             return jsonify({"status": "error", "message": "Missing required fields"}), 400
 
-        # Handle resume upload
+        # Handle resume upload (required)
         resume_path = ""
         if 'resume' in request.files:
             file = request.files['resume']
@@ -507,7 +431,7 @@ def init_routes(app):
         else:
             return jsonify({"status": "error", "message": "Resume is required"}), 400
 
-        # Handle photo upload
+        # Handle applicant photo upload (optional)
         photo_path = ""
         if 'photo' in request.files:
             file = request.files['photo']
@@ -524,6 +448,7 @@ def init_routes(app):
                     photo_path = f"/upload/staff_photo/{unique_filename}"
 
         try:
+            # Database connection
             conn = get_db_connection()
             if not conn:
                 init_db()
@@ -534,7 +459,7 @@ def init_routes(app):
             cursor = conn.cursor()
 
             try:
-                # Check if table exists
+                # Ensure the table exists
                 cursor.execute("SELECT id FROM join_staff LIMIT 1")
                 cursor.fetchall()
             except mysql.connector.Error as err:
@@ -549,6 +474,7 @@ def init_routes(app):
                 else:
                     raise
 
+            # Insert application record
             cursor.execute("""
                 INSERT INTO join_staff (fullname, email, phone, location, linkedin, cover_letter, position, resume, photo, experience, skills, status)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'applied')
@@ -563,3 +489,145 @@ def init_routes(app):
             print(f"Error handling job application: {e}")
             return jsonify({"status": "error", "message": "Failed to submit application"}), 500
 
+    # ==========================================================================
+    # DONATION ROUTES
+    # Handling donation form UI and payment APIs
+    # ==========================================================================
+
+    @app.route("/donate")
+    def donate():
+        """Render the donation page."""
+        return render_template('donate.html')
+
+    @app.route("/api/donate/initiate", methods=["POST"])
+    def initiate_donation():
+        """
+        Initiate a donation transaction.
+        Creates a pending record in the database.
+        """
+        data = request.json
+        if not data:
+            return jsonify({"status": "error", "message": "No data provided"}), 400
+            
+        # Extract donation data
+        fullname = data.get("fullname")
+        email = data.get("email")
+        phone = data.get("phone")
+        city = data.get("city", "")
+        pan = data.get("pan", "")
+        message = data.get("message", "")
+        amount = data.get("amount")
+        payment_method = data.get("paymentMethod")
+        
+        # Validate required fields
+        if not all([fullname, email, phone, amount, payment_method]):
+            return jsonify({"status": "error", "message": "Missing required fields"}), 400
+            
+        try:
+            # Database connection
+            conn = get_db_connection()
+            if not conn:
+                init_db()
+                conn = get_db_connection()
+                if not conn:
+                    return jsonify({"status": "error", "message": "Database error"}), 500
+                    
+            cursor = conn.cursor()
+            
+            # Ensure the table exists
+            try:
+                cursor.execute("SELECT id FROM donate LIMIT 1")
+                cursor.fetchall()
+            except mysql.connector.Error as err:
+                if err.errno == 1146: # Table doesn't exist
+                    init_db()
+                    cursor.close()
+                    conn.close()
+                    conn = get_db_connection()
+                    cursor = conn.cursor()
+                else:
+                    raise
+            
+            # Check for existing pending donation to avoid duplicates
+            cursor.execute("""
+                SELECT id FROM donate WHERE email = %s AND phone = %s AND amount = %s AND status = 'pending'
+            """, (email, phone, amount))
+            existing = cursor.fetchone()
+            
+            if existing:
+                donation_id = existing[0]
+            else:
+                # Create new pending donation record
+                cursor.execute("""
+                    INSERT INTO donate (fullname, email, phone, city, pan, message, amount, payment_method, status)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'pending')
+                """, (fullname, email, phone, city, pan, message, amount, payment_method))
+                donation_id = cursor.lastrowid
+                conn.commit()
+                
+            cursor.close()
+            conn.close()
+            
+            return jsonify({"status": "success", "donation_id": donation_id})
+            
+        except Exception as e:
+            print(f"Error initiating donation: {e}")
+            return jsonify({"status": "error", "message": "Failed to initiate donation"}), 500
+
+    @app.route("/api/donate/verify", methods=["POST"])
+    def verify_donation():
+        """
+        Verify and complete a donation transaction.
+        Updates the transaction status in the database.
+        """
+        data = request.json
+        donation_id = data.get("donation_id")
+        status = data.get("status")
+        transaction_id = data.get("transaction_id", "")
+        
+        # Validate required fields
+        if not donation_id or not status:
+            return jsonify({"status": "error", "message": "Missing required fields"}), 400
+            
+        try:
+            # Database connection
+            conn = get_db_connection()
+            if not conn:
+                return jsonify({"status": "error", "message": "Database error"}), 500
+                
+            cursor = conn.cursor()
+            
+            # Update the donation status
+            cursor.execute("""
+                UPDATE donate SET status = %s, transaction_id = %s WHERE id = %s
+            """, (status, transaction_id, donation_id))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return jsonify({"status": "success", "message": "Donation verified"})
+            
+        except Exception as e:
+            print(f"Error verifying donation: {e}")
+            return jsonify({"status": "error", "message": "Failed to verify donation"}), 500
+
+    # ==========================================================================
+    # UTILITY ROUTES
+    # ==========================================================================
+
+    @app.route("/api/data/<filename>")
+    def serve_data_file(filename):
+        """
+        Serve JSON data files from the root data/ folder securely.
+        (Ensures files are not publicly accessible via /static)
+        """
+        ALLOWED_FILES = {'carrier.json', 'program_info.json'}
+        if filename not in ALLOWED_FILES:
+            abort(404)
+            
+        file_path = os.path.join(app.root_path, 'data', filename)
+        if not os.path.exists(file_path):
+            abort(404)
+            
+        return send_file(file_path, mimetype='application/json')

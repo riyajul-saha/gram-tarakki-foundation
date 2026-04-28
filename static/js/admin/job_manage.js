@@ -228,7 +228,7 @@ async function toggleJobStatus(id, currentStatus) {
 }
 
 function renderApplicants() {
-    let html = `<div class="filter-bar"><div class="filter-left"><div class="search-input"><i class="fas fa-search"></i><input id="applicantSearch" placeholder="Search..."></div><select id="statusFilter" class="filter-select"><option value="">All Status</option><option>applied</option><option>shortlisted</option><option>interview</option><option>selected</option><option>rejected</option></select><select id="jobFilter" class="filter-select"><option value="">All Jobs</option>${jobs.map(j => `<option value="${j.id}">${j.title}</option>`).join('')}</select></div><div><button class="btn-sm btn-outline" id="bulkReject">Bulk Reject</button><button class="btn-sm" id="bulkShortlist">Bulk Shortlist</button></div></div><div class="table-wrapper"><table><thead><tr><th><input type="checkbox" id="selectAll"></th><th>Photo</th><th>Name/Email</th><th>Phone</th><th>Applied For</th><th>Experience</th><th>Resume</th><th>Status</th><th>Actions</th></tr></thead><tbody id="applicantsTable"></tbody></table></div>`;
+    let html = `<div class="filter-bar"><div class="filter-left"><div class="search-input"><i class="fas fa-search"></i><input id="applicantSearch" placeholder="Search..."></div><select id="statusFilter" class="filter-select"><option value="">All Status</option><option>applied</option><option>shortlisted</option><option>interview</option><option>selected</option><option>rejected</option><option>resign</option></select><select id="jobFilter" class="filter-select"><option value="">All Jobs</option>${jobs.map(j => `<option value="${j.id}">${j.title}</option>`).join('')}</select></div><div><button class="btn-sm btn-outline" id="bulkReject">Bulk Reject</button><button class="btn-sm" id="bulkShortlist">Bulk Shortlist</button></div></div><div class="table-wrapper"><table><thead><tr><th><input type="checkbox" id="selectAll"></th><th>Photo</th><th>Name/Email</th><th>Phone</th><th>Applied For</th><th>Experience</th><th>Resume</th><th>Status</th><th>Actions</th></tr></thead><tbody id="applicantsTable"></tbody></table></div>`;
     document.getElementById('tabApplicants').innerHTML = html;
     function filterApplicants() {
         let search = document.getElementById('applicantSearch').value.toLowerCase();
@@ -262,7 +262,9 @@ function renderApplicants() {
                 shortlistOrAcceptBtn = `<button class="icon-btn-sm" onclick="updateApplicantStatus(${a.id}, 'shortlisted')" title="Shortlist"><i class="fas fa-star"></i></button>`;
                 interviewBtn = `<button class="icon-btn-sm" onclick="openInterviewModal(${a.id})" title="Schedule Interview"><i class="fas fa-calendar"></i></button>`;
             }
-            return `<tr><td><input type="checkbox" class="applicantCheck" data-id="${a.id}"></td><td>${photoTd}</td><td>${a.name}<br><small>${a.email}</small></td><td>${a.phone}</td><td>${appliedForDisplay}</td><td>${a.experience || '--'}</td><td><button class="icon-btn-sm" onclick="viewResume('${a.resume}')"><i class="fas fa-file-pdf"></i></button></td><td><span class="status-badge status-${a.status}">${a.status}</span></td><td><div class="action-btns"><button class="icon-btn-sm" onclick="viewApplicant(${a.id})" title="View"><i class="fas fa-eye"></i></button>${shortlistOrAcceptBtn}<button class="icon-btn-sm" onclick="updateApplicantStatus(${a.id}, 'rejected')" title="Reject"><i class="fas fa-times"></i></button>${interviewBtn}</div></td></tr>`;
+            let rejectBtnTitle = a.status === 'selected' ? 'Resign' : 'Reject';
+            let rejectBtnClass = a.status === 'selected' ? 'fa-user-times' : 'fa-times';
+            return `<tr><td><input type="checkbox" class="applicantCheck" data-id="${a.id}"></td><td>${photoTd}</td><td>${a.name}<br><small>${a.email}</small></td><td>${a.phone}</td><td>${appliedForDisplay}</td><td>${a.experience || '--'}</td><td><button class="icon-btn-sm" onclick="viewResume('${a.resume}')"><i class="fas fa-file-pdf"></i></button></td><td><span class="status-badge status-${a.status}">${a.status}</span></td><td><div class="action-btns"><button class="icon-btn-sm" onclick="viewApplicant(${a.id})" title="View"><i class="fas fa-eye"></i></button>${shortlistOrAcceptBtn}<button class="icon-btn-sm" onclick="updateApplicantStatus(${a.id}, 'rejected')" title="${rejectBtnTitle}"><i class="fas ${rejectBtnClass}"></i></button>${interviewBtn}</div></td></tr>`;
         }).join('');
         attachBulkEvents();
     }
@@ -286,19 +288,28 @@ function viewApplicant(id) {
     const detailPhoto = a.photo ? `<img src="${a.photo}" width="80" style="border-radius:50%;object-fit:cover">` : `<i class="fas fa-user-circle" style="font-size:80px;color:#94a3b8"></i>`;
     // Show Accept button if interview scheduled, hide actions if already selected
     let primaryBtn = '';
+    let rejectBtnLabel = 'Reject';
     if (a.status === 'selected') {
         // Already selected — no further action needed
         primaryBtn = '';
+        rejectBtnLabel = 'Resign';
     } else if (a.status === 'interview') {
         primaryBtn = `<button class="btn-sm" style="background:#10b981" onclick="updateApplicantStatus(${a.id}, 'selected');closeModals()"><i class="fas fa-check-circle"></i> Accept</button>`;
     } else {
         primaryBtn = `<button class="btn-sm" onclick="openInterviewModal(${a.id})">Send Interview</button>`;
     }
-    document.getElementById('applicantDetail').innerHTML = `${detailPhoto}<h3>${a.name}</h3><p>Email: ${a.email}<br>Phone: ${a.phone}<br>Job: ${jobTitle}<br>Experience: ${a.experience || '--'}<br>Skills: ${a.skills || '--'}<br>Notes: ${a.notes || '--'}</p>${primaryBtn} <button class="btn-sm btn-danger" onclick="updateApplicantStatus(${a.id}, 'rejected')">Reject</button>`;
+    document.getElementById('applicantDetail').innerHTML = `${detailPhoto}<h3>${a.name}</h3><p>Email: ${a.email}<br>Phone: ${a.phone}<br>Job: ${jobTitle}<br>Experience: ${a.experience || '--'}<br>Skills: ${a.skills || '--'}<br>Notes: ${a.notes || '--'}</p>${primaryBtn} <button class="btn-sm btn-danger" onclick="updateApplicantStatus(${a.id}, 'rejected');closeModals()">${rejectBtnLabel}</button>`;
     document.getElementById('applicantModal').classList.add('active');
 }
 
 async function updateApplicantStatus(id, newStatus) {
+    let a = applicants.find(a => a.id === id);
+    if (a && newStatus === 'rejected') {
+        if (a.status === 'selected' || a.status === 'active' || a.status === 'approved') {
+            newStatus = 'resign';
+        }
+    }
+
     try {
         const res = await fetch('/admin/api/applicants', {
             method: 'POST',
