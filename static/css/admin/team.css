@@ -833,6 +833,11 @@ td small,
     font-size: 0.88rem;
 }
 
+.required-star {
+    color: #ef4444;
+    font-weight: 700;
+}
+
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -854,6 +859,459 @@ td small,
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
+/* ========================================
+   Add Staff Modal – Premium Redesign
+   ======================================== */
+
+.add-staff-modal {
+    max-width: 640px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.add-staff-modal > .close-modal {
+    top: 18px;
+    right: 18px;
+    z-index: 2;
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(4px);
+}
+.add-staff-modal > .close-modal:hover {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+/* Modal Header */
+.add-staff-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0ea5e9 100%);
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+}
+.add-staff-header::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    right: -15%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.add-staff-header-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #38bdf8;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.add-staff-header h2 {
+    color: #ffffff !important;
+    margin: 0 0 2px !important;
+    font-size: 1.3rem !important;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.add-staff-subtitle {
+    color: rgba(255,255,255,0.55) !important;
+    font-size: 0.82rem !important;
+    margin: 0 !important;
+}
+
+/* Form Body */
+.add-staff-modal form {
+    padding: 24px 32px 32px;
+    max-height: calc(90vh - 110px);
+    overflow-y: auto;
+}
+
+/* Custom scrollbar */
+.add-staff-modal form::-webkit-scrollbar {
+    width: 5px;
+}
+.add-staff-modal form::-webkit-scrollbar-track {
+    background: transparent;
+}
+.add-staff-modal form::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+.add-staff-modal form::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Form Sections */
+.form-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    transition: border-color 0.2s ease;
+}
+.form-section:hover {
+    border-color: #cbd5e1;
+}
+
+.form-section::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 0;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
+    background: linear-gradient(180deg, #3b82f6, #6366f1);
+}
+
+.form-section-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #3b82f6;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.form-section-title i {
+    font-size: 0.85rem;
+    color: #6366f1;
+}
+
+/* Form Rows */
+.form-row {
+    margin-bottom: 0;
+}
+.form-row-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+/* Input Icon Wrapper */
+.input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon-wrapper > i:first-child {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    z-index: 1;
+    pointer-events: none;
+    transition: color 0.2s ease;
+}
+.input-icon-wrapper:focus-within > i:first-child {
+    color: #3b82f6;
+}
+
+.input-icon-wrapper input,
+.input-icon-wrapper select {
+    padding-left: 40px !important;
+}
+
+.input-icon-wrapper textarea {
+    padding-left: 40px !important;
+}
+
+.textarea-wrapper {
+    align-items: flex-start;
+}
+.textarea-wrapper > i:first-child {
+    top: 12px;
+    position: absolute;
+}
+
+/* Conditional fields (admin / volunteer / other) */
+.conditional-fields {
+    display: none;
+    animation: fieldSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed #e2e8f0;
+}
+.conditional-fields.visible {
+    display: block;
+}
+
+@keyframes fieldSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Admin Notice */
+.admin-notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #eff6ff, #eef2ff);
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 0.82rem;
+    color: #3b82f6;
+    font-weight: 600;
+}
+.admin-notice i {
+    font-size: 1rem;
+    color: #6366f1;
+}
+
+/* Toggle password button */
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #94a3b8;
+    padding: 4px;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+    z-index: 1;
+}
+.toggle-password:hover {
+    color: #3b82f6;
+}
+
+/* ========================================
+   Password Strength Meter
+   ======================================== */
+.password-strength-container {
+    margin-top: 10px;
+}
+
+.strength-bar-track {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.strength-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
+    background: #e2e8f0;
+}
+
+.strength-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Strength levels */
+.strength-bar-fill.strength-weak {
+    background: linear-gradient(90deg, #ef4444, #f97316);
+    width: 25%;
+}
+.strength-bar-fill.strength-fair {
+    background: linear-gradient(90deg, #f97316, #f59e0b);
+    width: 50%;
+}
+.strength-bar-fill.strength-good {
+    background: linear-gradient(90deg, #f59e0b, #22c55e);
+    width: 75%;
+}
+.strength-bar-fill.strength-strong {
+    background: linear-gradient(90deg, #22c55e, #10b981);
+    width: 100%;
+}
+
+.strength-criteria {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 12px;
+}
+
+.criteria-item {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s ease;
+    padding: 2px 0;
+}
+.criteria-item i {
+    font-size: 0.4rem;
+    transition: all 0.25s ease;
+}
+
+.criteria-item.met {
+    color: #10b981;
+}
+.criteria-item.met i {
+    font-size: 0.55rem;
+}
+
+/* Password match message */
+.password-match-msg {
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 6px;
+    min-height: 18px;
+    transition: all 0.2s ease;
+}
+.password-match-msg.match {
+    color: #10b981;
+}
+.password-match-msg.no-match {
+    color: #ef4444;
+}
+
+/* ========================================
+   File Upload Cards
+   ======================================== */
+.file-upload-card {
+    border: 2px dashed #e2e8f0;
+    border-radius: 14px;
+    padding: 0;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+.file-upload-card:hover {
+    border-color: #3b82f6;
+    background: #f0f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.08);
+}
+.file-upload-card.has-file {
+    border-color: #10b981;
+    border-style: solid;
+    background: #f0fdf4;
+}
+
+.file-upload-card input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.file-upload-inner {
+    padding: 20px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.file-upload-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+}
+.photo-icon {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+.doc-icon {
+    background: #fef3c7;
+    color: #f59e0b;
+}
+.file-upload-card.has-file .file-upload-icon {
+    background: #d1fae5;
+    color: #10b981;
+}
+
+.file-upload-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.file-upload-hint {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* Submit Button */
+.add-staff-submit-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    border-radius: 14px !important;
+    background: linear-gradient(135deg, #3b82f6, #6366f1) !important;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
+    letter-spacing: 0.01em;
+    margin-top: 4px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    overflow: hidden;
+}
+.add-staff-submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.5s ease;
+}
+.add-staff-submit-btn:hover::before {
+    left: 100%;
+}
+.add-staff-submit-btn:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 28px rgba(99, 102, 241, 0.4) !important;
+    background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
+}
+
+/* Legacy file-upload (keep for other modals) */
 .file-upload {
     border: 2px dashed #e2e8f0;
     border-radius: 14px;
@@ -876,6 +1334,211 @@ td small,
     display: block;
     font-size: 1.5rem;
     margin-bottom: 8px;
+}
+
+/* ========================================
+   Edit Staff Modal – Premium Redesign
+   ======================================== */
+
+.edit-staff-modal {
+    max-width: 640px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.edit-staff-modal > .close-modal {
+    top: 18px;
+    right: 18px;
+    z-index: 2;
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(4px);
+}
+.edit-staff-modal > .close-modal:hover {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+/* Edit Modal Header */
+.edit-staff-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 40%, #6366f1 100%);
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+}
+.edit-staff-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+.edit-staff-header::after {
+    content: '';
+    position: absolute;
+    bottom: -40%;
+    left: 5%;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.edit-staff-header h2 {
+    color: #ffffff !important;
+    margin: 0 0 2px !important;
+    font-size: 1.3rem !important;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+/* Edit Photo Preview */
+.edit-photo-preview {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    border-radius: 16px;
+    overflow: visible;
+}
+.edit-photo-preview img {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,0.2) !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.edit-photo-badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.55rem;
+    border: 2px solid #1e293b;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+/* Edit Form Body */
+.edit-staff-modal form {
+    padding: 24px 32px 32px;
+    max-height: calc(90vh - 130px);
+    overflow-y: auto;
+}
+
+/* Custom scrollbar for edit modal */
+.edit-staff-modal form::-webkit-scrollbar {
+    width: 5px;
+}
+.edit-staff-modal form::-webkit-scrollbar-track {
+    background: transparent;
+}
+.edit-staff-modal form::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+.edit-staff-modal form::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Locked Email Field */
+.input-readonly {
+    background: #f1f5f9 !important;
+    color: #94a3b8 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+    border-color: #e2e8f0 !important;
+}
+.input-readonly:focus {
+    box-shadow: none !important;
+    border-color: #e2e8f0 !important;
+}
+
+.edit-locked-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #f1f5f9;
+    color: #94a3b8;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid #e2e8f0;
+}
+.edit-locked-badge i {
+    font-size: 0.6rem;
+}
+
+/* Edit Action Row */
+.edit-action-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.edit-cancel-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 12px 20px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.edit-cancel-btn:hover {
+    transform: translateY(-2px) !important;
+}
+
+.edit-save-btn {
+    flex: 2;
+    justify-content: center;
+    padding: 12px 24px !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, #8b5cf6, #6366f1) !important;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
+    letter-spacing: 0.01em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    overflow: hidden;
+}
+.edit-save-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.5s ease;
+}
+.edit-save-btn:hover::before {
+    left: 100%;
+}
+.edit-save-btn:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 28px rgba(99, 102, 241, 0.4) !important;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
 }
 
 /* Toast */
@@ -1037,6 +1700,64 @@ td small,
         padding: 24px 20px;
         border-radius: 16px;
     }
+
+    /* Add Staff Modal - Mobile */
+    .add-staff-modal {
+        max-width: 100% !important;
+    }
+    .add-staff-header {
+        padding: 22px 20px;
+    }
+    .add-staff-header-icon {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        font-size: 1.1rem;
+    }
+    .add-staff-header h2 {
+        font-size: 1.15rem !important;
+    }
+    .add-staff-modal form {
+        padding: 20px 20px 24px;
+    }
+    .form-section {
+        padding: 16px;
+    }
+    .form-row-2col {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    .strength-criteria {
+        grid-template-columns: 1fr;
+    }
+
+    /* Edit Staff Modal - Mobile */
+    .edit-staff-modal {
+        max-width: 100% !important;
+    }
+    .edit-staff-header {
+        padding: 22px 20px;
+    }
+    .edit-staff-header h2 {
+        font-size: 1.15rem !important;
+    }
+    .edit-staff-modal form {
+        padding: 20px 20px 24px;
+    }
+    .edit-photo-preview,
+    .edit-photo-preview img {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+    }
+    .edit-action-row {
+        flex-direction: column;
+    }
+    .edit-cancel-btn,
+    .edit-save-btn {
+        flex: unset;
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1052,5 +1773,22 @@ td small,
 
     .header-title h1 {
         font-size: 1.35rem;
+    }
+
+    .add-staff-header {
+        padding: 18px 16px;
+    }
+    .add-staff-modal form {
+        padding: 16px 16px 20px;
+    }
+    .form-section {
+        padding: 14px 12px;
+    }
+
+    .edit-staff-header {
+        padding: 18px 16px;
+    }
+    .edit-staff-modal form {
+        padding: 16px 16px 20px;
     }
 }

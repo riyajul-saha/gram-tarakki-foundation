@@ -249,8 +249,15 @@ function openAddStaffModal() {
     const form = document.getElementById('addStaffForm');
     if(form) {
         form.reset();
-        if(document.getElementById('photoUploadText')) document.getElementById('photoUploadText').innerText = 'Click to upload';
-        if(document.getElementById('docUploadText')) document.getElementById('docUploadText').innerText = 'Click to upload';
+        // Reset file upload card states
+        const photoCard = document.getElementById('photoUploadCard');
+        const docCard = document.getElementById('docUploadCard');
+        if(photoCard) photoCard.classList.remove('has-file');
+        if(docCard) docCard.classList.remove('has-file');
+        if(document.getElementById('photoUploadText')) document.getElementById('photoUploadText').innerText = 'Click to upload photo';
+        if(document.getElementById('docUploadText')) document.getElementById('docUploadText').innerText = 'Click to upload documents';
+        // Reset password UI
+        resetPasswordStrength();
         handleTypeChange();
     }
     openModal('addStaffModal');
@@ -266,11 +273,11 @@ function handleTypeChange() {
     const otherStaffFields = document.getElementById('otherStaffFields');
     const docUploadGroup = document.getElementById('docUploadGroup');
     
-    // Reset displays
-    if(adminFields) adminFields.style.display = 'none';
-    if(volunteerFields) volunteerFields.style.display = 'none';
-    if(otherStaffFields) otherStaffFields.style.display = 'none';
-    if(docUploadGroup) docUploadGroup.style.display = 'block';
+    // Reset displays using CSS class
+    if(adminFields) adminFields.classList.remove('visible');
+    if(volunteerFields) volunteerFields.classList.remove('visible');
+    if(otherStaffFields) otherStaffFields.classList.remove('visible');
+    if(docUploadGroup) docUploadGroup.style.display = '';
 
     // Remove required attributes
     ['staffPassword', 'staffConfirmPassword', 'staffServiceType', 'staffAvailability', 'staffRoleOfStaff'].forEach(id => {
@@ -278,17 +285,20 @@ function handleTypeChange() {
         if (el) el.removeAttribute('required');
     });
 
+    // Reset password strength UI
+    resetPasswordStrength();
+
     if (type === 'Admin') {
-        if(adminFields) adminFields.style.display = 'block';
+        if(adminFields) adminFields.classList.add('visible');
         if(docUploadGroup) docUploadGroup.style.display = 'none';
         document.getElementById('staffPassword').setAttribute('required', 'required');
         document.getElementById('staffConfirmPassword').setAttribute('required', 'required');
     } else if (type === 'Volunteer') {
-        if(volunteerFields) volunteerFields.style.display = 'block';
+        if(volunteerFields) volunteerFields.classList.add('visible');
         document.getElementById('staffServiceType').setAttribute('required', 'required');
         document.getElementById('staffAvailability').setAttribute('required', 'required');
     } else if (type === 'Other Staff') {
-        if(otherStaffFields) otherStaffFields.style.display = 'block';
+        if(otherStaffFields) otherStaffFields.classList.add('visible');
         document.getElementById('staffRoleOfStaff').setAttribute('required', 'required');
     }
 }
@@ -466,8 +476,159 @@ async function executeRemove(source, id) {
     }
 }
 
+// ========================================
+// Edit Staff
+// ========================================
+
 function editStaff(source, id) {
-    alert('Edit functionality - would open edit form');
+    const item = teamData.find(i => i.id === id && i.source === source);
+    if (!item) {
+        showToast('Staff member not found', 'error');
+        return;
+    }
+
+    // Close view modal if open
+    closeModal('viewModal');
+
+    // Populate header
+    const photoPreview = document.getElementById('editPhotoPreview');
+    if (photoPreview) photoPreview.src = item.photo || 'https://ui-avatars.com/api/?name=Staff';
+
+    const titleEl = document.getElementById('editStaffTitle');
+    if (titleEl) titleEl.textContent = `Edit: ${item.name}`;
+
+    const subtitleEl = document.getElementById('editStaffSubtitle');
+    if (subtitleEl) {
+        const sourceLabel = source === 'admin' ? 'Admin' : (item.job_type === 'volunteer' ? 'Volunteer' : 'Staff');
+        subtitleEl.textContent = `Update ${sourceLabel} information`;
+    }
+
+    // Populate hidden fields
+    document.getElementById('editStaffId').value = id;
+    document.getElementById('editStaffSource').value = source;
+
+    // Populate form fields
+    document.getElementById('editName').value = item.name || '';
+    document.getElementById('editEmail').value = item.email || '';
+    document.getElementById('editPhone').value = item.phone || '';
+    document.getElementById('editRole').value = item.role || '';
+    document.getElementById('editAddress').value = item.address || '';
+
+    // Set status
+    const statusSelect = document.getElementById('editStatus');
+    if (statusSelect) {
+        const currentStatus = (item.status || 'active').toLowerCase();
+        statusSelect.value = currentStatus;
+        // If admin, disable status change
+        if (source === 'admin') {
+            statusSelect.disabled = true;
+        } else {
+            statusSelect.disabled = false;
+        }
+    }
+
+    // If admin, hide role field (they are always "Admin")
+    const roleGroup = document.getElementById('editRole').closest('.form-group');
+    if (source === 'admin' && roleGroup) {
+        roleGroup.style.display = 'none';
+    } else if (roleGroup) {
+        roleGroup.style.display = '';
+    }
+
+    // Reset photo upload card
+    const photoCard = document.getElementById('editPhotoUploadCard');
+    if (photoCard) photoCard.classList.remove('has-file');
+    const photoText = document.getElementById('editPhotoUploadText');
+    if (photoText) photoText.textContent = 'Click to change photo';
+    const photoInput = document.getElementById('editStaffPhoto');
+    if (photoInput) photoInput.value = '';
+
+    openModal('editStaffModal');
+}
+
+function handleEditPhotoPreview() {
+    const input = document.getElementById('editStaffPhoto');
+    const preview = document.getElementById('editPhotoPreview');
+    const card = document.getElementById('editPhotoUploadCard');
+    const label = document.getElementById('editPhotoUploadText');
+
+    if (input && input.files && input.files[0]) {
+        card.classList.add('has-file');
+        label.textContent = input.files[0].name;
+
+        // Show live preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if (preview) preview.src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        card.classList.remove('has-file');
+        label.textContent = 'Click to change photo';
+    }
+}
+
+async function handleEditStaff(e) {
+    e.preventDefault();
+
+    const id = document.getElementById('editStaffId').value;
+    const source = document.getElementById('editStaffSource').value;
+    const name = document.getElementById('editName').value.trim();
+    const phone = document.getElementById('editPhone').value.trim();
+    const role = document.getElementById('editRole').value.trim();
+    const status = document.getElementById('editStatus').value;
+    const address = document.getElementById('editAddress').value.trim();
+
+    if (!name || !phone) {
+        showToast('Name and phone are required', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'edit_staff');
+    formData.append('id', id);
+    formData.append('source', source);
+    formData.append('name', name);
+    formData.append('phone', phone);
+    formData.append('role', role);
+    formData.append('status', status);
+    formData.append('address', address);
+
+    // Photo
+    const photoInput = document.getElementById('editStaffPhoto');
+    if (photoInput && photoInput.files[0]) {
+        formData.append('photo', photoInput.files[0]);
+    }
+
+    const btn = document.getElementById('editStaffBtn');
+    const originalText = btn ? btn.innerHTML : '<i class="fas fa-save"></i> Save Changes';
+    if (btn) {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
+    }
+
+    try {
+        const res = await fetch('/admin/api/team', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+            showToast('Staff updated successfully', 'success');
+            closeModal('editStaffModal');
+            await fetchTeamData();
+        } else {
+            showToast(data.message || 'Failed to update staff', 'error');
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Error updating staff', 'error');
+    } finally {
+        if (btn) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
 }
 
 // Toast
@@ -534,6 +695,156 @@ async function fetchTeamData() {
         showToast('Error loading data', 'error');
     }
 }
+
+// ========================================
+// Password Strength Meter
+// ========================================
+
+function checkPasswordStrength(password) {
+    const bar = document.getElementById('strengthBar');
+    const label = document.getElementById('strengthLabel');
+    if (!bar || !label) return;
+
+    const criteria = {
+        length: password.length >= 8,
+        upper: /[A-Z]/.test(password),
+        lower: /[a-z]/.test(password),
+        number: /[0-9]/.test(password),
+        special: /[^A-Za-z0-9]/.test(password)
+    };
+
+    // Update criteria items
+    updateCriteriaItem('criteriaLength', criteria.length);
+    updateCriteriaItem('criteriaUpper', criteria.upper);
+    updateCriteriaItem('criteriaLower', criteria.lower);
+    updateCriteriaItem('criteriaNumber', criteria.number);
+    updateCriteriaItem('criteriaSpecial', criteria.special);
+
+    const score = Object.values(criteria).filter(Boolean).length;
+
+    // Remove old strength classes
+    bar.className = 'strength-bar-fill';
+
+    if (password.length === 0) {
+        label.textContent = 'Enter a password';
+        label.style.color = '#94a3b8';
+        return;
+    }
+
+    if (score <= 1) {
+        bar.classList.add('strength-weak');
+        label.textContent = '🔴 Weak';
+        label.style.color = '#ef4444';
+    } else if (score <= 2) {
+        bar.classList.add('strength-fair');
+        label.textContent = '🟠 Fair';
+        label.style.color = '#f97316';
+    } else if (score <= 3) {
+        bar.classList.add('strength-good');
+        label.textContent = '🟡 Good';
+        label.style.color = '#eab308';
+    } else {
+        bar.classList.add('strength-strong');
+        label.textContent = '🟢 Strong';
+        label.style.color = '#10b981';
+    }
+
+    // Also check password match in case confirm is already filled
+    checkPasswordMatch();
+}
+
+function updateCriteriaItem(id, met) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const icon = el.querySelector('i');
+    if (met) {
+        el.classList.add('met');
+        if (icon) icon.className = 'fas fa-check-circle';
+    } else {
+        el.classList.remove('met');
+        if (icon) icon.className = 'fas fa-circle';
+    }
+}
+
+function resetPasswordStrength() {
+    const bar = document.getElementById('strengthBar');
+    const label = document.getElementById('strengthLabel');
+    const matchMsg = document.getElementById('passwordMatchMsg');
+    if (bar) bar.className = 'strength-bar-fill';
+    if (label) { label.textContent = 'Enter a password'; label.style.color = '#94a3b8'; }
+    if (matchMsg) { matchMsg.textContent = ''; matchMsg.className = 'password-match-msg'; }
+
+    ['criteriaLength', 'criteriaUpper', 'criteriaLower', 'criteriaNumber', 'criteriaSpecial'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.remove('met');
+            const icon = el.querySelector('i');
+            if (icon) icon.className = 'fas fa-circle';
+        }
+    });
+}
+
+function checkPasswordMatch() {
+    const pwd = document.getElementById('staffPassword');
+    const confirm = document.getElementById('staffConfirmPassword');
+    const msg = document.getElementById('passwordMatchMsg');
+    if (!pwd || !confirm || !msg) return;
+
+    if (confirm.value.length === 0) {
+        msg.textContent = '';
+        msg.className = 'password-match-msg';
+        return;
+    }
+
+    if (pwd.value === confirm.value) {
+        msg.innerHTML = '<i class="fas fa-check-circle"></i> Passwords match';
+        msg.className = 'password-match-msg match';
+    } else {
+        msg.innerHTML = '<i class="fas fa-times-circle"></i> Passwords do not match';
+        msg.className = 'password-match-msg no-match';
+    }
+}
+
+function togglePasswordVisibility(inputId, btnEl) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const icon = btnEl.querySelector('i');
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (icon) icon.className = 'fas fa-eye-slash';
+    } else {
+        input.type = 'password';
+        if (icon) icon.className = 'fas fa-eye';
+    }
+}
+
+// ========================================
+// File Upload UI Handler
+// ========================================
+
+function handleFileUploadUI(inputId, cardId, labelId, isMultiple) {
+    const input = document.getElementById(inputId);
+    const card = document.getElementById(cardId);
+    const label = document.getElementById(labelId);
+    if (!input || !card || !label) return;
+
+    if (input.files && input.files.length > 0) {
+        card.classList.add('has-file');
+        if (isMultiple) {
+            label.textContent = input.files.length + ' file(s) selected';
+        } else {
+            label.textContent = input.files[0].name;
+        }
+    } else {
+        card.classList.remove('has-file');
+        label.textContent = isMultiple ? 'Click to upload documents' : 'Click to upload photo';
+    }
+}
+
+// ========================================
+// Initialize
+// ========================================
 
 document.addEventListener('DOMContentLoaded', function () {
     fetchTeamData();

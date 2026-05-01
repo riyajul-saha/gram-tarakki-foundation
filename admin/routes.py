@@ -547,9 +547,9 @@ def init_routes(app):
 
             if request.method == "POST":
                 # Check for form data vs JSON
-                if request.form and request.form.get('action') == 'add_staff':
+                if request.form and request.form.get('action') in ('add_staff', 'edit_staff'):
                     data = request.form
-                    action = 'add_staff'
+                    action = data.get('action')
                 else:
                     data = request.json
                     action = data.get('action') if data else None
@@ -641,6 +641,67 @@ def init_routes(app):
                             return jsonify({"status": "error", "message": str(e)}), 500
 
                     return jsonify({"status": "error", "message": "Invalid type"}), 400
+
+                elif action == 'edit_staff':
+                    edit_id = data.get('id')
+                    edit_source = data.get('source')
+                    edit_name = data.get('name', '').strip()
+                    edit_phone = data.get('phone', '').strip()
+                    edit_role = data.get('role', '').strip()
+                    edit_status = data.get('status', '').strip()
+                    edit_address = data.get('address', '').strip()
+
+                    if not edit_id or not edit_source or not edit_name:
+                        return jsonify({"status": "error", "message": "Missing required fields"}), 400
+
+                    import os, uuid
+                    from werkzeug.utils import secure_filename
+
+                    # Handle optional photo upload
+                    photo_path = None
+                    if 'photo' in request.files:
+                        file = request.files['photo']
+                        if file and file.filename != '':
+                            filename = secure_filename(file.filename)
+                            ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                            if ext in {'jpg', 'jpeg', 'png', 'webp'}:
+                                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                                folder_name = 'admin_photo' if edit_source == 'admin' else 'staff_photo'
+                                upload_dir = os.path.join(os.getcwd(), 'upload', folder_name)
+                                os.makedirs(upload_dir, exist_ok=True)
+                                file.save(os.path.join(upload_dir, unique_filename))
+                                photo_path = f"/upload/{folder_name}/{unique_filename}"
+
+                    try:
+                        if edit_source == 'admin':
+                            if photo_path:
+                                cursor.execute("UPDATE admin SET fullname = %s, phone = %s, address = %s, image = %s WHERE id = %s",
+                                    (edit_name, edit_phone, edit_address, photo_path, edit_id))
+                            else:
+                                cursor.execute("UPDATE admin SET fullname = %s, phone = %s, address = %s WHERE id = %s",
+                                    (edit_name, edit_phone, edit_address, edit_id))
+                        elif edit_source == 'our_staff':
+                            if photo_path:
+                                cursor.execute("UPDATE our_staff SET fullname = %s, phone = %s, location = %s, role = %s, status = %s, photo = %s WHERE id = %s",
+                                    (edit_name, edit_phone, edit_address, edit_role, edit_status, photo_path, edit_id))
+                            else:
+                                cursor.execute("UPDATE our_staff SET fullname = %s, phone = %s, location = %s, role = %s, status = %s WHERE id = %s",
+                                    (edit_name, edit_phone, edit_address, edit_role, edit_status, edit_id))
+                        elif edit_source == 'volunteer':
+                            if photo_path:
+                                cursor.execute("UPDATE join_volunteer SET fullname = %s, phone = %s, city = %s, role = %s, status = %s, profile_photo = %s WHERE id = %s",
+                                    (edit_name, edit_phone, edit_address, edit_role, edit_status, photo_path, edit_id))
+                            else:
+                                cursor.execute("UPDATE join_volunteer SET fullname = %s, phone = %s, city = %s, role = %s, status = %s WHERE id = %s",
+                                    (edit_name, edit_phone, edit_address, edit_role, edit_status, edit_id))
+                        else:
+                            return jsonify({"status": "error", "message": "Unknown source"}), 400
+
+                        conn.commit()
+                        return jsonify({"status": "success"})
+                    except Exception as e:
+                        print(f"Error editing staff: {e}")
+                        return jsonify({"status": "error", "message": str(e)}), 500
 
                 # Existing logic for update_status or remove
                 member_id = data.get('id') if data else None
