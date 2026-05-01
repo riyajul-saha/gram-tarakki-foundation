@@ -67,7 +67,17 @@ function handleAddStudent(e) {
     
     const imageInput = document.getElementById('addStudentImage');
     if (imageInput && imageInput.files[0]) {
-        formData.append('image', imageInput.files[0]);
+        const file = imageInput.files[0];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            showToast('Only JPG, PNG and WebP images are allowed. SVG not permitted.', 'error');
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            showToast('Photo must be under 2 MB.', 'error');
+            return;
+        }
+        formData.append('image', file);
     }
 
     fetch('/admin/add-student', {

@@ -108,15 +108,22 @@ def init_routes(app):
                 file = request.files['image']
                 if file and file.filename != '':
                     filename = secure_filename(file.filename)
-                    # Validate file extension
+                    # Validate file extension (SVG blocked to prevent XSS)
                     allowed_ext = {'jpg', 'jpeg', 'png', 'webp'}
                     ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
-                    if ext in allowed_ext:
-                        unique_filename = f"{uuid.uuid4().hex}_{filename}"
-                        os.makedirs(app.config['STUDENT_IMAGE_FOLDER'], exist_ok=True)
-                        file_path = os.path.join(app.config['STUDENT_IMAGE_FOLDER'], unique_filename)
-                        file.save(file_path)
-                        image_path = f"/upload/student_image/{unique_filename}"
+                    if ext not in allowed_ext or ext == 'svg':
+                        return jsonify({"status": "error", "message": "Only JPG, PNG and WebP images are allowed. SVG not permitted."}), 400
+                    # Check file size (max 2 MB for student photo)
+                    file.seek(0, 2)
+                    file_size = file.tell()
+                    file.seek(0)
+                    if file_size > 2 * 1024 * 1024:
+                        return jsonify({"status": "error", "message": "Photo must be under 2 MB."}), 400
+                    unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                    os.makedirs(app.config['STUDENT_IMAGE_FOLDER'], exist_ok=True)
+                    file_path = os.path.join(app.config['STUDENT_IMAGE_FOLDER'], unique_filename)
+                    file.save(file_path)
+                    image_path = f"/upload/student_image/{unique_filename}"
 
             # Helper to replace empty strings with "NaN" as expected by the DB schema
             def validate_opt(val):
@@ -214,6 +221,17 @@ def init_routes(app):
             file = request.files['resume']
             if file and file.filename != '':
                 filename = secure_filename(file.filename)
+                # Validate file extension
+                allowed_ext = {'pdf'}
+                ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                if ext not in allowed_ext:
+                    return jsonify({"status": "error", "message": "Only PDF files are allowed for resume."}), 400
+                # Check file size (max 1 MB)
+                file.seek(0, 2)
+                file_size = file.tell()
+                file.seek(0)
+                if file_size > 1 * 1024 * 1024:
+                    return jsonify({"status": "error", "message": "Resume must be under 1 MB."}), 400
                 unique_filename = f"{uuid.uuid4().hex}_{filename}"
                 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
@@ -226,6 +244,17 @@ def init_routes(app):
             file = request.files['profile_photo']
             if file and file.filename != '':
                 filename = secure_filename(file.filename)
+                # Validate file extension (SVG blocked to prevent XSS)
+                allowed_ext = {'jpg', 'jpeg', 'png', 'webp'}
+                ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                if ext not in allowed_ext or ext == 'svg':
+                    return jsonify({"status": "error", "message": "Only JPG, PNG and WebP images are allowed. SVG not permitted."}), 400
+                # Check file size (max 2 MB)
+                file.seek(0, 2)
+                file_size = file.tell()
+                file.seek(0)
+                if file_size > 2 * 1024 * 1024:
+                    return jsonify({"status": "error", "message": "Photo must be under 2 MB."}), 400
                 unique_filename = f"{uuid.uuid4().hex}_{filename}"
                 volunteer_upload_dir = os.path.join(os.getcwd(), 'upload', 'voluteer')
                 os.makedirs(volunteer_upload_dir, exist_ok=True)
@@ -318,6 +347,17 @@ def init_routes(app):
             file = request.files['logoUpload']
             if file and file.filename != '':
                 filename = secure_filename(file.filename)
+                # Validate file extension (SVG blocked to prevent XSS)
+                allowed_ext = {'jpg', 'jpeg', 'png', 'webp'}
+                ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                if ext not in allowed_ext or ext == 'svg':
+                    return jsonify({"status": "error", "message": "Only JPG, PNG and WebP images are allowed. SVG not permitted."}), 400
+                # Check file size (max 100 KB for logo)
+                file.seek(0, 2)
+                file_size = file.tell()
+                file.seek(0)
+                if file_size > 100 * 1024:
+                    return jsonify({"status": "error", "message": "Logo must be under 100 KB."}), 400
                 unique_filename = f"{uuid.uuid4().hex}_{filename}"
                 os.makedirs(app.config['PARTNER_LOGO_FOLDER'], exist_ok=True)
                 file_path = os.path.join(app.config['PARTNER_LOGO_FOLDER'], unique_filename)
@@ -422,6 +462,17 @@ def init_routes(app):
             file = request.files['resume']
             if file and file.filename != '':
                 filename = secure_filename(file.filename)
+                # Validate file extension
+                allowed_ext = {'pdf', 'doc', 'docx'}
+                ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                if ext not in allowed_ext:
+                    return jsonify({"status": "error", "message": "Only PDF, DOC and DOCX files are allowed for resume."}), 400
+                # Check file size (max 1 MB)
+                file.seek(0, 2)
+                file_size = file.tell()
+                file.seek(0)
+                if file_size > 1 * 1024 * 1024:
+                    return jsonify({"status": "error", "message": "Resume must be under 1 MB."}), 400
                 unique_filename = f"{uuid.uuid4().hex}_{filename}"
                 resume_upload_dir = os.path.join(os.getcwd(), 'upload', 'resume')
                 os.makedirs(resume_upload_dir, exist_ok=True)
@@ -437,15 +488,23 @@ def init_routes(app):
             file = request.files['photo']
             if file and file.filename != '':
                 filename = secure_filename(file.filename)
+                # Validate file extension (SVG blocked to prevent XSS)
                 allowed_ext = {'jpg', 'jpeg', 'png', 'webp'}
                 ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
-                if ext in allowed_ext:
-                    unique_filename = f"{uuid.uuid4().hex}_{filename}"
-                    photo_upload_dir = os.path.join(os.getcwd(), 'upload', 'staff_photo')
-                    os.makedirs(photo_upload_dir, exist_ok=True)
-                    file_path = os.path.join(photo_upload_dir, unique_filename)
-                    file.save(file_path)
-                    photo_path = f"/upload/staff_photo/{unique_filename}"
+                if ext not in allowed_ext or ext == 'svg':
+                    return jsonify({"status": "error", "message": "Only JPG, PNG and WebP images are allowed. SVG not permitted."}), 400
+                # Check file size (max 100 KB for applicant photo)
+                file.seek(0, 2)
+                file_size = file.tell()
+                file.seek(0)
+                if file_size > 100 * 1024:
+                    return jsonify({"status": "error", "message": "Photo must be under 100 KB."}), 400
+                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                photo_upload_dir = os.path.join(os.getcwd(), 'upload', 'staff_photo')
+                os.makedirs(photo_upload_dir, exist_ok=True)
+                file_path = os.path.join(photo_upload_dir, unique_filename)
+                file.save(file_path)
+                photo_path = f"/upload/staff_photo/{unique_filename}"
 
         try:
             # Database connection

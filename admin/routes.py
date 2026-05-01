@@ -404,6 +404,13 @@ def init_routes(app):
                 elif request.method == "POST":
                     data = request.json
                     applicant_id = data.get('id')
+                    action = data.get('action')
+                    
+                    if action == 'delete' and applicant_id:
+                        cursor.execute("DELETE FROM join_staff WHERE id = %s", (applicant_id,))
+                        conn.commit()
+                        return jsonify({"status": "success"})
+                        
                     new_status = data.get('status')
                     if applicant_id and new_status:
                         cursor.execute("UPDATE join_staff SET status = %s WHERE id = %s", (new_status, applicant_id))
@@ -539,11 +546,106 @@ def init_routes(app):
             cursor = conn.cursor(dictionary=True)
 
             if request.method == "POST":
-                data = request.json
-                member_id = data.get('id')
-                source = data.get('source')
-                new_status = data.get('status')
-                action = data.get('action')  # 'update_status' or 'remove'
+                # Check for form data vs JSON
+                if request.form and request.form.get('action') == 'add_staff':
+                    data = request.form
+                    action = 'add_staff'
+                else:
+                    data = request.json
+                    action = data.get('action') if data else None
+
+                if action == 'add_staff':
+                    staff_type = data.get('type')
+                    name = data.get('name')
+                    email = data.get('email')
+                    phone = data.get('phone')
+                    address = data.get('address')
+                    
+                    import os
+                    import uuid
+                    from werkzeug.utils import secure_filename
+                    
+                    # Handle Photo
+                    photo_path = ""
+                    if 'photo' in request.files:
+                        file = request.files['photo']
+                        if file and file.filename != '':
+                            filename = secure_filename(file.filename)
+                            ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                            if ext in {'jpg', 'jpeg', 'png', 'webp'}:
+                                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                                folder_name = 'admin_photo' if staff_type == 'Admin' else 'staff_photo'
+                                upload_dir = os.path.join(os.getcwd(), 'upload', folder_name)
+                                os.makedirs(upload_dir, exist_ok=True)
+                                file.save(os.path.join(upload_dir, unique_filename))
+                                photo_path = f"/upload/{folder_name}/{unique_filename}"
+                    
+                    # Handle Documents
+                    resume_path = ""
+                    if staff_type != 'Admin' and 'documents' in request.files:
+                        file = request.files['documents']
+                        if file and file.filename != '':
+                            filename = secure_filename(file.filename)
+                            ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                            if ext in {'pdf', 'doc', 'docx'}:
+                                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                                upload_dir = os.path.join(os.getcwd(), 'upload', 'resume')
+                                os.makedirs(upload_dir, exist_ok=True)
+                                file.save(os.path.join(upload_dir, unique_filename))
+                                resume_path = f"/upload/resume/{unique_filename}"
+
+                    if staff_type == 'Admin':
+                        password = data.get('password')
+                        if not password:
+                            return jsonify({"status": "error", "message": "Password is required for Admin"}), 400
+                        from argon2 import PasswordHasher
+                        ph = PasswordHasher()
+                        hashed_password = ph.hash(password)
+                        
+                        try:
+                            # id is auto incremented
+                            cursor.execute("INSERT INTO admin (fullname, email, password, phone, address, image) VALUES (%s, %s, %s, %s, %s, %s)", (name, email, hashed_password, phone, address, photo_path))
+                            conn.commit()
+                            return jsonify({"status": "success"})
+                        except Exception as e:
+                            print(f"Error adding admin: {e}")
+                            if "Duplicate entry" in str(e):
+                                return jsonify({"status": "error", "message": "An admin with this email or ID already exists"}), 400
+                            return jsonify({"status": "error", "message": str(e)}), 500
+
+                    elif staff_type == 'Volunteer':
+                        service_type = data.get('serviceType')
+                        availability = data.get('availability')
+                        try:
+                            cursor.execute("""
+                                INSERT INTO our_staff (fullname, email, phone, location, role, availability, job_type, status, photo, resume)
+                                VALUES (%s, %s, %s, %s, %s, %s, 'volunteer', 'active', %s, %s)
+                            """, (name, email, phone, address, service_type, availability, photo_path, resume_path))
+                            conn.commit()
+                            return jsonify({"status": "success"})
+                        except Exception as e:
+                            print(f"Error adding volunteer: {e}")
+                            return jsonify({"status": "error", "message": str(e)}), 500
+
+                    elif staff_type == 'Other Staff':
+                        role_of_staff = data.get('roleOfStaff')
+                        try:
+                            cursor.execute("""
+                                INSERT INTO our_staff (fullname, email, phone, location, role, job_type, status, photo, resume)
+                                VALUES (%s, %s, %s, %s, %s, 'staff', 'active', %s, %s)
+                            """, (name, email, phone, address, role_of_staff, photo_path, resume_path))
+                            conn.commit()
+                            return jsonify({"status": "success"})
+                        except Exception as e:
+                            print(f"Error adding other staff: {e}")
+                            return jsonify({"status": "error", "message": str(e)}), 500
+
+                    return jsonify({"status": "error", "message": "Invalid type"}), 400
+
+                # Existing logic for update_status or remove
+                member_id = data.get('id') if data else None
+                source = data.get('source') if data else None
+                new_status = data.get('status') if data else None
 
                 if not member_id or not source:
                     cursor.close()
@@ -626,9 +728,9 @@ def init_routes(app):
                     except json.JSONDecodeError:
                         pass
             
-            # Fetch from join_volunteer (only pending or rejected)
+            # Fetch from join_volunteer (only pending)
             try:
-                cursor.execute("SELECT id, fullname as name, email, phone, city as address, role, profile_photo as photo, status, created_at as appliedDate, resume_path FROM join_volunteer WHERE status NOT IN ('active', 'approved', 'selected')")
+                cursor.execute("SELECT id, fullname as name, email, phone, city as address, role, profile_photo as photo, status, created_at as appliedDate, resume_path FROM join_volunteer WHERE status = 'pending'")
                 volunteers = cursor.fetchall()
                 for v in volunteers:
                     v['source'] = 'volunteer'
@@ -642,24 +744,7 @@ def init_routes(app):
                 if err.errno != 1146: # ignore if table doesn't exist
                     print(f"Error fetching join_volunteer: {err}")
                     
-            # Fetch from join_staff (only pending or rejected or applied or interview)
-            try:
-                cursor.execute("SELECT id, fullname as name, email, phone, location as address, position as role, photo, status, created_at as appliedDate, resume FROM join_staff WHERE status NOT IN ('active', 'approved', 'selected')")
-                staff = cursor.fetchall()
-
-                for s in staff:
-                    s['source'] = 'staff'
-                    s['photo'] = s['photo'] or 'https://ui-avatars.com/api/?name=' + s['name'].replace(' ', '+')
-                    s['appliedDate'] = s['appliedDate'].strftime('%Y-%m-%d') if s.get('appliedDate') else ''
-                    s['documents'] = []
-                    if s.get('resume'):
-                        s['documents'].append('Resume')
-                    role_id = str(s.get('role', ''))
-                    s['role'] = job_map.get(role_id, s['role'])
-                    team.append(s)
-            except mysql.connector.Error as err:
-                if err.errno != 1146:
-                    print(f"Error fetching join_staff: {err}")
+            # removed join_staff fetch for team page
 
             # Fetch from our_staff
             try:
@@ -680,7 +765,24 @@ def init_routes(app):
             except mysql.connector.Error as err:
                 if err.errno != 1146:
                     print(f"Error fetching our_staff: {err}")
-                    
+            
+            # Fetch from admin
+            try:
+                cursor.execute("SELECT id, fullname as name, email, phone, address, image as photo, created_at as appliedDate FROM admin")
+                admins = cursor.fetchall()
+                for a in admins:
+                    a['source'] = 'admin'
+                    a['photo'] = a['photo'] or 'https://ui-avatars.com/api/?name=' + str(a.get('name', 'Admin') or 'Admin').replace(' ', '+')
+                    a['appliedDate'] = a['appliedDate'].strftime('%Y-%m-%d') if a.get('appliedDate') else ''
+                    a['documents'] = []
+                    a['role'] = 'Admin'
+                    a['job_type'] = 'staff'
+                    a['status'] = 'active' # admin is always considered active
+                    team.append(a)
+            except mysql.connector.Error as err:
+                if err.errno != 1146:
+                    print(f"Error fetching admin: {err}")
+
             cursor.close()
             conn.close()
             return jsonify({"status": "success", "team": team})

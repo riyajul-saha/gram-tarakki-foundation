@@ -61,9 +61,11 @@
 <!-- Tabs -->
 <div class="tabs-container">
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('pending')">Pending Requests <span
-                class="badge" id="badgePending">0</span></button>
-        <button class="tab-btn" onclick="switchTab('active')">Active Staff <span class="badge" id="badgeActive">0</span></button>
+        <button class="tab-btn active" onclick="switchTab('pending')">Pending Requests <span class="badge"
+                id="badgePending">0</span></button>
+        <button class="tab-btn" onclick="switchTab('active')">Active Staff <span class="badge"
+                id="badgeActive">0</span></button>
+        <button class="tab-btn" onclick="switchTab('admin')">Admin <span class="badge" id="badgeAdmin">0</span></button>
         <button class="tab-btn" onclick="switchTab('all')">All <span class="badge" id="badgeAll">0</span></button>
     </div>
 
@@ -140,25 +142,65 @@
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal('addStaffModal')">&times;</span>
         <h2>Add New Staff</h2>
-        <form onsubmit="handleAddStaff(event)">
-            <div class="form-group"><label>Full Name *</label><input type="text" required></div>
-            <div class="form-group"><label>Email *</label><input type="email" required></div>
-            <div class="form-group"><label>Phone *</label><input type="tel" required></div>
-            <div class="form-group"><label>Role</label>
-                <select>
-                    <option>Teacher</option>
-                    <option>Volunteer</option>
-                    <option>Admin</option>
+        <form onsubmit="handleAddStaff(event)" id="addStaffForm">
+            <div class="form-group"><label>Full Name *</label><input type="text" id="staffName" required></div>
+            <div class="form-group"><label>Email *</label><input type="email" id="staffEmail" required></div>
+            <div class="form-group"><label>Phone *</label><input type="tel" id="staffPhone" required></div>
+            
+            <div class="form-group"><label>Type *</label>
+                <select id="staffType" onchange="handleTypeChange()" required>
+                    <option value="">Select Type</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Volunteer">Volunteer</option>
+                    <option value="Other Staff">Other Staff</option>
                 </select>
             </div>
-            <div class="form-group"><label>Address</label><textarea rows="2"></textarea></div>
-            <div class="form-group"><label>Upload Photo</label>
-                <div class="file-upload"><i class="fas fa-cloud-upload-alt"></i> Click to upload</div>
+            
+            <div id="adminFields" style="display: none;">
+                <p style="font-size: 0.85rem; color: #64748b; margin-top: -10px; margin-bottom: 10px;">Please create a password for the new admin user.</p>
+                <div class="form-group"><label>Password *</label><input type="password" id="staffPassword"></div>
+                <div class="form-group"><label>Confirm Password *</label><input type="password" id="staffConfirmPassword"></div>
             </div>
-            <div class="form-group"><label>Upload Documents</label>
-                <div class="file-upload"><i class="fas fa-cloud-upload-alt"></i> Click to upload</div>
+
+            <div id="volunteerFields" style="display: none;">
+                <div class="form-group"><label>Service Type *</label>
+                    <select id="staffServiceType">
+                        <option value="">Select Service</option>
+                        <option value="Teacher / Tutor">Teacher / Tutor</option>
+                        <option value="Karate Assistant">Karate Assistant</option>
+                        <option value="Yoga Trainer">Yoga Trainer</option>
+                        <option value="Event Volunteer">Event Volunteer</option>
+                        <option value="Social Media Helper">Social Media Helper</option>
+                        <option value="Field Volunteer">Field Volunteer</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Availability *</label>
+                    <select id="staffAvailability">
+                        <option value="">Select Availability</option>
+                        <option value="Weekends">Weekends</option>
+                        <option value="Weekdays">Weekdays</option>
+                        <option value="Flexible">Flexible</option>
+                    </select>
+                </div>
             </div>
-            <button type="submit" class="btn" style="width:100%">Add Staff</button>
+
+            <div id="otherStaffFields" style="display: none;">
+                <div class="form-group"><label>Role of Staff *</label><input type="text" id="staffRoleOfStaff"></div>
+            </div>
+
+            <div class="form-group"><label>Address</label><textarea id="staffAddress" rows="2"></textarea></div>
+            
+            <div class="form-group" id="photoUploadGroup"><label>Upload Photo</label>
+                <div class="file-upload" style="position: relative;"><i class="fas fa-cloud-upload-alt"></i> <span id="photoUploadText">Click to upload</span>
+                    <input type="file" id="staffPhoto" accept="image/*" style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%; cursor: pointer;" onchange="document.getElementById('photoUploadText').innerText = this.files[0] ? this.files[0].name : 'Click to upload'">
+                </div>
+            </div>
+            <div class="form-group" id="docUploadGroup"><label>Upload Documents</label>
+                <div class="file-upload" style="position: relative;"><i class="fas fa-cloud-upload-alt"></i> <span id="docUploadText">Click to upload</span>
+                    <input type="file" id="staffDocs" multiple style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%; cursor: pointer;" onchange="document.getElementById('docUploadText').innerText = this.files.length + ' file(s) selected'">
+                </div>
+            </div>
+            <button type="submit" class="btn" id="addStaffBtn" style="width:100%">Add Staff</button>
         </form>
     </div>
 </div>
@@ -167,14 +209,16 @@
 <div id="confirmModal" class="modal">
     <div class="modal-content" style="max-width: 420px;">
         <div style="text-align: center; padding: 8px 0;">
-            <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;">
+            <div
+                style="width:56px;height:56px;margin:0 auto 16px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;">
                 <i class="fas fa-exclamation-triangle" style="font-size:1.4rem;color:#f59e0b;"></i>
             </div>
             <h3 id="confirmTitle" style="margin-bottom:8px;">Confirm Action</h3>
             <p id="confirmMessage" style="color:#64748b;">Are you sure?</p>
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 24px;">
                 <button class="btn" id="confirmYes" style="min-width:100px;">Yes, Confirm</button>
-                <button class="btn btn-secondary" onclick="closeModal('confirmModal')" style="min-width:100px;">Cancel</button>
+                <button class="btn btn-secondary" onclick="closeModal('confirmModal')"
+                    style="min-width:100px;">Cancel</button>
             </div>
         </div>
     </div>

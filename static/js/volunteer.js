@@ -255,12 +255,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const file = this.files[0];
                     const fileSizeMB = file.size / (1024 * 1024);
 
-                    if (fileSizeMB > 2) {
-                        showPopup('fail', 'File Too Large', 'Please upload a photo smaller than 2MB.');
+                    // Block SVG to prevent XSS injection
+                    const allowedPhotoTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                    if (!allowedPhotoTypes.includes(file.type)) {
+                        showPopup('fail', 'Invalid File Type', 'Only JPG, PNG and WebP images are allowed. SVG files are not permitted for security reasons.');
                         this.value = '';
                         resetPhotoPreview();
-                    } else if (!file.type.startsWith('image/')) {
-                        showPopup('fail', 'Invalid File Type', 'Only image files (JPG/PNG/WEBP) are allowed.');
+                    } else if (fileSizeMB > 2) {
+                        showPopup('fail', 'File Too Large', 'Please upload a photo smaller than 2MB.');
                         this.value = '';
                         resetPhotoPreview();
                     } else {

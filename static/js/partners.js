@@ -21,13 +21,35 @@
         }
     });
 
-    // ----- FILE UPLOAD VISUAL -----
+    // ----- FILE UPLOAD VISUAL + VALIDATION -----
+    const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+    const MAX_LOGO_SIZE_KB = 100; // 100 KB
+
     const fileArea = document.getElementById('fileUploadArea');
     const fileInput = document.getElementById('logoUpload');
     fileArea.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', function () {
         if (this.files.length > 0) {
-            fileArea.innerHTML = `<i class="fas fa-check-circle"></i> ${this.files[0].name}`;
+            const file = this.files[0];
+
+            // Block SVG and non-allowed types
+            if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+                showPopup('error', 'Invalid File Type', 'Only JPG, PNG and WebP images are allowed. SVG files are not permitted for security reasons.');
+                this.value = '';
+                fileArea.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Click or drag to upload';
+                return;
+            }
+
+            // Check file size
+            const fileSizeKB = file.size / 1024;
+            if (fileSizeKB > MAX_LOGO_SIZE_KB) {
+                showPopup('error', 'File Too Large', `Logo must be under ${MAX_LOGO_SIZE_KB} KB. Your file is ${fileSizeKB.toFixed(1)} KB.`);
+                this.value = '';
+                fileArea.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Click or drag to upload';
+                return;
+            }
+
+            fileArea.innerHTML = `<i class="fas fa-check-circle"></i> ${file.name}`;
         } else {
             fileArea.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Click or drag to upload';
         }
@@ -116,7 +138,17 @@
 
         const fileInput = document.getElementById('logoUpload');
         if (fileInput.files.length > 0) {
-            formData.append('logoUpload', fileInput.files[0]);
+            const logoFile = fileInput.files[0];
+            // Block SVG and non-allowed types
+            if (!ALLOWED_IMAGE_TYPES.includes(logoFile.type)) {
+                showPopup('error', 'Invalid File Type', 'Only JPG, PNG and WebP images are allowed. SVG files are not permitted.');
+                return;
+            }
+            if (logoFile.size / 1024 > MAX_LOGO_SIZE_KB) {
+                showPopup('error', 'File Too Large', `Logo must be under ${MAX_LOGO_SIZE_KB} KB.`);
+                return;
+            }
+            formData.append('logoUpload', logoFile);
         }
 
         // Send via fetch

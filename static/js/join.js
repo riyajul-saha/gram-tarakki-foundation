@@ -71,7 +71,7 @@
     function handleImageFile(file) {
         // Validate type
         if (!ALLOWED_TYPES.includes(file.type)) {
-            showPopup('fail', 'Invalid File', 'Please upload a JPEG, PNG or WebP image.');
+            showPopup('fail', 'Invalid File', 'Please upload a JPEG, PNG or WebP image. SVG files are not allowed for security reasons.');
             studentImageInput.value = '';
             return;
         }

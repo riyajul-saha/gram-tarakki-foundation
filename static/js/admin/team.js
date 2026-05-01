@@ -15,8 +15,11 @@ function filterData() {
             if (itemStatus !== 'pending') match = false;
         } else if (currentTab === 'active') {
             if (itemStatus !== 'active' && itemStatus !== 'approved' && itemStatus !== 'selected') match = false;
+            if (item.source === 'admin') match = false;
+        } else if (currentTab === 'admin') {
+            if (item.source !== 'admin') match = false;
         } else if (currentTab === 'all') {
-            if (!['selected', 'active', 'approved', 'resign', 'resigned', 'pending'].includes(itemStatus)) match = false;
+            if (!['selected', 'active', 'approved', 'resign', 'resigned'].includes(itemStatus) && item.source !== 'admin') match = false;
         }
         
         if (search && (!item.name || !item.name.toLowerCase().includes(search)) && (!item.email || !item.email.toLowerCase().includes(search)) && (!item.phone || !item.phone.includes(search))) match = false;
@@ -125,23 +128,23 @@ function updateCounts() {
     let pendingVolunteer = 0;
     let activeBoth = 0;
     let rejectedBoth = 0;
+    let adminCount = 0;
     let allCount = 0;
 
     teamData.forEach(item => {
         const status = item.status ? item.status.toLowerCase() : '';
-        const isVolunteer = item.source === 'volunteer';
-        const isStaff = item.source === 'staff';
 
         if (status === 'pending') pendingVolunteer++;
-        if (status === 'active' || status === 'approved' || status === 'selected') activeBoth++;
+        if ((status === 'active' || status === 'approved' || status === 'selected') && item.source !== 'admin') activeBoth++;
         if (status === 'rejected') rejectedBoth++;
+        if (item.source === 'admin') adminCount++;
         
-        if (['selected', 'active', 'approved', 'resign', 'resigned', 'pending'].includes(status)) {
+        if (['selected', 'active', 'approved', 'resign', 'resigned'].includes(status) || item.source === 'admin') {
             allCount++;
         }
     });
 
-    const totalTeam = activeBoth + rejectedBoth;
+    const totalTeam = activeBoth + rejectedBoth + adminCount;
 
     if (document.getElementById('countTotalTeam')) document.getElementById('countTotalTeam').innerText = totalTeam;
     if (document.getElementById('countPending')) document.getElementById('countPending').innerText = pendingVolunteer;
@@ -150,6 +153,7 @@ function updateCounts() {
 
     if (document.getElementById('badgePending')) document.getElementById('badgePending').innerText = pendingVolunteer;
     if (document.getElementById('badgeActive')) document.getElementById('badgeActive').innerText = activeBoth;
+    if (document.getElementById('badgeAdmin')) document.getElementById('badgeAdmin').innerText = adminCount;
     if (document.getElementById('badgeAll')) document.getElementById('badgeAll').innerText = allCount;
 }
 
@@ -242,12 +246,126 @@ function viewDetails(source, id) {
 
 // Add Staff
 function openAddStaffModal() {
+    const form = document.getElementById('addStaffForm');
+    if(form) {
+        form.reset();
+        if(document.getElementById('photoUploadText')) document.getElementById('photoUploadText').innerText = 'Click to upload';
+        if(document.getElementById('docUploadText')) document.getElementById('docUploadText').innerText = 'Click to upload';
+        handleTypeChange();
+    }
     openModal('addStaffModal');
 }
-function handleAddStaff(e) {
+
+function handleTypeChange() {
+    const typeEl = document.getElementById('staffType');
+    if (!typeEl) return;
+    const type = typeEl.value;
+    
+    const adminFields = document.getElementById('adminFields');
+    const volunteerFields = document.getElementById('volunteerFields');
+    const otherStaffFields = document.getElementById('otherStaffFields');
+    const docUploadGroup = document.getElementById('docUploadGroup');
+    
+    // Reset displays
+    if(adminFields) adminFields.style.display = 'none';
+    if(volunteerFields) volunteerFields.style.display = 'none';
+    if(otherStaffFields) otherStaffFields.style.display = 'none';
+    if(docUploadGroup) docUploadGroup.style.display = 'block';
+
+    // Remove required attributes
+    ['staffPassword', 'staffConfirmPassword', 'staffServiceType', 'staffAvailability', 'staffRoleOfStaff'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.removeAttribute('required');
+    });
+
+    if (type === 'Admin') {
+        if(adminFields) adminFields.style.display = 'block';
+        if(docUploadGroup) docUploadGroup.style.display = 'none';
+        document.getElementById('staffPassword').setAttribute('required', 'required');
+        document.getElementById('staffConfirmPassword').setAttribute('required', 'required');
+    } else if (type === 'Volunteer') {
+        if(volunteerFields) volunteerFields.style.display = 'block';
+        document.getElementById('staffServiceType').setAttribute('required', 'required');
+        document.getElementById('staffAvailability').setAttribute('required', 'required');
+    } else if (type === 'Other Staff') {
+        if(otherStaffFields) otherStaffFields.style.display = 'block';
+        document.getElementById('staffRoleOfStaff').setAttribute('required', 'required');
+    }
+}
+
+async function handleAddStaff(e) {
     e.preventDefault();
-    showToast('Staff added successfully', 'success');
-    closeModal('addStaffModal');
+    const type = document.getElementById('staffType').value;
+    
+    if (type === 'Admin') {
+        const pwd = document.getElementById('staffPassword').value;
+        const confirmPwd = document.getElementById('staffConfirmPassword').value;
+        if (pwd !== confirmPwd) {
+            showToast('Passwords do not match', 'error');
+            return;
+        }
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'add_staff');
+    formData.append('name', document.getElementById('staffName').value);
+    formData.append('email', document.getElementById('staffEmail').value);
+    formData.append('phone', document.getElementById('staffPhone').value);
+    formData.append('type', type);
+    formData.append('address', document.getElementById('staffAddress').value);
+
+    if (type === 'Admin') {
+        formData.append('password', document.getElementById('staffPassword').value);
+    } else if (type === 'Volunteer') {
+        formData.append('serviceType', document.getElementById('staffServiceType').value);
+        formData.append('availability', document.getElementById('staffAvailability').value);
+    } else if (type === 'Other Staff') {
+        formData.append('roleOfStaff', document.getElementById('staffRoleOfStaff').value);
+    }
+
+    const photoInput = document.getElementById('staffPhoto');
+    if (photoInput && photoInput.files[0]) {
+        formData.append('photo', photoInput.files[0]);
+    }
+
+    if (type !== 'Admin') {
+        const docInput = document.getElementById('staffDocs');
+        if (docInput && docInput.files) {
+            for (let i = 0; i < docInput.files.length; i++) {
+                formData.append('documents', docInput.files[i]);
+            }
+        }
+    }
+
+    const btn = document.getElementById('addStaffBtn');
+    const originalText = btn ? btn.innerHTML : 'Add Staff';
+    if (btn) {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+        btn.disabled = true;
+    }
+
+    try {
+        const res = await fetch('/admin/api/team', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+            showToast('Staff added successfully', 'success');
+            closeModal('addStaffModal');
+            await fetchTeamData();
+        } else {
+            showToast(data.message || 'Failed to add staff', 'error');
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Error adding staff', 'error');
+    } finally {
+        if (btn) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
 }
 
 // Confirm actions

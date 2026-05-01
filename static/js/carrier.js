@@ -178,12 +178,27 @@ function resetFileUploads() {
     }
 }
 
-// File upload listeners — show file name after selection
+// Allowed image types (SVG blocked to prevent XSS)
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_PHOTO_SIZE_KB = 100;   // 100 KB
+const MAX_RESUME_SIZE_MB = 1;    // 1 MB
+
 document.getElementById('resume')?.addEventListener('change', function () {
     const area = document.getElementById('resumeUploadArea');
     const label = document.getElementById('resumeFileName');
     if (this.files && this.files.length > 0) {
-        label.innerHTML = `<i class="fas fa-check-circle"></i> ${this.files[0].name} — Uploaded`;
+        const file = this.files[0];
+        const fileSizeMB = file.size / (1024 * 1024);
+
+        if (fileSizeMB > MAX_RESUME_SIZE_MB) {
+            alert(`Resume must be under ${MAX_RESUME_SIZE_MB} MB. Your file is ${fileSizeMB.toFixed(2)} MB.`);
+            this.value = '';
+            label.innerHTML = 'Click to upload your resume';
+            area.classList.remove('uploaded');
+            return;
+        }
+
+        label.innerHTML = `<i class="fas fa-check-circle"></i> ${file.name} — Uploaded`;
         area.classList.add('uploaded');
     } else {
         label.innerHTML = 'Click to upload your resume';
@@ -195,7 +210,27 @@ document.getElementById('photo')?.addEventListener('change', function () {
     const area = document.getElementById('photoUploadArea');
     const label = document.getElementById('photoFileName');
     if (this.files && this.files.length > 0) {
-        label.innerHTML = `<i class="fas fa-check-circle"></i> ${this.files[0].name} — Uploaded`;
+        const file = this.files[0];
+        const fileSizeKB = file.size / 1024;
+
+        // Block SVG and non-allowed types
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+            alert('Only JPG, PNG and WebP images are allowed. SVG files are not permitted for security reasons.');
+            this.value = '';
+            label.innerHTML = 'Click to upload your photo';
+            area.classList.remove('uploaded');
+            return;
+        }
+
+        if (fileSizeKB > MAX_PHOTO_SIZE_KB) {
+            alert(`Photo must be under ${MAX_PHOTO_SIZE_KB} KB. Your file is ${fileSizeKB.toFixed(1)} KB.`);
+            this.value = '';
+            label.innerHTML = 'Click to upload your photo';
+            area.classList.remove('uploaded');
+            return;
+        }
+
+        label.innerHTML = `<i class="fas fa-check-circle"></i> ${file.name} — Uploaded`;
         area.classList.add('uploaded');
     } else {
         label.innerHTML = 'Click to upload your photo';
@@ -208,6 +243,29 @@ async function handleApply(e) {
     const form = document.getElementById('applicationForm');
     const submitBtn = document.getElementById('applySubmitBtn');
     const originalHTML = submitBtn.innerHTML;
+
+    // --- Pre-submit file validation ---
+    const photoInput = document.getElementById('photo');
+    if (photoInput && photoInput.files.length > 0) {
+        const photo = photoInput.files[0];
+        if (!ALLOWED_IMAGE_TYPES.includes(photo.type)) {
+            alert('Only JPG, PNG and WebP images are allowed. SVG files are not permitted for security reasons.');
+            return;
+        }
+        if (photo.size / 1024 > MAX_PHOTO_SIZE_KB) {
+            alert(`Photo must be under ${MAX_PHOTO_SIZE_KB} KB.`);
+            return;
+        }
+    }
+    const resumeInput = document.getElementById('resume');
+    if (resumeInput && resumeInput.files.length > 0) {
+        if (resumeInput.files[0].size / (1024 * 1024) > MAX_RESUME_SIZE_MB) {
+            alert(`Resume must be under ${MAX_RESUME_SIZE_MB} MB.`);
+            return;
+        }
+    }
+    // --- End pre-submit validation ---
+
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
     submitBtn.disabled = true;
 

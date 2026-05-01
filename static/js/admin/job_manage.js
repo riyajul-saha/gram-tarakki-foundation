@@ -262,9 +262,10 @@ function renderApplicants() {
                 shortlistOrAcceptBtn = `<button class="icon-btn-sm" onclick="updateApplicantStatus(${a.id}, 'shortlisted')" title="Shortlist"><i class="fas fa-star"></i></button>`;
                 interviewBtn = `<button class="icon-btn-sm" onclick="openInterviewModal(${a.id})" title="Schedule Interview"><i class="fas fa-calendar"></i></button>`;
             }
-            let rejectBtnTitle = a.status === 'selected' ? 'Resign' : 'Reject';
-            let rejectBtnClass = a.status === 'selected' ? 'fa-user-times' : 'fa-times';
-            return `<tr><td><input type="checkbox" class="applicantCheck" data-id="${a.id}"></td><td>${photoTd}</td><td>${a.name}<br><small>${a.email}</small></td><td>${a.phone}</td><td>${appliedForDisplay}</td><td>${a.experience || '--'}</td><td><button class="icon-btn-sm" onclick="viewResume('${a.resume}')"><i class="fas fa-file-pdf"></i></button></td><td><span class="status-badge status-${a.status}">${a.status}</span></td><td><div class="action-btns"><button class="icon-btn-sm" onclick="viewApplicant(${a.id})" title="View"><i class="fas fa-eye"></i></button>${shortlistOrAcceptBtn}<button class="icon-btn-sm" onclick="updateApplicantStatus(${a.id}, 'rejected')" title="${rejectBtnTitle}"><i class="fas ${rejectBtnClass}"></i></button>${interviewBtn}</div></td></tr>`;
+            let rejectBtnTitle = a.status === 'selected' ? 'Delete' : 'Reject';
+            let rejectBtnClass = a.status === 'selected' ? 'fa-trash-alt' : 'fa-times';
+            let rejectAction = a.status === 'selected' ? `deleteApplicant(${a.id})` : `updateApplicantStatus(${a.id}, 'rejected')`;
+            return `<tr><td><input type="checkbox" class="applicantCheck" data-id="${a.id}"></td><td>${photoTd}</td><td>${a.name}<br><small>${a.email}</small></td><td>${a.phone}</td><td>${appliedForDisplay}</td><td>${a.experience || '--'}</td><td><button class="icon-btn-sm" onclick="viewResume('${a.resume}')"><i class="fas fa-file-pdf"></i></button></td><td><span class="status-badge status-${a.status}">${a.status}</span></td><td><div class="action-btns"><button class="icon-btn-sm" onclick="viewApplicant(${a.id})" title="View"><i class="fas fa-eye"></i></button>${shortlistOrAcceptBtn}<button class="icon-btn-sm" onclick="${rejectAction}" title="${rejectBtnTitle}"><i class="fas ${rejectBtnClass}"></i></button>${interviewBtn}</div></td></tr>`;
         }).join('');
         attachBulkEvents();
     }
@@ -289,16 +290,18 @@ function viewApplicant(id) {
     // Show Accept button if interview scheduled, hide actions if already selected
     let primaryBtn = '';
     let rejectBtnLabel = 'Reject';
+    let rejectAction = `updateApplicantStatus(${a.id}, 'rejected');closeModals()`;
     if (a.status === 'selected') {
         // Already selected — no further action needed
         primaryBtn = '';
-        rejectBtnLabel = 'Resign';
+        rejectBtnLabel = 'Delete';
+        rejectAction = `deleteApplicant(${a.id});closeModals()`;
     } else if (a.status === 'interview') {
         primaryBtn = `<button class="btn-sm" style="background:#10b981" onclick="updateApplicantStatus(${a.id}, 'selected');closeModals()"><i class="fas fa-check-circle"></i> Accept</button>`;
     } else {
         primaryBtn = `<button class="btn-sm" onclick="openInterviewModal(${a.id})">Send Interview</button>`;
     }
-    document.getElementById('applicantDetail').innerHTML = `${detailPhoto}<h3>${a.name}</h3><p>Email: ${a.email}<br>Phone: ${a.phone}<br>Job: ${jobTitle}<br>Experience: ${a.experience || '--'}<br>Skills: ${a.skills || '--'}<br>Notes: ${a.notes || '--'}</p>${primaryBtn} <button class="btn-sm btn-danger" onclick="updateApplicantStatus(${a.id}, 'rejected');closeModals()">${rejectBtnLabel}</button>`;
+    document.getElementById('applicantDetail').innerHTML = `${detailPhoto}<h3>${a.name}</h3><p>Email: ${a.email}<br>Phone: ${a.phone}<br>Job: ${jobTitle}<br>Experience: ${a.experience || '--'}<br>Skills: ${a.skills || '--'}<br>Notes: ${a.notes || '--'}</p>${primaryBtn} <button class="btn-sm btn-danger" onclick="${rejectAction}">${rejectBtnLabel}</button>`;
     document.getElementById('applicantModal').classList.add('active');
 }
 
@@ -329,6 +332,29 @@ async function updateApplicantStatus(id, newStatus) {
         }
     } catch (e) {
         showToast("Error updating status");
+    }
+}
+
+async function deleteApplicant(id) {
+    if (!confirm('Are you sure you want to delete this member from join_staff table?')) return;
+    try {
+        const res = await fetch('/admin/api/applicants', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', id: id })
+        });
+        if (res.ok) {
+            applicants = applicants.filter(a => a.id !== id);
+            showToast('Member deleted successfully');
+            renderApplicants();
+            updateStats();
+            renderPipeline();
+            updateTabBadges();
+        } else {
+            showToast("Failed to delete member");
+        }
+    } catch (e) {
+        showToast("Error deleting member");
     }
 }
 
