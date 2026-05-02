@@ -15,6 +15,25 @@ def init_routes(app):
     # Handles admin login and logout functionality
     # ==========================================================================
 
+    @app.context_processor
+    def inject_admin_data():
+        from flask import session
+        if session.get('admin_logged_in') and session.get('admin_id'):
+            try:
+                from core.db import get_db_connection
+                conn = get_db_connection()
+                if conn:
+                    cursor = conn.cursor(dictionary=True)
+                    cursor.execute("SELECT * FROM admin WHERE id = %s", (session.get('admin_id'),))
+                    admin = cursor.fetchone()
+                    cursor.close()
+                    conn.close()
+                    return dict(current_admin=admin)
+            except Exception as e:
+                print(f"Error fetching admin data for context: {e}")
+        return dict(current_admin=None)
+
+
     @app.route("/login", methods=["GET", "POST"])
     def login():
         """

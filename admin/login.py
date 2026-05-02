@@ -14,20 +14,40 @@ def verify_admin_login(username, password):
         cursor.execute("SELECT * FROM admin WHERE id = %s OR email = %s", (username, username))
         admin_user = cursor.fetchone()
         
-        cursor.close()
-        conn.close()
-
         if not admin_user:
+            cursor.close()
+            conn.close()
             return {"status": "error", "message": "Invalid credentials", "code": 401}
+
+        if admin_user.get('status') == 'block':
+            cursor.close()
+            conn.close()
+            return {"status": "error", "message": "Your account has been blocked. Please contact another admin.", "code": 403}
 
         ph = PasswordHasher()
         try:
             # Verify password against hash
             ph.verify(admin_user['password'], password)
-            # Success
+            # Success, reset failed attempts
+            cursor.execute("UPDATE admin SET failed_attempts = 0 WHERE id = %s", (admin_user['id'],))
+            conn.commit()
+            cursor.close()
+            conn.close()
             return {"status": "success", "admin_id": admin_user['id']}
         except VerifyMismatchError:
-            return {"status": "error", "message": "Invalid credentials", "code": 401}
+            failed_attempts = admin_user.get('failed_attempts', 0) + 1
+            if failed_attempts >= 5:
+                cursor.execute("UPDATE admin SET failed_attempts = %s, status = 'block' WHERE id = %s", (failed_attempts, admin_user['id']))
+                conn.commit()
+                cursor.close()
+                conn.close()
+                return {"status": "error", "message": "Your account has been blocked due to multiple failed login attempts. Please contact another admin.", "code": 403}
+            else:
+                cursor.execute("UPDATE admin SET failed_attempts = %s WHERE id = %s", (failed_attempts, admin_user['id']))
+                conn.commit()
+                cursor.close()
+                conn.close()
+                return {"status": "error", "message": f"Invalid credentials. You have {5 - failed_attempts} attempts left.", "code": 401}
             
     except Exception as e:
         print(f"Error during login: {e}")

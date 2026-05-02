@@ -63,6 +63,30 @@ def init_db():
                 password VARCHAR(255) NOT NULL
             )
         """)
+        try:
+            cursor.execute("ALTER TABLE admin ADD COLUMN fullname VARCHAR(255)")
+        except mysql.connector.Error:
+            pass
+        try:
+            cursor.execute("ALTER TABLE admin ADD COLUMN phone VARCHAR(50)")
+        except mysql.connector.Error:
+            pass
+        try:
+            cursor.execute("ALTER TABLE admin ADD COLUMN address VARCHAR(255)")
+        except mysql.connector.Error:
+            pass
+        try:
+            cursor.execute("ALTER TABLE admin ADD COLUMN image VARCHAR(255)")
+        except mysql.connector.Error:
+            pass
+        try:
+            cursor.execute("ALTER TABLE admin ADD COLUMN status VARCHAR(20) DEFAULT 'active'")
+        except mysql.connector.Error:
+            pass
+        try:
+            cursor.execute("ALTER TABLE admin ADD COLUMN failed_attempts INT DEFAULT 0")
+        except mysql.connector.Error:
+            pass
         
         # Create join_volunteer table
         cursor.execute("""
