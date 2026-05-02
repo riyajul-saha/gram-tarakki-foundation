@@ -292,7 +292,7 @@ def init_routes(app):
     def api_jobs():
         """
         API for Job Management.
-        GET: Returns a list of all jobs from carrier.json.
+        GET: Returns a list of all jobs from career.json.
         POST: Handles creating, updating, changing status, or deleting jobs.
         """
         if not session.get('admin_logged_in'):
@@ -300,7 +300,7 @@ def init_routes(app):
             
         import json
         import os
-        json_path = os.path.join(app.root_path, 'data', 'carrier.json')
+        json_path = os.path.join(app.root_path, 'data', 'career.json')
         
         if request.method == "GET":
             if os.path.exists(json_path):
@@ -422,7 +422,7 @@ def init_routes(app):
                                 pos = str(member.get('position', ''))
                                 import json, os
                                 from flask import current_app
-                                json_path = os.path.join(current_app.root_path, 'data', 'carrier.json')
+                                json_path = os.path.join(current_app.root_path, 'data', 'career.json')
                                 job_title = pos
                                 if os.path.exists(json_path):
                                     with open(json_path, 'r', encoding='utf-8') as f:
@@ -431,7 +431,7 @@ def init_routes(app):
                                             for j in jobs:
                                                 if str(j.get('id', '')) == pos:
                                                     job_title = j.get('title', '')
-                                                    # Check the explicit job type from carrier.json
+                                                    # Check the explicit job type from career.json
                                                     c_type = j.get('type', '').lower()
                                                     if 'intern' in c_type or 'intern' in job_title.lower():
                                                         job_type = 'internship'
@@ -745,7 +745,7 @@ def init_routes(app):
                                 pos = str(member.get('position', ''))
                                 import json, os
                                 from flask import current_app
-                                json_path = os.path.join(current_app.root_path, 'data', 'carrier.json')
+                                json_path = os.path.join(current_app.root_path, 'data', 'career.json')
                                 job_title = pos
                                 if os.path.exists(json_path):
                                     with open(json_path, 'r', encoding='utf-8') as f:
@@ -754,7 +754,7 @@ def init_routes(app):
                                             for j in jobs:
                                                 if str(j.get('id', '')) == pos:
                                                     job_title = j.get('title', '')
-                                                    # Check the explicit job type from carrier.json
+                                                    # Check the explicit job type from career.json
                                                     c_type = j.get('type', '').lower()
                                                     if 'intern' in c_type or 'intern' in job_title.lower():
                                                         job_type = 'internship'
@@ -779,7 +779,7 @@ def init_routes(app):
             
             import json, os
             from flask import current_app
-            json_path = os.path.join(current_app.root_path, 'data', 'carrier.json')
+            json_path = os.path.join(current_app.root_path, 'data', 'career.json')
             job_map = {}
             if os.path.exists(json_path):
                 with open(json_path, 'r', encoding='utf-8') as f:

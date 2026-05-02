@@ -415,10 +415,10 @@ def init_routes(app):
     # Handling job listings and applications
     # ==========================================================================
 
-    @app.route("/carrier")
-    def carrier():
+    @app.route("/career")
+    def career():
         """Render the career page displaying available jobs."""
-        return render_template('carrier.html')
+        return render_template('career.html')
 
     @app.route("/apply-job", methods=["POST"])
     def apply_job():
@@ -681,7 +681,7 @@ def init_routes(app):
         Serve JSON data files from the root data/ folder securely.
         (Ensures files are not publicly accessible via /static)
         """
-        ALLOWED_FILES = {'carrier.json', 'program_info.json'}
+        ALLOWED_FILES = {'career.json', 'program_info.json'}
         if filename not in ALLOWED_FILES:
             abort(404)
             

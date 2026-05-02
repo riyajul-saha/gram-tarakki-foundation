@@ -469,7 +469,7 @@ section {
     margin-bottom: 28px;
 }
 
-.apply-modal-header > i {
+.apply-modal-header>i {
     font-size: 2.4rem;
     color: #2E7D32;
     margin-bottom: 8px;
@@ -526,6 +526,7 @@ section {
     .form-row {
         grid-template-columns: 1fr;
     }
+
     .apply-modal-content {
         padding: 24px 20px;
     }

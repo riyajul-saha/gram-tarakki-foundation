@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/carrier.css') }}">{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/career.css') }}">{% endblock %}
 
 {% block content %}
 <!-- 1️⃣ Hero Section -->
@@ -155,9 +155,11 @@
                 <div class="file-upload" id="photoUploadArea" onclick="document.getElementById('photo').click()">
                     <i class="fas fa-image fa-2x"></i>
                     <span id="photoFileName">Click to upload your photo</span>
-                    <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp" style="display: none;">
+                    <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp"
+                        style="display: none;">
                 </div>
-                <span class="form-hint"><i class="fas fa-info-circle"></i> Max 100 KB · JPG, PNG or WebP only (SVG not allowed)</span>
+                <span class="form-hint"><i class="fas fa-info-circle"></i> Max 100 KB · JPG, PNG or WebP only (SVG not
+                    allowed)</span>
             </div>
 
             <!-- Resume Upload -->
@@ -166,7 +168,8 @@
                 <div class="file-upload" id="resumeUploadArea" onclick="document.getElementById('resume').click()">
                     <i class="fas fa-cloud-upload-alt fa-2x"></i>
                     <span id="resumeFileName">Click to upload your resume</span>
-                    <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" style="display: none;" required>
+                    <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" style="display: none;"
+                        required>
                 </div>
                 <span class="form-hint"><i class="fas fa-info-circle"></i> Max 1 MB · PDF, DOC or DOCX only</span>
             </div>
@@ -258,5 +261,5 @@
 </section>
 {% endblock %}
 {% block js %}
-<script src="{{ url_for('static', filename='js/carrier.js') }}"></script>
+<script src="{{ url_for('static', filename='js/career.js') }}"></script>
 {% endblock %}

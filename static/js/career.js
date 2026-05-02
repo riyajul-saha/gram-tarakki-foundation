@@ -1,7 +1,7 @@
 let jobs = [];
 
 // Fetch job data from JSON file
-fetch('/api/data/carrier.json')
+fetch('/api/data/career.json')
     .then(response => response.json())
     .then(data => {
         jobs = data;
@@ -275,9 +275,9 @@ async function handleApply(e) {
             method: 'POST',
             body: formData
         });
-        
+
         const data = await res.json();
-        if(res.ok && data.status === 'success') {
+        if (res.ok && data.status === 'success') {
             closeApplyModal();
             form.reset();
             resetFileUploads();
@@ -285,7 +285,7 @@ async function handleApply(e) {
         } else {
             alert(data.message || 'Error submitting application.');
         }
-    } catch(err) {
+    } catch (err) {
         console.error(err);
         alert('An error occurred. Please try again.');
     } finally {
