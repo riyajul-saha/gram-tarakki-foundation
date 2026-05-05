@@ -363,19 +363,47 @@ function openInterviewModal(id) {
     document.getElementById('interviewModal').classList.add('active');
 }
 
-document.getElementById('interviewType')?.addEventListener('change', (e) => {
-    const label = document.getElementById('interviewLinkLabel');
-    if (label) {
-        label.innerText = e.target.value === 'Online' ? 'Meeting Link' : 'Location / Address';
-    }
+// Interview Type Toggle Buttons
+document.querySelectorAll('.type-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.type-option').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const val = btn.dataset.value;
+        document.getElementById('interviewType').value = val;
+        const label = document.getElementById('interviewLinkLabel');
+        const input = document.getElementById('interviewLink');
+        if (val === 'Online') {
+            label.innerHTML = '<i class="fas fa-link"></i> Meeting Link';
+            input.placeholder = 'https://meet.google.com/...';
+        } else {
+            label.innerHTML = '<i class="fas fa-map-marker-alt"></i> Location / Address';
+            input.placeholder = 'e.g. 5th Floor, Tower B, Sector V';
+        }
+    });
 });
 
 document.getElementById('interviewForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const sendBtn = document.getElementById('interviewSendBtn');
+    const btnContent = sendBtn.querySelector('.send-btn-content');
+    const btnSending = sendBtn.querySelector('.send-btn-sending');
+
+    // ---- Sending Animation ----
+    btnContent.style.display = 'none';
+    btnSending.style.display = 'inline-flex';
+    sendBtn.classList.add('sending');
+
     let id = parseInt(document.getElementById('interviewApplicantId').value);
 
     let applicant = applicants.find(a => a.id === id);
-    if (!applicant) return;
+    if (!applicant) {
+        // Reset button
+        btnContent.style.display = 'inline-flex';
+        btnSending.style.display = 'none';
+        sendBtn.classList.remove('sending');
+        return;
+    }
 
     let jobTitle = jobs.find(j => String(j.id) === String(applicant.jobId))?.title || applicant.jobId;
 
@@ -398,17 +426,44 @@ document.getElementById('interviewForm')?.addEventListener('submit', async (e) =
             body: JSON.stringify(payload)
         });
 
+        // Reset button state
+        btnContent.style.display = 'inline-flex';
+        btnSending.style.display = 'none';
+        sendBtn.classList.remove('sending');
+
         if (res.ok) {
-            // Update status to 'interview' — this re-renders the table
-            // so the Shortlist button becomes an Accept button
+            // ---- Show Success Animation ----
+            const overlay = document.getElementById('interviewSuccessOverlay');
+            overlay.style.display = 'flex';
+            // Re-trigger animations by resetting the inner HTML
+            const container = overlay.querySelector('.success-animation-container');
+            container.innerHTML = container.innerHTML;
+
+            // Update status to 'interview'
             await updateApplicantStatus(id, 'interview');
-            showToast('Interview invitation sent — you can now Accept the candidate');
-            closeModals();
+
+            // Auto-close after 2.5 seconds
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                document.getElementById('interviewForm').reset();
+                // Reset toggle buttons
+                document.querySelectorAll('.type-option').forEach(b => b.classList.remove('active'));
+                document.querySelector('.type-option[data-value="Online"]')?.classList.add('active');
+                const label = document.getElementById('interviewLinkLabel');
+                if (label) label.innerHTML = '<i class="fas fa-link"></i> Meeting Link';
+                const input = document.getElementById('interviewLink');
+                if (input) input.placeholder = 'https://meet.google.com/...';
+                closeModals();
+            }, 2500);
         } else {
             const data = await res.json();
             showToast(data.message || 'Failed to send invite');
         }
     } catch (e) {
+        // Reset button state
+        btnContent.style.display = 'inline-flex';
+        btnSending.style.display = 'none';
+        sendBtn.classList.remove('sending');
         console.error('Error sending interview invite:', e);
         showToast('Network error while sending invite');
     }

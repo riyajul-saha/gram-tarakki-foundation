@@ -19,10 +19,19 @@ def verify_admin_login(username, password):
             conn.close()
             return {"status": "error", "message": "Invalid credentials", "code": 401}
 
+        from datetime import datetime, timedelta
+
         if admin_user.get('status') == 'block':
             cursor.close()
             conn.close()
-            return {"status": "error", "message": "Your account has been blocked. Please contact another admin.", "code": 403}
+            return {"status": "error", "message": "Your account has been permanently blocked. Please contact another admin.", "code": 403}
+
+        locked_until = admin_user.get('locked_until')
+        if locked_until and datetime.now() < locked_until:
+            wait_mins = int((locked_until - datetime.now()).total_seconds() / 60) + 1
+            cursor.close()
+            conn.close()
+            return {"status": "error", "message": f"Your account is temporarily locked. Please try again in {wait_mins} minutes.", "code": 403}
 
         ph = PasswordHasher()
         try:
@@ -37,11 +46,12 @@ def verify_admin_login(username, password):
         except VerifyMismatchError:
             failed_attempts = admin_user.get('failed_attempts', 0) + 1
             if failed_attempts >= 5:
-                cursor.execute("UPDATE admin SET failed_attempts = %s, status = 'block' WHERE id = %s", (failed_attempts, admin_user['id']))
+                lock_time = datetime.now() + timedelta(minutes=15)
+                cursor.execute("UPDATE admin SET failed_attempts = %s, locked_until = %s WHERE id = %s", (failed_attempts, lock_time, admin_user['id']))
                 conn.commit()
                 cursor.close()
                 conn.close()
-                return {"status": "error", "message": "Your account has been blocked due to multiple failed login attempts. Please contact another admin.", "code": 403}
+                return {"status": "error", "message": "Your account has been temporarily locked due to multiple failed login attempts. Please try again in 15 minutes.", "code": 403}
             else:
                 cursor.execute("UPDATE admin SET failed_attempts = %s WHERE id = %s", (failed_attempts, admin_user['id']))
                 conn.commit()

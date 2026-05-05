@@ -934,6 +934,360 @@ tr:hover td {
     }
 }
 
+/* ========== Interview Modal Premium Styles ========== */
+
+.interview-modal-content {
+    max-width: 540px !important;
+    padding: 0 !important;
+    overflow: hidden;
+    position: relative;
+}
+
+.interview-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 28px 32px 20px;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e40af 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.interview-modal-header::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.interview-header-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
+    50% { box-shadow: 0 4px 25px rgba(139, 92, 246, 0.5); }
+}
+
+.interview-modal-title {
+    font-size: 1.25rem !important;
+    font-weight: 700;
+    color: #f8fafc !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+.interview-modal-subtitle {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-top: 3px;
+}
+
+.interview-modal-content .close-modal {
+    color: rgba(255, 255, 255, 0.6);
+    z-index: 2;
+}
+.interview-modal-content .close-modal:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.interview-modal-content form {
+    padding: 24px 32px 32px;
+}
+
+/* Interview Type Toggle */
+.interview-type-toggle {
+    display: flex;
+    gap: 10px;
+}
+
+.type-option {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.type-option:hover {
+    border-color: #93c5fd;
+    color: #3b82f6;
+    background: #eff6ff;
+}
+
+.type-option.active {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    color: #1d4ed8;
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.15);
+}
+
+.type-option.active i {
+    color: #2563eb;
+}
+
+/* Date & Time Row */
+.interview-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Form Group Icon Labels */
+.interview-fg label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.interview-fg label i {
+    color: #3b82f6;
+    font-size: 0.82rem;
+    width: 16px;
+    text-align: center;
+}
+
+.optional-tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #94a3b8;
+    background: #f1f5f9;
+    padding: 1px 8px;
+    border-radius: 6px;
+    margin-left: 4px;
+}
+
+/* Send Button */
+.interview-send-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 24px;
+    font-size: 0.95rem;
+    margin-top: 6px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.interview-send-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.5s ease;
+}
+
+.interview-send-btn:hover::before {
+    left: 100%;
+}
+
+.interview-send-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+}
+
+.interview-send-btn.sending {
+    background: linear-gradient(135deg, #475569, #64748b);
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.send-btn-content,
+.send-btn-sending {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Sending Dots Animation */
+.sending-dots {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.sending-dots span {
+    width: 7px;
+    height: 7px;
+    background: white;
+    border-radius: 50%;
+    animation: sendingBounce 1.2s ease-in-out infinite;
+}
+
+.sending-dots span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.sending-dots span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes sendingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-8px); opacity: 1; }
+}
+
+/* ========== Success Overlay ========== */
+.interview-success-overlay {
+    position: absolute;
+    inset: 0;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 20px;
+    animation: successFadeIn 0.4s ease;
+}
+
+@keyframes successFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.success-animation-container {
+    text-align: center;
+    position: relative;
+}
+
+/* Checkmark SVG */
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+}
+
+.checkmark-svg {
+    width: 80px;
+    height: 80px;
+}
+
+.checkmark-circle {
+    stroke: #22c55e;
+    stroke-width: 2;
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: checkCircle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+    stroke: #22c55e;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: checkStroke 0.35s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+}
+
+@keyframes checkCircle {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes checkStroke {
+    to { stroke-dashoffset: 0; }
+}
+
+.success-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: successTextIn 0.4s ease 0.7s forwards;
+}
+
+.success-message {
+    font-size: 0.92rem;
+    color: #64748b;
+    opacity: 0;
+    animation: successTextIn 0.4s ease 0.9s forwards;
+}
+
+@keyframes successTextIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Confetti Particles */
+.success-confetti {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    pointer-events: none;
+}
+
+.success-confetti span {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    top: 50%;
+    left: 50%;
+    opacity: 0;
+    animation: confettiBurst 1s ease-out 0.4s forwards;
+}
+
+.success-confetti span:nth-child(1)  { background: #3b82f6; --tx: -60px; --ty: -70px; --r: 200deg; }
+.success-confetti span:nth-child(2)  { background: #22c55e; --tx: 50px;  --ty: -80px; --r: -150deg; }
+.success-confetti span:nth-child(3)  { background: #f59e0b; --tx: -70px; --ty: 30px;  --r: 300deg; }
+.success-confetti span:nth-child(4)  { background: #ef4444; --tx: 80px;  --ty: 20px;  --r: -250deg; }
+.success-confetti span:nth-child(5)  { background: #8b5cf6; --tx: 0px;   --ty: -90px; --r: 180deg; }
+.success-confetti span:nth-child(6)  { background: #ec4899; --tx: -40px; --ty: -50px; --r: -120deg; }
+.success-confetti span:nth-child(7)  { background: #14b8a6; --tx: 60px;  --ty: -40px; --r: 220deg; }
+.success-confetti span:nth-child(8)  { background: #f97316; --tx: -80px; --ty: -20px; --r: -300deg; }
+.success-confetti span:nth-child(9)  { background: #6366f1; --tx: 30px;  --ty: 50px;  --r: 260deg; width: 6px; height: 6px; }
+.success-confetti span:nth-child(10) { background: #10b981; --tx: -20px; --ty: 60px;  --r: -200deg; width: 6px; height: 6px; }
+
+@keyframes confettiBurst {
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(0);
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) rotate(var(--r)) scale(1);
+        opacity: 0;
+    }
+}
+
 @media (max-width: 768px) {
     .stats-grid {
         grid-template-columns: 1fr 1fr;
@@ -967,5 +1321,17 @@ tr:hover td {
 
     .tabs-container {
         padding: 0 20px;
+    }
+
+    .interview-modal-content form {
+        padding: 20px;
+    }
+
+    .interview-modal-header {
+        padding: 20px;
+    }
+
+    .interview-row {
+        grid-template-columns: 1fr;
     }
 }

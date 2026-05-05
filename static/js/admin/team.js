@@ -6,11 +6,11 @@ function filterData() {
     const search = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase() : '';
     const role = document.getElementById('roleFilter') ? document.getElementById('roleFilter').value : '';
     const status = document.getElementById('statusFilter') ? document.getElementById('statusFilter').value : '';
-    
+
     filteredData = teamData.filter(item => {
         let match = true;
         const itemStatus = item.status ? item.status.toLowerCase() : '';
-        
+
         if (currentTab === 'pending') {
             if (itemStatus !== 'pending') match = false;
         } else if (currentTab === 'active') {
@@ -21,7 +21,7 @@ function filterData() {
         } else if (currentTab === 'all') {
             if (!['selected', 'active', 'approved', 'resign', 'resigned'].includes(itemStatus) && item.source !== 'admin') match = false;
         }
-        
+
         if (search && (!item.name || !item.name.toLowerCase().includes(search)) && (!item.email || !item.email.toLowerCase().includes(search)) && (!item.phone || !item.phone.includes(search))) match = false;
         if (role && item.role !== role) match = false;
         if (status && item.status !== status) match = false;
@@ -36,7 +36,7 @@ function renderTable() {
     if (!tableBody || !cardsView) return;
 
     let tableHtml = '', cardsHtml = '';
-    
+
     if (filteredData.length === 0) {
         const emptyIcon = currentTab === 'pending' ? 'fa-inbox' : 'fa-users-slash';
         const emptyTitle = currentTab === 'pending' ? 'No Pending Requests' : 'No Records Found';
@@ -50,12 +50,19 @@ function renderTable() {
         const itemStatus = item.status ? item.status.toLowerCase() : '';
         const statusDisplay = item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : 'Unknown';
         const statusClass = itemStatus === 'pending' ? 'status-pending' : ((itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected') ? 'status-active' : 'status-inactive');
-        
+
         let actions = `
             <div class="action-btns">
                 <button class="action-btn view" onclick="viewDetails('${item.source}', ${item.id})"><i class="fas fa-eye"></i></button>
         `;
-        if (itemStatus === 'pending') {
+        if (item.source === 'admin') {
+            actions += `<button class="action-btn edit" onclick="editStaff('${item.source}', ${item.id})"><i class="fas fa-edit"></i></button>`;
+            if (itemStatus === 'block') {
+                actions += `<button class="action-btn approve" onclick="confirmAdminStatus('${item.source}', ${item.id}, 'active')"><i class="fas fa-check" title="Active Admin"></i></button>`;
+            } else {
+                actions += `<button class="action-btn reject" onclick="confirmAdminStatus('${item.source}', ${item.id}, 'block')"><i class="fas fa-times" title="Block Admin"></i></button>`;
+            }
+        } else if (itemStatus === 'pending') {
             actions += `
                 <button class="action-btn approve" onclick="confirmApprove('${item.source}', ${item.id})"><i class="fas fa-check"></i></button>
                 <button class="action-btn reject" onclick="confirmReject('${item.source}', ${item.id})"><i class="fas fa-times"></i></button>
@@ -75,13 +82,13 @@ function renderTable() {
         let displayRole = item.role || 'N/A';
         const roleLower = displayRole.toLowerCase();
         const jt = (item.job_type || '').toLowerCase();
-        
+
         if (jt === 'volunteer' || (item.source === 'volunteer' && !roleLower.includes('intern'))) {
-             displayRole += ' <small>(vol)</small>';
+            displayRole += ' <small>(vol)</small>';
         } else if (jt === 'internship' || (item.source === 'volunteer' && roleLower.includes('intern'))) {
-             displayRole += ' <small>(intern)</small>';
+            displayRole += ' <small>(intern)</small>';
         } else if (jt === 'staff' || item.source === 'staff') {
-             displayRole += ' <small>(staff)</small>';
+            displayRole += ' <small>(staff)</small>';
         }
 
         // Table row
@@ -96,6 +103,30 @@ function renderTable() {
             </tr>
         `;
 
+        let cardActions = `<button class="action-btn view" onclick="viewDetails('${item.source}', ${item.id})"><i class="fas fa-eye"></i></button>`;
+        if (item.source === 'admin') {
+            cardActions += `<button class="action-btn edit" onclick="editStaff('${item.source}', ${item.id})"><i class="fas fa-edit"></i></button>`;
+            if (itemStatus === 'block') {
+                cardActions += `<button class="action-btn approve" onclick="confirmAdminStatus('${item.source}', ${item.id}, 'active')"><i class="fas fa-check" title="Active Admin"></i></button>`;
+            } else {
+                cardActions += `<button class="action-btn reject" onclick="confirmAdminStatus('${item.source}', ${item.id}, 'block')"><i class="fas fa-times" title="Block Admin"></i></button>`;
+            }
+        } else if (itemStatus === 'pending') {
+            cardActions += `
+                <button class="action-btn approve" onclick="confirmApprove('${item.source}', ${item.id})"><i class="fas fa-check"></i></button>
+                <button class="action-btn reject" onclick="confirmReject('${item.source}', ${item.id})"><i class="fas fa-times"></i></button>
+            `;
+        } else if (itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected') {
+            cardActions += `
+                <button class="action-btn edit" onclick="editStaff('${item.source}', ${item.id})"><i class="fas fa-edit"></i></button>
+                <button class="action-btn reject" onclick="confirmReject('${item.source}', ${item.id})"><i class="fas fa-times"></i></button>
+            `;
+        } else {
+            cardActions += `
+                <button class="action-btn remove" onclick="confirmRemove('${item.source}', ${item.id})"><i class="fas fa-trash"></i></button>
+            `;
+        }
+
         // Card for mobile
         cardsHtml += `
             <div class="team-card">
@@ -106,15 +137,7 @@ function renderTable() {
                     <span class="status-badge ${statusClass}">${statusDisplay}</span>
                 </div>
                 <div class="card-actions">
-                    <button class="action-btn view" onclick="viewDetails('${item.source}', ${item.id})"><i class="fas fa-eye"></i></button>
-                    ${itemStatus === 'pending' ?
-                `<button class="action-btn approve" onclick="confirmApprove('${item.source}', ${item.id})"><i class="fas fa-check"></i></button>
-                         <button class="action-btn reject" onclick="confirmReject('${item.source}', ${item.id})"><i class="fas fa-times"></i></button>` :
-                (itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected' ?
-                `<button class="action-btn edit" onclick="editStaff('${item.source}', ${item.id})"><i class="fas fa-edit"></i></button>
-                         <button class="action-btn reject" onclick="confirmReject('${item.source}', ${item.id})"><i class="fas fa-times"></i></button>` :
-                `<button class="action-btn remove" onclick="confirmRemove('${item.source}', ${item.id})"><i class="fas fa-trash"></i></button>`)
-            }
+                    ${cardActions}
                 </div>
             </div>
         `;
@@ -138,7 +161,7 @@ function updateCounts() {
         if ((status === 'active' || status === 'approved' || status === 'selected') && item.source !== 'admin') activeBoth++;
         if (status === 'rejected') rejectedBoth++;
         if (item.source === 'admin') adminCount++;
-        
+
         if (['selected', 'active', 'approved', 'resign', 'resigned'].includes(status) || item.source === 'admin') {
             allCount++;
         }
@@ -178,19 +201,19 @@ function applyFilters() {
 function viewDetails(source, id) {
     const item = teamData.find(i => i.id === id && i.source === source);
     if (!item) return;
-    
+
     let displayRole = item.role || 'N/A';
     const roleLower = displayRole.toLowerCase();
     const jt = (item.job_type || '').toLowerCase();
-    
+
     if (jt === 'volunteer' || (item.source === 'volunteer' && !roleLower.includes('intern'))) {
-         displayRole += ' <small>(vol)</small>';
+        displayRole += ' <small>(vol)</small>';
     } else if (jt === 'internship' || (item.source === 'volunteer' && roleLower.includes('intern'))) {
-         displayRole += ' <small>(intern)</small>';
+        displayRole += ' <small>(intern)</small>';
     } else if (jt === 'staff' || item.source === 'staff') {
-         displayRole += ' <small>(staff)</small>';
+        displayRole += ' <small>(staff)</small>';
     }
-    
+
     const itemStatus = item.status ? item.status.toLowerCase() : '';
     const statusDisplay = item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : 'Unknown';
     const statusClass = itemStatus === 'pending' ? 'status-pending' : ((itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected') ? 'status-active' : 'status-inactive');
@@ -230,13 +253,18 @@ function viewDetails(source, id) {
             ${(item.documents && item.documents.length > 0) ? item.documents.map(d => `<button class="doc-btn"><i class="fas fa-file-alt"></i> ${d}</button>`).join('') : '<p style="color:#94a3b8;font-size:0.88rem;">No documents uploaded</p>'}
         </div>
         <div style="display: flex; gap: 10px;">
-            ${itemStatus === 'pending' ?
-            `<button class="btn" onclick="confirmApprove('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Approve</button>
-                 <button class="btn btn-danger" onclick="confirmReject('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-times"></i> Reject</button>` :
-            (itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected' ?
+            ${item.source === 'admin' ?
             `<button class="btn" onclick="editStaff('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-edit"></i> Edit</button>
+             ${itemStatus === 'block' ?
+                `<button class="btn" onclick="confirmAdminStatus('${item.source}', ${item.id}, 'active')" style="flex:1;justify-content:center;background:#10b981;border-color:#10b981;"><i class="fas fa-check"></i> Active</button>` :
+                `<button class="btn btn-danger" onclick="confirmAdminStatus('${item.source}', ${item.id}, 'block')" style="flex:1;justify-content:center;"><i class="fas fa-times"></i> Block</button>`}`
+            : (itemStatus === 'pending' ?
+                `<button class="btn" onclick="confirmApprove('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-check"></i> Approve</button>
                  <button class="btn btn-danger" onclick="confirmReject('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-times"></i> Reject</button>` :
-            `<button class="btn btn-danger" onclick="confirmRemove('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-trash"></i> Remove</button>`)
+                (itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected' ?
+                    `<button class="btn" onclick="editStaff('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-edit"></i> Edit</button>
+                 <button class="btn btn-danger" onclick="confirmReject('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-times"></i> Reject</button>` :
+                    `<button class="btn btn-danger" onclick="confirmRemove('${item.source}', ${item.id})" style="flex:1;justify-content:center;"><i class="fas fa-trash"></i> Remove</button>`))
         }
         </div>
     `;
@@ -247,15 +275,15 @@ function viewDetails(source, id) {
 // Add Staff
 function openAddStaffModal() {
     const form = document.getElementById('addStaffForm');
-    if(form) {
+    if (form) {
         form.reset();
         // Reset file upload card states
         const photoCard = document.getElementById('photoUploadCard');
         const docCard = document.getElementById('docUploadCard');
-        if(photoCard) photoCard.classList.remove('has-file');
-        if(docCard) docCard.classList.remove('has-file');
-        if(document.getElementById('photoUploadText')) document.getElementById('photoUploadText').innerText = 'Click to upload photo';
-        if(document.getElementById('docUploadText')) document.getElementById('docUploadText').innerText = 'Click to upload documents';
+        if (photoCard) photoCard.classList.remove('has-file');
+        if (docCard) docCard.classList.remove('has-file');
+        if (document.getElementById('photoUploadText')) document.getElementById('photoUploadText').innerText = 'Click to upload photo';
+        if (document.getElementById('docUploadText')) document.getElementById('docUploadText').innerText = 'Click to upload documents';
         // Reset password UI
         resetPasswordStrength();
         handleTypeChange();
@@ -267,17 +295,17 @@ function handleTypeChange() {
     const typeEl = document.getElementById('staffType');
     if (!typeEl) return;
     const type = typeEl.value;
-    
+
     const adminFields = document.getElementById('adminFields');
     const volunteerFields = document.getElementById('volunteerFields');
     const otherStaffFields = document.getElementById('otherStaffFields');
     const docUploadGroup = document.getElementById('docUploadGroup');
-    
+
     // Reset displays using CSS class
-    if(adminFields) adminFields.classList.remove('visible');
-    if(volunteerFields) volunteerFields.classList.remove('visible');
-    if(otherStaffFields) otherStaffFields.classList.remove('visible');
-    if(docUploadGroup) docUploadGroup.style.display = '';
+    if (adminFields) adminFields.classList.remove('visible');
+    if (volunteerFields) volunteerFields.classList.remove('visible');
+    if (otherStaffFields) otherStaffFields.classList.remove('visible');
+    if (docUploadGroup) docUploadGroup.style.display = '';
 
     // Remove required attributes
     ['staffPassword', 'staffConfirmPassword', 'staffServiceType', 'staffAvailability', 'staffRoleOfStaff'].forEach(id => {
@@ -289,16 +317,16 @@ function handleTypeChange() {
     resetPasswordStrength();
 
     if (type === 'Admin') {
-        if(adminFields) adminFields.classList.add('visible');
-        if(docUploadGroup) docUploadGroup.style.display = 'none';
+        if (adminFields) adminFields.classList.add('visible');
+        if (docUploadGroup) docUploadGroup.style.display = 'none';
         document.getElementById('staffPassword').setAttribute('required', 'required');
         document.getElementById('staffConfirmPassword').setAttribute('required', 'required');
     } else if (type === 'Volunteer') {
-        if(volunteerFields) volunteerFields.classList.add('visible');
+        if (volunteerFields) volunteerFields.classList.add('visible');
         document.getElementById('staffServiceType').setAttribute('required', 'required');
         document.getElementById('staffAvailability').setAttribute('required', 'required');
     } else if (type === 'Other Staff') {
-        if(otherStaffFields) otherStaffFields.classList.add('visible');
+        if (otherStaffFields) otherStaffFields.classList.add('visible');
         document.getElementById('staffRoleOfStaff').setAttribute('required', 'required');
     }
 }
@@ -306,7 +334,7 @@ function handleTypeChange() {
 async function handleAddStaff(e) {
     e.preventDefault();
     const type = document.getElementById('staffType').value;
-    
+
     if (type === 'Admin') {
         const pwd = document.getElementById('staffPassword').value;
         const confirmPwd = document.getElementById('staffConfirmPassword').value;
@@ -411,6 +439,19 @@ function confirmRemove(source, id) {
     openModal('confirmModal');
 }
 
+let currentAdminActionStatus = null;
+
+function confirmAdminStatus(source, id, status) {
+    currentActionId = id;
+    currentActionSource = source;
+    currentAdminActionStatus = status;
+    const isBlocking = status === 'block';
+    document.getElementById('confirmTitle').innerText = isBlocking ? 'Block Admin' : 'Activate Admin';
+    document.getElementById('confirmMessage').innerText = isBlocking ? 'Are you sure you want to block this admin?' : 'Are you sure you want to activate this admin?';
+    document.getElementById('confirmYes').onclick = function () { executeAdminStatus(currentActionSource, currentActionId, currentAdminActionStatus); };
+    openModal('confirmModal');
+}
+
 async function executeApprove(source, id) {
     try {
         const res = await fetch('/admin/api/team', {
@@ -452,6 +493,28 @@ async function executeReject(source, id, isSelected) {
     } catch (e) {
         console.error(e);
         showToast('Error rejecting', 'error');
+    }
+}
+
+async function executeAdminStatus(source, id, status) {
+    try {
+        const res = await fetch('/admin/api/team', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, source, status: status, action: 'update_status' })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+            showToast('Admin status updated successfully', 'success');
+            closeModal('confirmModal');
+            closeModal('viewModal');
+            await fetchTeamData();
+        } else {
+            showToast(data.message || 'Failed to update admin status', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Error updating admin status', 'error');
     }
 }
 async function executeRemove(source, id) {
@@ -518,13 +581,25 @@ function editStaff(source, id) {
     const statusSelect = document.getElementById('editStatus');
     if (statusSelect) {
         const currentStatus = (item.status || 'active').toLowerCase();
-        statusSelect.value = currentStatus;
-        // If admin, disable status change
+
         if (source === 'admin') {
-            statusSelect.disabled = true;
+            statusSelect.innerHTML = '<option value="active">Active</option><option value="block">Blocked</option>';
         } else {
-            statusSelect.disabled = false;
+            statusSelect.innerHTML = '<option value="active">Active</option><option value="resign">Resigned</option>';
         }
+
+        statusSelect.value = currentStatus;
+        statusSelect.disabled = false;
+    }
+
+    // Handle admin specific fields
+    const adminFields = document.getElementById('editAdminFields');
+    if (source === 'admin') {
+        if (adminFields) adminFields.style.display = '';
+        const editPwd = document.getElementById('editPassword');
+        if (editPwd) editPwd.value = '';
+    } else {
+        if (adminFields) adminFields.style.display = 'none';
     }
 
     // If admin, hide role field (they are always "Admin")
@@ -558,7 +633,7 @@ function handleEditPhotoPreview() {
 
         // Show live preview
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             if (preview) preview.src = e.target.result;
         };
         reader.readAsDataURL(input.files[0]);
@@ -593,6 +668,13 @@ async function handleEditStaff(e) {
     formData.append('role', role);
     formData.append('status', status);
     formData.append('address', address);
+
+    if (source === 'admin') {
+        const pwd = document.getElementById('editPassword');
+        if (pwd && pwd.value) {
+            formData.append('password', pwd.value);
+        }
+    }
 
     // Photo
     const photoInput = document.getElementById('editStaffPhoto');
@@ -655,23 +737,23 @@ function closeModal(id) {
 function populateRoleFilter() {
     const roleFilter = document.getElementById('roleFilter');
     if (!roleFilter) return;
-    
+
     const currentVal = roleFilter.value;
     const roles = new Set();
-    
+
     teamData.forEach(item => {
         if (item.role) {
             // Some roles have appended text in display, but we want the base item.role
             roles.add(item.role);
         }
     });
-    
+
     const sortedRoles = Array.from(roles).sort();
     let html = '<option value="">All Roles</option>';
     sortedRoles.forEach(role => {
         html += `<option value="${role}">${role}</option>`;
     });
-    
+
     roleFilter.innerHTML = html;
     if (sortedRoles.includes(currentVal)) {
         roleFilter.value = currentVal;
@@ -848,14 +930,14 @@ function handleFileUploadUI(inputId, cardId, labelId, isMultiple) {
 
 document.addEventListener('DOMContentLoaded', function () {
     fetchTeamData();
-    
+
     // Setup real-time filters
     const searchInput = document.getElementById('searchInput');
     if (searchInput) searchInput.addEventListener('input', filterData);
-    
+
     const roleFilter = document.getElementById('roleFilter');
     if (roleFilter) roleFilter.addEventListener('change', filterData);
-    
+
     const statusFilter = document.getElementById('statusFilter');
     if (statusFilter) statusFilter.addEventListener('change', filterData);
 });

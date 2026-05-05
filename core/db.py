@@ -87,6 +87,10 @@ def init_db():
             cursor.execute("ALTER TABLE admin ADD COLUMN failed_attempts INT DEFAULT 0")
         except mysql.connector.Error:
             pass
+        try:
+            cursor.execute("ALTER TABLE admin ADD COLUMN locked_until TIMESTAMP NULL")
+        except mysql.connector.Error:
+            pass
         
         # Create join_volunteer table
         cursor.execute("""

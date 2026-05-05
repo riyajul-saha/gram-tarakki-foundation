@@ -693,12 +693,24 @@ def init_routes(app):
 
                     try:
                         if edit_source == 'admin':
-                            if photo_path:
-                                cursor.execute("UPDATE admin SET fullname = %s, phone = %s, address = %s, image = %s WHERE id = %s",
-                                    (edit_name, edit_phone, edit_address, photo_path, edit_id))
+                            edit_password = data.get('password', '').strip()
+                            if edit_password:
+                                from argon2 import PasswordHasher
+                                ph = PasswordHasher()
+                                hashed_pwd = ph.hash(edit_password)
+                                if photo_path:
+                                    cursor.execute("UPDATE admin SET fullname = %s, phone = %s, address = %s, image = %s, status = %s, password = %s WHERE id = %s",
+                                        (edit_name, edit_phone, edit_address, photo_path, edit_status, hashed_pwd, edit_id))
+                                else:
+                                    cursor.execute("UPDATE admin SET fullname = %s, phone = %s, address = %s, status = %s, password = %s WHERE id = %s",
+                                        (edit_name, edit_phone, edit_address, edit_status, hashed_pwd, edit_id))
                             else:
-                                cursor.execute("UPDATE admin SET fullname = %s, phone = %s, address = %s WHERE id = %s",
-                                    (edit_name, edit_phone, edit_address, edit_id))
+                                if photo_path:
+                                    cursor.execute("UPDATE admin SET fullname = %s, phone = %s, address = %s, image = %s, status = %s WHERE id = %s",
+                                        (edit_name, edit_phone, edit_address, photo_path, edit_status, edit_id))
+                                else:
+                                    cursor.execute("UPDATE admin SET fullname = %s, phone = %s, address = %s, status = %s WHERE id = %s",
+                                        (edit_name, edit_phone, edit_address, edit_status, edit_id))
                         elif edit_source == 'our_staff':
                             if photo_path:
                                 cursor.execute("UPDATE our_staff SET fullname = %s, phone = %s, location = %s, role = %s, status = %s, photo = %s WHERE id = %s",
@@ -732,7 +744,14 @@ def init_routes(app):
                     conn.close()
                     return jsonify({"status": "error", "message": "Missing parameters"}), 400
 
-                table = 'our_staff' if source == 'our_staff' else ('join_volunteer' if source == 'volunteer' else 'join_staff')
+                if source == 'admin':
+                    table = 'admin'
+                elif source == 'our_staff':
+                    table = 'our_staff'
+                elif source == 'volunteer':
+                    table = 'join_volunteer'
+                else:
+                    table = 'join_staff'
 
                 if action == 'remove':
                     cursor.execute(f"DELETE FROM {table} WHERE id = %s", (member_id,))
@@ -848,7 +867,7 @@ def init_routes(app):
             
             # Fetch from admin
             try:
-                cursor.execute("SELECT id, fullname as name, email, phone, address, image as photo, created_at as appliedDate FROM admin")
+                cursor.execute("SELECT id, fullname as name, email, phone, address, image as photo, created_at as appliedDate, status FROM admin")
                 admins = cursor.fetchall()
                 for a in admins:
                     a['source'] = 'admin'
@@ -857,7 +876,7 @@ def init_routes(app):
                     a['documents'] = []
                     a['role'] = 'Admin'
                     a['job_type'] = 'staff'
-                    a['status'] = 'active' # admin is always considered active
+                    a['status'] = a.get('status') or 'active'
                     team.append(a)
             except mysql.connector.Error as err:
                 if err.errno != 1146:

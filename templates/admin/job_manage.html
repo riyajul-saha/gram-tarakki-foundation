@@ -32,9 +32,9 @@
 <!-- Tabs -->
 <div class="tabs-container">
     <div class="tabs">
-        <button class="tab-btn active" data-tab="jobs"><i class="fas fa-briefcase"></i> Job Posts</button>
-        <button class="tab-btn" data-tab="applicants"><i class="fas fa-users"></i> Applicants</button>
-        <button class="tab-btn" data-tab="pipeline"><i class="fas fa-columns"></i> Pipeline</button>
+        <button class="tab-btn active" data-tab="jobs"><i class="fas fa-briefcase"></i>Job Posts</button>
+        <button class="tab-btn" data-tab="applicants"><i class="fas fa-users"></i>Applicants</button>
+        <button class="tab-btn" data-tab="pipeline"><i class="fas fa-columns"></i>Pipeline</button>
     </div>
     <div id="tabJobs" class="tab-pane"></div>
     <div id="tabApplicants" class="tab-pane" style="display:none"></div>
@@ -46,7 +46,8 @@
     <div class="modal-content"><span class="close-modal">&times;</span>
         <h2 id="jobModalTitle">Create Job</h2>
         <form id="jobForm">
-            <div class="form-group"><label>Job Title</label><input id="jobTitle" required placeholder="e.g. Software Developer"></div>
+            <div class="form-group"><label>Job Title</label><input id="jobTitle" required
+                    placeholder="e.g. Software Developer"></div>
             <div class="form-group"><label>Department</label><input id="jobDept" placeholder="e.g. Engineering"></div>
             <div class="form-group"><label>Job Type</label><select id="jobType">
                     <option>Full-time</option>
@@ -55,14 +56,19 @@
                     <option>Volunteer</option>
                     <option>Contract</option>
                 </select></div>
-            <div class="form-group"><label>Location</label><input id="jobLocation" placeholder="e.g. Remote, Kolkata"></div>
-            <div class="form-group"><label>Salary Range</label><input id="jobSalary" placeholder="e.g. ₹25k - ₹35k"></div>
-            <div class="form-group"><label>Description</label><textarea id="jobDesc" rows="3" placeholder="Describe the role..."></textarea></div>
-            <div class="form-group"><label>Requirements (one per line)</label><textarea id="jobReq" rows="3" placeholder="Bachelor's degree&#10;2+ years experience"></textarea></div>
+            <div class="form-group"><label>Location</label><input id="jobLocation" placeholder="e.g. Remote, Kolkata">
+            </div>
+            <div class="form-group"><label>Salary Range</label><input id="jobSalary" placeholder="e.g. ₹25k - ₹35k">
+            </div>
+            <div class="form-group"><label>Description</label><textarea id="jobDesc" rows="3"
+                    placeholder="Describe the role..."></textarea></div>
+            <div class="form-group"><label>Requirements (one per line)</label><textarea id="jobReq" rows="3"
+                    placeholder="Bachelor's degree&#10;2+ years experience"></textarea></div>
             <div class="form-group"><label>Deadline</label><input type="date" id="jobDeadline"></div>
             <div style="display:flex; gap:10px;">
                 <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Publish</button>
-                <button type="button" id="saveDraftBtn" class="btn btn-outline"><i class="fas fa-save"></i> Save Draft</button>
+                <button type="button" id="saveDraftBtn" class="btn btn-outline"><i class="fas fa-save"></i> Save
+                    Draft</button>
             </div>
         </form>
     </div>
@@ -78,19 +84,95 @@
 
 <!-- Modal: Schedule Interview -->
 <div id="interviewModal" class="modal">
-    <div class="modal-content"><span class="close-modal">&times;</span>
-        <h3>Schedule Interview</h3>
-        <form id="interviewForm"><input type="hidden" id="interviewApplicantId">
-            <div class="form-group"><label>Type</label><select id="interviewType">
+    <div class="modal-content interview-modal-content">
+        <span class="close-modal">&times;</span>
+        <!-- Modal Header -->
+        <div class="interview-modal-header">
+            <div class="interview-header-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div>
+                <h3 class="interview-modal-title">Schedule Interview</h3>
+                <p class="interview-modal-subtitle">Send an interview invitation to the applicant</p>
+            </div>
+        </div>
+
+        <form id="interviewForm">
+            <input type="hidden" id="interviewApplicantId">
+
+            <!-- Interview Type -->
+            <div class="form-group interview-fg">
+                <label><i class="fas fa-video"></i> Interview Type</label>
+                <div class="interview-type-toggle">
+                    <button type="button" class="type-option active" data-value="Online">
+                        <i class="fas fa-laptop"></i> Online
+                    </button>
+                    <button type="button" class="type-option" data-value="Offline">
+                        <i class="fas fa-building"></i> Offline
+                    </button>
+                </div>
+                <select id="interviewType" style="display:none">
                     <option>Online</option>
                     <option>Offline</option>
-                </select></div>
-            <div class="form-group"><label>Date</label><input type="date" id="interviewDate" required></div>
-            <div class="form-group"><label>Time</label><input type="time" id="interviewTime" required></div>
-            <div class="form-group"><label id="interviewLinkLabel">Meeting Link / Address</label><input id="interviewLink"></div>
-            <div class="form-group"><label>Message</label><textarea id="interviewMsg" rows="2"></textarea></div>
-            <button type="submit" class="btn">Send Invite</button>
+                </select>
+            </div>
+
+            <!-- Date & Time Row -->
+            <div class="interview-row">
+                <div class="form-group interview-fg">
+                    <label><i class="fas fa-calendar-alt"></i> Date</label>
+                    <input type="date" id="interviewDate" required>
+                </div>
+                <div class="form-group interview-fg">
+                    <label><i class="fas fa-clock"></i> Time</label>
+                    <input type="time" id="interviewTime" required>
+                </div>
+            </div>
+
+            <!-- Meeting Link / Address -->
+            <div class="form-group interview-fg">
+                <label id="interviewLinkLabel"><i class="fas fa-link"></i> Meeting Link</label>
+                <input id="interviewLink" placeholder="https://meet.google.com/...">
+            </div>
+
+            <!-- Message -->
+            <div class="form-group interview-fg">
+                <label><i class="fas fa-comment-dots"></i> Personal Message <span
+                        class="optional-tag">Optional</span></label>
+                <textarea id="interviewMsg" rows="2" placeholder="Add a note for the candidate..."></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn interview-send-btn" id="interviewSendBtn">
+                <span class="send-btn-content">
+                    <i class="fas fa-paper-plane"></i> Send Invite
+                </span>
+                <span class="send-btn-sending" style="display:none">
+                    <span class="sending-dots">
+                        <span></span><span></span><span></span>
+                    </span>
+                    Sending...
+                </span>
+            </button>
         </form>
+
+        <!-- Success Overlay -->
+        <div class="interview-success-overlay" id="interviewSuccessOverlay" style="display:none">
+            <div class="success-animation-container">
+                <div class="success-checkmark">
+                    <svg viewBox="0 0 52 52" class="checkmark-svg">
+                        <circle cx="26" cy="26" r="25" fill="none" class="checkmark-circle" />
+                        <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" class="checkmark-check" />
+                    </svg>
+                </div>
+                <h3 class="success-title">Invitation Sent!</h3>
+                <p class="success-message">The interview invite has been emailed successfully.</p>
+                <div class="success-confetti">
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

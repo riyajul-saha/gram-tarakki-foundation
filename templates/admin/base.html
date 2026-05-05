@@ -61,7 +61,8 @@
                         Our Students</a></li>
                 <li class="nav-item"><a href="#" class="nav-link {% block donations_active %}{% endblock %}"><i
                             class="fas fa-donate"></i> Donations</a></li>
-                <li class="nav-item"><a href="/admin/job-management" class="nav-link {% block job_management_active %}{% endblock %}"><i
+                <li class="nav-item"><a href="/admin/job-management"
+                        class="nav-link {% block job_management_active %}{% endblock %}"><i
                             class="fas fa-briefcase"></i>Job Management</a></li>
                 <li class="nav-item"><a href="#" class="nav-link {% block blog_active %}{% endblock %}"><i
                             class="fas fa-blog"></i> Blog / Updates</a></li>
@@ -90,26 +91,29 @@
                     <button class="icon-btn"><i class="fas fa-envelope"></i></button>
                     <div class="profile dropdown">
                         {% if current_admin %}
-                            {% set initials = "A" %}
-                            {% if current_admin.fullname %}
-                                {% set name_parts = current_admin.fullname.split() %}
-                                {% if name_parts|length > 1 %}
-                                    {% set initials = name_parts[0][0]|upper ~ name_parts[1][0]|upper %}
-                                {% else %}
-                                    {% set initials = name_parts[0][0]|upper %}
-                                {% endif %}
-                            {% elif current_admin.email %}
-                                {% set initials = current_admin.email[0]|upper %}
-                            {% endif %}
-                            
-                            {% if current_admin.image %}
-                                <img src="{{ current_admin.image }}" alt="Admin" style="object-fit: cover; width: 40px; height: 40px; border-radius: 50%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="admin-initials" style="display: none;">{{ initials }}</div>
-                            {% else %}
-                                <div class="admin-initials">{{ initials }}</div>
-                            {% endif %}
+                        {% set initials = "A" %}
+                        {% if current_admin.fullname %}
+                        {% set name_parts = current_admin.fullname.split() %}
+                        {% if name_parts|length > 1 %}
+                        {% set initials = name_parts[0][0]|upper ~ name_parts[1][0]|upper %}
                         {% else %}
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Admin" style="width: 40px; height: 40px; border-radius: 50%;">
+                        {% set initials = name_parts[0][0]|upper %}
+                        {% endif %}
+                        {% elif current_admin.email %}
+                        {% set initials = current_admin.email[0]|upper %}
+                        {% endif %}
+
+                        {% if current_admin.image %}
+                        <img src="{{ current_admin.image }}" alt="Admin"
+                            style="object-fit: cover; width: 40px; height: 40px; border-radius: 50%;"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="admin-initials" style="display: none;">{{ initials }}</div>
+                        {% else %}
+                        <div class="admin-initials">{{ initials }}</div>
+                        {% endif %}
+                        {% else %}
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Admin"
+                            style="width: 40px; height: 40px; border-radius: 50%;">
                         {% endif %}
                         <div class="dropdown-menu">
                             <a href="#">Profile</a>

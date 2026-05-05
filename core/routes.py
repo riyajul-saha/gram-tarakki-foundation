@@ -2,10 +2,11 @@ import os
 import uuid
 import re
 from datetime import datetime
-from flask import render_template, request, jsonify, send_file, abort
+from flask import render_template, request, jsonify, send_file, abort, session
 from werkzeug.utils import secure_filename
 from core.email_sender import send_email_async
 from core.db import get_db_connection, init_db
+from core.security import rate_limit, validate_image_file, validate_pdf_file
 import mysql.connector
 
 # ==============================================================================
@@ -77,6 +78,7 @@ def init_routes(app):
     # ==========================================================================
 
     @app.route("/join", methods=["GET", "POST"])
+    @rate_limit
     def join():
         """
         Handle student enrollment requests.
@@ -113,6 +115,8 @@ def init_routes(app):
                     ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
                     if ext not in allowed_ext or ext == 'svg':
                         return jsonify({"status": "error", "message": "Only JPG, PNG and WebP images are allowed. SVG not permitted."}), 400
+                    if not validate_image_file(file):
+                        return jsonify({"status": "error", "message": "Invalid image file."}), 400
                     # Check file size (max 2 MB for student photo)
                     file.seek(0, 2)
                     file_size = file.tell()
@@ -201,6 +205,7 @@ def init_routes(app):
         return render_template('join.html')
 
     @app.route("/volunteer_join", methods=["POST"])
+    @rate_limit
     def volunteer_join():
         """
         Handle volunteer registration form submissions.
@@ -226,6 +231,8 @@ def init_routes(app):
                 ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
                 if ext not in allowed_ext:
                     return jsonify({"status": "error", "message": "Only PDF files are allowed for resume."}), 400
+                if not validate_pdf_file(file):
+                    return jsonify({"status": "error", "message": "Invalid PDF file."}), 400
                 # Check file size (max 1 MB)
                 file.seek(0, 2)
                 file_size = file.tell()
@@ -249,6 +256,8 @@ def init_routes(app):
                 ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
                 if ext not in allowed_ext or ext == 'svg':
                     return jsonify({"status": "error", "message": "Only JPG, PNG and WebP images are allowed. SVG not permitted."}), 400
+                if not validate_image_file(file):
+                    return jsonify({"status": "error", "message": "Invalid image file."}), 400
                 # Check file size (max 2 MB)
                 file.seek(0, 2)
                 file_size = file.tell()
@@ -321,6 +330,7 @@ def init_routes(app):
             return jsonify({"status": "error", "message": "Failed to submit. Please try again later."}), 500
 
     @app.route("/partner_join", methods=["POST"])
+    @rate_limit
     def partner_join():
         """
         Handle partnership inquiries form submissions.
@@ -352,6 +362,8 @@ def init_routes(app):
                 ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
                 if ext not in allowed_ext or ext == 'svg':
                     return jsonify({"status": "error", "message": "Only JPG, PNG and WebP images are allowed. SVG not permitted."}), 400
+                if not validate_image_file(file):
+                    return jsonify({"status": "error", "message": "Invalid image file."}), 400
                 # Check file size (max 100 KB for logo)
                 file.seek(0, 2)
                 file_size = file.tell()
@@ -421,6 +433,7 @@ def init_routes(app):
         return render_template('career.html')
 
     @app.route("/apply-job", methods=["POST"])
+    @rate_limit
     def apply_job():
         """
         Handle job applications submitted from the career portal.
@@ -467,6 +480,8 @@ def init_routes(app):
                 ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
                 if ext not in allowed_ext:
                     return jsonify({"status": "error", "message": "Only PDF, DOC and DOCX files are allowed for resume."}), 400
+                if ext == 'pdf' and not validate_pdf_file(file):
+                    return jsonify({"status": "error", "message": "Invalid PDF file."}), 400
                 # Check file size (max 1 MB)
                 file.seek(0, 2)
                 file_size = file.tell()
@@ -493,6 +508,8 @@ def init_routes(app):
                 ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
                 if ext not in allowed_ext or ext == 'svg':
                     return jsonify({"status": "error", "message": "Only JPG, PNG and WebP images are allowed. SVG not permitted."}), 400
+                if not validate_image_file(file):
+                    return jsonify({"status": "error", "message": "Invalid image file."}), 400
                 # Check file size (max 100 KB for applicant photo)
                 file.seek(0, 2)
                 file_size = file.tell()

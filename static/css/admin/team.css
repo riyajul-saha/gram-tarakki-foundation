@@ -869,16 +869,17 @@ td small,
     overflow: hidden !important;
 }
 
-.add-staff-modal > .close-modal {
+.add-staff-modal>.close-modal {
     top: 18px;
     right: 18px;
     z-index: 2;
-    color: rgba(255,255,255,0.7);
-    background: rgba(255,255,255,0.1);
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(4px);
 }
-.add-staff-modal > .close-modal:hover {
-    background: rgba(255,255,255,0.2);
+
+.add-staff-modal>.close-modal:hover {
+    background: rgba(255, 255, 255, 0.2);
     color: #fff;
 }
 
@@ -892,6 +893,7 @@ td small,
     position: relative;
     overflow: hidden;
 }
+
 .add-staff-header::before {
     content: '';
     position: absolute;
@@ -908,7 +910,7 @@ td small,
     width: 52px;
     height: 52px;
     min-width: 52px;
-    background: rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 14px;
     display: flex;
     align-items: center;
@@ -916,7 +918,7 @@ td small,
     font-size: 1.4rem;
     color: #38bdf8;
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .add-staff-header h2 {
@@ -928,7 +930,7 @@ td small,
 }
 
 .add-staff-subtitle {
-    color: rgba(255,255,255,0.55) !important;
+    color: rgba(255, 255, 255, 0.55) !important;
     font-size: 0.82rem !important;
     margin: 0 !important;
 }
@@ -944,13 +946,16 @@ td small,
 .add-staff-modal form::-webkit-scrollbar {
     width: 5px;
 }
+
 .add-staff-modal form::-webkit-scrollbar-track {
     background: transparent;
 }
+
 .add-staff-modal form::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 10px;
 }
+
 .add-staff-modal form::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
 }
@@ -965,6 +970,7 @@ td small,
     position: relative;
     transition: border-color 0.2s ease;
 }
+
 .form-section:hover {
     border-color: #cbd5e1;
 }
@@ -991,6 +997,7 @@ td small,
     align-items: center;
     gap: 8px;
 }
+
 .form-section-title i {
     font-size: 0.85rem;
     color: #6366f1;
@@ -1000,6 +1007,7 @@ td small,
 .form-row {
     margin-bottom: 0;
 }
+
 .form-row-2col {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1013,7 +1021,7 @@ td small,
     align-items: center;
 }
 
-.input-icon-wrapper > i:first-child {
+.input-icon-wrapper>i:first-child {
     position: absolute;
     left: 14px;
     color: #94a3b8;
@@ -1022,7 +1030,8 @@ td small,
     pointer-events: none;
     transition: color 0.2s ease;
 }
-.input-icon-wrapper:focus-within > i:first-child {
+
+.input-icon-wrapper:focus-within>i:first-child {
     color: #3b82f6;
 }
 
@@ -1038,7 +1047,8 @@ td small,
 .textarea-wrapper {
     align-items: flex-start;
 }
-.textarea-wrapper > i:first-child {
+
+.textarea-wrapper>i:first-child {
     top: 12px;
     position: absolute;
 }
@@ -1051,6 +1061,7 @@ td small,
     padding-top: 14px;
     border-top: 1px dashed #e2e8f0;
 }
+
 .conditional-fields.visible {
     display: block;
 }
@@ -1060,6 +1071,7 @@ td small,
         opacity: 0;
         transform: translateY(-8px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1080,6 +1092,7 @@ td small,
     color: #3b82f6;
     font-weight: 600;
 }
+
 .admin-notice i {
     font-size: 1rem;
     color: #6366f1;
@@ -1098,6 +1111,7 @@ td small,
     transition: color 0.2s ease;
     z-index: 1;
 }
+
 .toggle-password:hover {
     color: #3b82f6;
 }
@@ -1141,14 +1155,17 @@ td small,
     background: linear-gradient(90deg, #ef4444, #f97316);
     width: 25%;
 }
+
 .strength-bar-fill.strength-fair {
     background: linear-gradient(90deg, #f97316, #f59e0b);
     width: 50%;
 }
+
 .strength-bar-fill.strength-good {
     background: linear-gradient(90deg, #f59e0b, #22c55e);
     width: 75%;
 }
+
 .strength-bar-fill.strength-strong {
     background: linear-gradient(90deg, #22c55e, #10b981);
     width: 100%;
@@ -1169,6 +1186,7 @@ td small,
     transition: color 0.2s ease;
     padding: 2px 0;
 }
+
 .criteria-item i {
     font-size: 0.4rem;
     transition: all 0.25s ease;
@@ -1177,6 +1195,7 @@ td small,
 .criteria-item.met {
     color: #10b981;
 }
+
 .criteria-item.met i {
     font-size: 0.55rem;
 }
@@ -1189,9 +1208,11 @@ td small,
     min-height: 18px;
     transition: all 0.2s ease;
 }
+
 .password-match-msg.match {
     color: #10b981;
 }
+
 .password-match-msg.no-match {
     color: #ef4444;
 }
@@ -1210,12 +1231,14 @@ td small,
     position: relative;
     overflow: hidden;
 }
+
 .file-upload-card:hover {
     border-color: #3b82f6;
     background: #f0f7ff;
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(59, 130, 246, 0.08);
 }
+
 .file-upload-card.has-file {
     border-color: #10b981;
     border-style: solid;
@@ -1251,14 +1274,17 @@ td small,
     font-size: 1.1rem;
     margin-bottom: 2px;
 }
+
 .photo-icon {
     background: #eff6ff;
     color: #3b82f6;
 }
+
 .doc-icon {
     background: #fef3c7;
     color: #f59e0b;
 }
+
 .file-upload-card.has-file .file-upload-icon {
     background: #d1fae5;
     color: #10b981;
@@ -1292,6 +1318,7 @@ td small,
     position: relative;
     overflow: hidden;
 }
+
 .add-staff-submit-btn::before {
     content: '';
     position: absolute;
@@ -1299,12 +1326,14 @@ td small,
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
     transition: left 0.5s ease;
 }
+
 .add-staff-submit-btn:hover::before {
     left: 100%;
 }
+
 .add-staff-submit-btn:hover {
     transform: translateY(-3px) !important;
     box-shadow: 0 8px 28px rgba(99, 102, 241, 0.4) !important;
@@ -1346,16 +1375,17 @@ td small,
     overflow: hidden !important;
 }
 
-.edit-staff-modal > .close-modal {
+.edit-staff-modal>.close-modal {
     top: 18px;
     right: 18px;
     z-index: 2;
-    color: rgba(255,255,255,0.7);
-    background: rgba(255,255,255,0.1);
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(4px);
 }
-.edit-staff-modal > .close-modal:hover {
-    background: rgba(255,255,255,0.2);
+
+.edit-staff-modal>.close-modal:hover {
+    background: rgba(255, 255, 255, 0.2);
     color: #fff;
 }
 
@@ -1369,6 +1399,7 @@ td small,
     position: relative;
     overflow: hidden;
 }
+
 .edit-staff-header::before {
     content: '';
     position: absolute;
@@ -1380,6 +1411,7 @@ td small,
     border-radius: 50%;
     pointer-events: none;
 }
+
 .edit-staff-header::after {
     content: '';
     position: absolute;
@@ -1409,14 +1441,16 @@ td small,
     border-radius: 16px;
     overflow: visible;
 }
+
 .edit-photo-preview img {
     width: 64px;
     height: 64px;
     border-radius: 16px;
     object-fit: cover;
-    border: 3px solid rgba(255,255,255,0.2) !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    border: 3px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
+
 .edit-photo-badge {
     position: absolute;
     bottom: -4px;
@@ -1445,13 +1479,16 @@ td small,
 .edit-staff-modal form::-webkit-scrollbar {
     width: 5px;
 }
+
 .edit-staff-modal form::-webkit-scrollbar-track {
     background: transparent;
 }
+
 .edit-staff-modal form::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 10px;
 }
+
 .edit-staff-modal form::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
 }
@@ -1464,6 +1501,7 @@ td small,
     opacity: 0.7;
     border-color: #e2e8f0 !important;
 }
+
 .input-readonly:focus {
     box-shadow: none !important;
     border-color: #e2e8f0 !important;
@@ -1484,6 +1522,7 @@ td small,
     letter-spacing: 0.04em;
     border: 1px solid #e2e8f0;
 }
+
 .edit-locked-badge i {
     font-size: 0.6rem;
 }
@@ -1504,6 +1543,7 @@ td small,
     font-size: 0.9rem !important;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
+
 .edit-cancel-btn:hover {
     transform: translateY(-2px) !important;
 }
@@ -1522,6 +1562,7 @@ td small,
     position: relative;
     overflow: hidden;
 }
+
 .edit-save-btn::before {
     content: '';
     position: absolute;
@@ -1529,12 +1570,14 @@ td small,
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
     transition: left 0.5s ease;
 }
+
 .edit-save-btn:hover::before {
     left: 100%;
 }
+
 .edit-save-btn:hover {
     transform: translateY(-3px) !important;
     box-shadow: 0 8px 28px rgba(99, 102, 241, 0.4) !important;
@@ -1705,28 +1748,35 @@ td small,
     .add-staff-modal {
         max-width: 100% !important;
     }
+
     .add-staff-header {
         padding: 22px 20px;
     }
+
     .add-staff-header-icon {
         width: 44px;
         height: 44px;
         min-width: 44px;
         font-size: 1.1rem;
     }
+
     .add-staff-header h2 {
         font-size: 1.15rem !important;
     }
+
     .add-staff-modal form {
         padding: 20px 20px 24px;
     }
+
     .form-section {
         padding: 16px;
     }
+
     .form-row-2col {
         grid-template-columns: 1fr;
         gap: 0;
     }
+
     .strength-criteria {
         grid-template-columns: 1fr;
     }
@@ -1735,24 +1785,30 @@ td small,
     .edit-staff-modal {
         max-width: 100% !important;
     }
+
     .edit-staff-header {
         padding: 22px 20px;
     }
+
     .edit-staff-header h2 {
         font-size: 1.15rem !important;
     }
+
     .edit-staff-modal form {
         padding: 20px 20px 24px;
     }
+
     .edit-photo-preview,
     .edit-photo-preview img {
         width: 52px;
         height: 52px;
         min-width: 52px;
     }
+
     .edit-action-row {
         flex-direction: column;
     }
+
     .edit-cancel-btn,
     .edit-save-btn {
         flex: unset;
@@ -1778,9 +1834,11 @@ td small,
     .add-staff-header {
         padding: 18px 16px;
     }
+
     .add-staff-modal form {
         padding: 16px 16px 20px;
     }
+
     .form-section {
         padding: 14px 12px;
     }
@@ -1788,6 +1846,7 @@ td small,
     .edit-staff-header {
         padding: 18px 16px;
     }
+
     .edit-staff-modal form {
         padding: 16px 16px 20px;
     }
