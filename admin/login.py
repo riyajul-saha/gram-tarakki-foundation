@@ -1,7 +1,10 @@
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+import random
+import string
+from datetime import datetime, timedelta
 
-def verify_admin_login(username, password):
+def verify_admin_login(email, password):
     from core.db import get_db_connection
     
     try:
@@ -10,16 +13,14 @@ def verify_admin_login(username, password):
             return {"status": "error", "message": "Database connection failed", "code": 500}
 
         cursor = conn.cursor(dictionary=True)
-        # Check by id (userid) or email
-        cursor.execute("SELECT * FROM admin WHERE id = %s OR email = %s", (username, username))
+        # Check by email only
+        cursor.execute("SELECT * FROM admin WHERE email = %s", (email,))
         admin_user = cursor.fetchone()
         
         if not admin_user:
             cursor.close()
             conn.close()
             return {"status": "error", "message": "Invalid credentials", "code": 401}
-
-        from datetime import datetime, timedelta
 
         if admin_user.get('status') == 'block':
             cursor.close()
@@ -42,7 +43,7 @@ def verify_admin_login(username, password):
             conn.commit()
             cursor.close()
             conn.close()
-            return {"status": "success", "admin_id": admin_user['id']}
+            return {"status": "success", "admin_id": admin_user['id'], "admin_name": admin_user.get('fullname', 'Admin'), "admin_email": admin_user.get('email', '')}
         except VerifyMismatchError:
             failed_attempts = admin_user.get('failed_attempts', 0) + 1
             if failed_attempts >= 5:
@@ -62,3 +63,24 @@ def verify_admin_login(username, password):
     except Exception as e:
         print(f"Error during login: {e}")
         return {"status": "error", "message": "An error occurred during login", "code": 500}
+
+
+def generate_otp(length=6):
+    """Generate a secure random numeric OTP."""
+    return ''.join(random.choices(string.digits, k=length))
+
+
+def send_otp_email(app, admin_email, admin_name, otp_code, expiry_minutes=5):
+    """Render the OTP email template and send it."""
+    from flask import render_template
+    from core.email_sender import send_email_async
+
+    with app.app_context():
+        html_body = render_template('emails/otp_verification.html',
+                                    admin_name=admin_name,
+                                    admin_email=admin_email,
+                                    otp_code=otp_code,
+                                    expiry_minutes=expiry_minutes)
+        
+        subject = "🔐 Admin Login Verification Code – Gram Tarakki Foundation"
+        send_email_async(admin_email, html_body, subject=subject)

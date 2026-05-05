@@ -18,35 +18,35 @@
 </head>
 
 <body>
-    <div class="login-card">
+    <div class="login-card" id="loginCard">
         <!-- Header -->
-        <div class="login-header">
+        <div class="login-header" id="loginHeader">
             <div class="logo">
                 <img src="{{ url_for('static', filename='images/home/logo.webp') }}" alt="GT Foundation Logo"
                     style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>Admin Panel Login</h1>
-            <div class="subtitle">Authorized personnel only</div>
+            <h1 id="cardTitle">Admin Panel Login</h1>
+            <div class="subtitle" id="cardSubtitle">Authorized personnel only</div>
         </div>
 
-        <!-- Form -->
+        <!-- ===================== Step 1: Credentials Form ===================== -->
         <form id="loginForm" onsubmit="return handleLogin(event)">
-            <!-- Error message placeholder -->
+            <!-- Error message -->
             <div id="errorMsg" class="error-message">
                 <i class="fas fa-exclamation-circle"></i>
                 <span id="errorText"></span>
             </div>
 
-            <!-- Email / Username -->
+            <!-- Email -->
             <div class="form-group">
-                <label for="username">Email or Userid</label>
+                <label for="email">Email Address</label>
                 <div class="input-wrapper">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="username" placeholder="admin@gtfoundation.in" autocomplete="username">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="admin@gtfoundation.in" autocomplete="email">
                 </div>
             </div>
 
-            <!-- Password with toggle -->
+            <!-- Password -->
             <div class="form-group">
                 <label for="password">Password</label>
                 <div class="input-wrapper">
@@ -64,16 +64,77 @@
             </div>
 
             <!-- Login Button -->
-            <button type="submit" class="login-btn">Sign In</button>
+            <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
 
             <a href="{{ url_for('home') }}" class="cancel-back">
                 <i class="fas fa-arrow-left"></i> Cancel, go back
             </a>
 
             <div class="demo-note">
-                <i class="fas fa-shield-alt"></i> Secure login • Gram Tarakki Foundation • Admin
+                <i class="fas fa-shield-alt"></i> Secure login • Gram Tarakki Foundation
             </div>
         </form>
+
+        <!-- ===================== Step 2: OTP Verification ===================== -->
+        <div id="otpSection" class="otp-section" style="display: none;">
+            <!-- Error message -->
+            <div id="otpErrorMsg" class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="otpErrorText"></span>
+            </div>
+
+            <!-- Email sent indicator -->
+            <div class="otp-hero">
+                <div class="otp-hero-icon">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <p class="otp-hero-title">Check your email</p>
+                <p class="otp-hero-email" id="maskedEmail">ad••••@example.com</p>
+                <p class="otp-hero-desc">Enter the 6-digit verification code we just sent</p>
+            </div>
+
+            <!-- OTP Input Boxes -->
+            <div class="otp-input-row" id="otpInputs">
+                <input type="text" maxlength="1" class="otp-box" data-index="0" inputmode="numeric"
+                    autocomplete="one-time-code">
+                <input type="text" maxlength="1" class="otp-box" data-index="1" inputmode="numeric">
+                <input type="text" maxlength="1" class="otp-box" data-index="2" inputmode="numeric">
+                <span class="otp-dot">•</span>
+                <input type="text" maxlength="1" class="otp-box" data-index="3" inputmode="numeric">
+                <input type="text" maxlength="1" class="otp-box" data-index="4" inputmode="numeric">
+                <input type="text" maxlength="1" class="otp-box" data-index="5" inputmode="numeric">
+            </div>
+
+            <!-- Timer -->
+            <div class="otp-meta">
+                <span class="otp-timer" id="otpTimer">
+                    <i class="fas fa-clock"></i>
+                    <span>Expires in</span>
+                    <strong id="timerCount">5:00</strong>
+                </span>
+            </div>
+
+            <!-- Verify Button -->
+            <button type="button" class="login-btn otp-verify-btn" id="verifyOtpBtn" onclick="handleVerifyOtp()">
+                Verify & Sign In
+            </button>
+
+            <!-- Resend + Back row -->
+            <div class="otp-actions">
+                <button type="button" class="otp-action-link" onclick="backToLogin()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <span class="otp-action-divider">|</span>
+                <button type="button" class="otp-action-link otp-resend" id="resendOtpBtn" onclick="handleResendOtp()"
+                    disabled>
+                    Resend Code <span id="resendTimer">(30s)</span>
+                </button>
+            </div>
+
+            <div class="demo-note">
+                <i class="fas fa-shield-alt"></i> Two-Step Verification • Gram Tarakki Foundation
+            </div>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/admin/login.js') }}"></script>

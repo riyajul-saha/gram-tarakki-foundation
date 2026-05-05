@@ -1,6 +1,7 @@
 from flask import render_template, request, jsonify, redirect, url_for, session, make_response
 import mysql.connector
-from admin.login import verify_admin_login
+from admin.login import verify_admin_login, generate_otp, send_otp_email
+from datetime import datetime, timedelta
 
 # ==============================================================================
 # Initialization
@@ -12,7 +13,7 @@ def init_routes(app):
 
     # ==========================================================================
     # AUTHENTICATION ROUTES
-    # Handles admin login and logout functionality
+    # Handles admin login, OTP verification, and logout functionality
     # ==========================================================================
 
     @app.context_processor
@@ -39,23 +40,47 @@ def init_routes(app):
         """
         Admin Login Page and API.
         GET: Renders login page if not logged in.
-        POST: Verifies credentials and sets up session.
+        POST: Verifies credentials and sends OTP for 2-step verification.
         """
         if request.method == "POST":
             data = request.get_json() or {}
-            username = data.get("username", "").strip()
+            email = data.get("email", "").strip()
             password = data.get("password", "").strip()
 
-            if not username or not password:
-                return jsonify({"status": "error", "message": "Username and password are required"}), 400
+            if not email or not password:
+                return jsonify({"status": "error", "message": "Email and password are required"}), 400
 
-            result = verify_admin_login(username, password)
+            result = verify_admin_login(email, password)
 
             if result["status"] == "success":
-                session.permanent = True
-                session['admin_logged_in'] = True
-                session['admin_id'] = result['admin_id']
-                return jsonify({"status": "success", "redirect": url_for("dashboard")})
+                # Generate OTP and store in session for verification
+                otp = generate_otp(6)
+                expiry_minutes = 5
+                session['otp_code'] = otp
+                session['otp_expiry'] = (datetime.now() + timedelta(minutes=expiry_minutes)).isoformat()
+                session['otp_admin_id'] = result['admin_id']
+                session['otp_admin_email'] = result['admin_email']
+                session['otp_admin_name'] = result['admin_name']
+                session['otp_verified'] = False
+
+                # Send OTP email
+                try:
+                    send_otp_email(app, result['admin_email'], result['admin_name'], otp, expiry_minutes)
+                except Exception as e:
+                    print(f"Error sending OTP email: {e}")
+                    return jsonify({"status": "error", "message": "Failed to send verification email. Please try again."}), 500
+
+                # Mask email for frontend display
+                masked = result['admin_email']
+                parts = masked.split('@')
+                if len(parts) == 2 and len(parts[0]) > 2:
+                    masked = parts[0][:2] + '•' * (len(parts[0]) - 2) + '@' + parts[1]
+
+                return jsonify({
+                    "status": "otp_sent",
+                    "message": "Verification code sent to your email",
+                    "masked_email": masked
+                })
             else:
                 return jsonify({"status": result["status"], "message": result["message"]}), result.get("code", 401)
 
@@ -64,6 +89,50 @@ def init_routes(app):
             return redirect(url_for("dashboard"))
 
         return render_template('admin/login.html')
+
+
+    @app.route("/verify-otp", methods=["POST"])
+    def verify_otp():
+        """
+        Verifies the OTP sent to admin email for 2-step authentication.
+        On success, completes the login and creates the admin session.
+        """
+        data = request.get_json() or {}
+        otp_input = data.get("otp", "").strip()
+
+        if not otp_input:
+            return jsonify({"status": "error", "message": "Please enter the verification code"}), 400
+
+        # Check if OTP session data exists
+        stored_otp = session.get('otp_code')
+        otp_expiry = session.get('otp_expiry')
+        admin_id = session.get('otp_admin_id')
+
+        if not stored_otp or not otp_expiry or not admin_id:
+            return jsonify({"status": "error", "message": "Session expired. Please login again."}), 401
+
+        # Check OTP expiry
+        expiry_time = datetime.fromisoformat(otp_expiry)
+        if datetime.now() > expiry_time:
+            # Clear OTP session data
+            for key in ['otp_code', 'otp_expiry', 'otp_admin_id', 'otp_admin_email', 'otp_admin_name', 'otp_verified']:
+                session.pop(key, None)
+            return jsonify({"status": "error", "message": "Verification code has expired. Please login again."}), 401
+
+        # Verify OTP
+        if otp_input != stored_otp:
+            return jsonify({"status": "error", "message": "Invalid verification code. Please try again."}), 401
+
+        # OTP verified — complete login
+        session.permanent = True
+        session['admin_logged_in'] = True
+        session['admin_id'] = admin_id
+
+        # Clear OTP session data
+        for key in ['otp_code', 'otp_expiry', 'otp_admin_id', 'otp_admin_email', 'otp_admin_name', 'otp_verified']:
+            session.pop(key, None)
+
+        return jsonify({"status": "success", "redirect": url_for("dashboard")})
 
     @app.route("/logout")
     def logout():
@@ -515,7 +584,7 @@ def init_routes(app):
                 
                 # Send Email
                 from core.email_sender import send_email_async
-                html_body = render_template('email/interview_invite.html', 
+                html_body = render_template('emails/interview_invite.html', 
                                             name=name, 
                                             job_title=job_title, 
                                             type=i_type, 

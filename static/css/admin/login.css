@@ -7,7 +7,6 @@
 body {
     font-family: 'Inter', sans-serif;
     background: linear-gradient(145deg, #e8f0e8, #d4e2d4);
-    /* soft greenish background */
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -15,7 +14,10 @@ body {
     padding: 20px;
 }
 
-/* Centered card */
+/* ============================
+   LOGIN CARD
+   ============================ */
+
 .login-card {
     background: #FFFFFF;
     border-radius: 28px;
@@ -23,14 +25,17 @@ body {
     max-width: 440px;
     width: 100%;
     padding: 2.5rem 2rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.35s ease;
 }
 
 .login-card:hover {
     box-shadow: 0 25px 50px -12px rgba(46, 125, 50, 0.2);
 }
 
-/* Header Section */
+/* ============================
+   HEADER
+   ============================ */
+
 .login-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -45,10 +50,7 @@ body {
     background: transparent;
     border-radius: 20px;
     margin-bottom: 1rem;
-    /* Removed box-shadow and background color since it's an image now */
 }
-
-/* Removed .logo i styles */
 
 .login-header h1 {
     font-family: 'Poppins', sans-serif;
@@ -56,6 +58,7 @@ body {
     font-size: 1.9rem;
     color: #1F2D2E;
     margin-bottom: 0.3rem;
+    transition: all 0.3s ease;
 }
 
 .login-header .subtitle {
@@ -65,9 +68,13 @@ body {
     border-bottom: 1px solid #E5E7EB;
     padding-bottom: 0.8rem;
     display: inline-block;
+    transition: all 0.3s ease;
 }
 
-/* Form fields */
+/* ============================
+   FORM FIELDS
+   ============================ */
+
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -163,7 +170,10 @@ body {
     width: 100%;
 }
 
-/* Login button */
+/* ============================
+   LOGIN BUTTON
+   ============================ */
+
 .login-btn {
     width: 100%;
     background: linear-gradient(135deg, #2E7D32, #1B5E20);
@@ -171,7 +181,7 @@ body {
     border-radius: 40px;
     padding: 1rem;
     color: white;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 600;
     font-family: 'Inter', sans-serif;
     cursor: pointer;
@@ -191,7 +201,16 @@ body {
     box-shadow: 0 4px 8px rgba(46, 125, 50, 0.2);
 }
 
-/* Error message */
+.login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ============================
+   ERROR MESSAGE
+   ============================ */
+
 .error-message {
     background-color: #FFEBEE;
     border-left: 4px solid #E53935;
@@ -204,18 +223,25 @@ body {
     font-size: 0.9rem;
     color: #B71C1C;
     opacity: 0;
-    transition: opacity 0.3s;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s, max-height 0.3s ease;
 }
 
 .error-message.show {
     opacity: 1;
+    max-height: 80px;
 }
 
 .error-message i {
     font-size: 1.1rem;
+    flex-shrink: 0;
 }
 
-/* Cancel / Go back link */
+/* ============================
+   CANCEL / GO BACK
+   ============================ */
+
 .cancel-back {
     display: flex;
     align-items: center;
@@ -230,6 +256,11 @@ body {
     transition: all 0.25s ease;
     cursor: pointer;
     margin-bottom: 0.5rem;
+    background: none;
+    border: none;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .cancel-back:hover {
@@ -255,7 +286,251 @@ body {
     margin-top: 1rem;
 }
 
-/* Mobile optimization */
+/* ============================================================
+   OTP VERIFICATION SECTION
+   ============================================================ */
+
+.otp-section {
+    animation: fadeSlideUp 0.4s ease forwards;
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hero: check your email */
+.otp-hero {
+    text-align: center;
+    margin-bottom: 1.8rem;
+}
+
+.otp-hero-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.8rem;
+    animation: gentlePulse 2.5s ease-in-out infinite;
+}
+
+.otp-hero-icon i {
+    font-size: 1.4rem;
+    color: #2E7D32;
+}
+
+@keyframes gentlePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.15);
+    }
+
+    50% {
+        transform: scale(1.06);
+        box-shadow: 0 0 0 10px rgba(46, 125, 50, 0);
+    }
+}
+
+.otp-hero-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1F2D2E;
+    margin-bottom: 2px;
+}
+
+.otp-hero-email {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #2E7D32;
+    margin-bottom: 6px;
+}
+
+.otp-hero-desc {
+    font-size: 0.82rem;
+    color: #9CA3AF;
+}
+
+/* OTP Input Row */
+.otp-input-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1.2rem;
+}
+
+.otp-box {
+    width: 46px;
+    height: 56px;
+    border: 2px solid #E5E7EB;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    color: #1B5E20;
+    background: #F9FAFB;
+    transition: all 0.2s ease;
+    caret-color: #2E7D32;
+}
+
+.otp-box:focus {
+    outline: none;
+    border-color: #2E7D32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.12);
+    background: #fff;
+    transform: scale(1.06);
+}
+
+.otp-box.filled {
+    border-color: #66BB6A;
+    background: #F0FFF4;
+}
+
+.otp-box.error {
+    border-color: #E53935;
+    background: #FFF5F5;
+    animation: shake 0.35s ease;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-3px);
+    }
+
+    75% {
+        transform: translateX(3px);
+    }
+}
+
+.otp-dot {
+    font-size: 1.6rem;
+    color: #D1D5DB;
+    user-select: none;
+    line-height: 1;
+    margin: 0 1px;
+}
+
+/* Timer badge */
+.otp-meta {
+    text-align: center;
+    margin-bottom: 1.2rem;
+}
+
+.otp-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: #6B7280;
+    background: #F3F4F6;
+    padding: 5px 14px;
+    border-radius: 16px;
+}
+
+.otp-timer i {
+    color: #9CA3AF;
+    font-size: 0.75rem;
+}
+
+.otp-timer strong {
+    color: #2E7D32;
+    font-family: 'Inter', monospace;
+    font-size: 0.85rem;
+}
+
+.otp-timer.expiring strong {
+    color: #E53935;
+}
+
+/* Verify button tweak */
+.otp-verify-btn {
+    font-size: 1.05rem;
+}
+
+/* Actions row (Back | Resend) */
+.otp-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 0.3rem;
+}
+
+.otp-action-link {
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #6B7280;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.otp-action-link:hover:not(:disabled) {
+    color: #1F2D2E;
+    background: #f0f1f3;
+}
+
+.otp-action-link i {
+    font-size: 0.75rem;
+}
+
+.otp-action-divider {
+    color: #E5E7EB;
+    font-size: 0.85rem;
+    user-select: none;
+}
+
+.otp-resend {
+    color: #1E3A8A;
+    font-weight: 600;
+}
+
+.otp-resend:hover:not(:disabled) {
+    color: #0f2b5e;
+    background: #EEF2FF;
+}
+
+.otp-resend:disabled {
+    color: #D1D5DB;
+    cursor: not-allowed;
+}
+
+.otp-resend #resendTimer {
+    font-weight: 400;
+    font-size: 0.78rem;
+    color: inherit;
+}
+
+/* ============================
+   MOBILE OPTIMIZATION
+   ============================ */
+
 @media (max-width: 480px) {
     .login-card {
         padding: 2rem 1.5rem;
@@ -268,5 +543,29 @@ body {
     .logo {
         width: 60px;
         height: 60px;
+    }
+
+    .otp-box {
+        width: 38px;
+        height: 48px;
+        font-size: 1.25rem;
+        border-radius: 10px;
+    }
+
+    .otp-input-row {
+        gap: 5px;
+    }
+
+    .otp-hero-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .otp-hero-icon i {
+        font-size: 1.2rem;
+    }
+
+    .otp-hero-title {
+        font-size: 0.95rem;
     }
 }
