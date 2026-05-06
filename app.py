@@ -51,23 +51,10 @@ def serve_upload(filename):
         abort(403)
     return send_from_directory(UPLOAD_BASE, filename)
 
-@app.route('/40add09e418b4c4ea130cd8b453e3d74.txt')
-def bing_site_auth():
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), '40add09e418b4c4ea130cd8b453e3d74.txt')
-
-@app.route('/sitemap.xml')
-def sitemap():
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'sitemap.xml')
-
-@app.route('/BingSiteAuth.xml')
-def bing_site_auth():
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'BingSiteAuth.xml')
-
-
-
-@app.route('/robots.txt')
-def robots():
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'robots.txt')
+# Extra static file routes (e.g., sitemap.xml, robots.txt, Bing auth) 
+# have been moved to a separate file: core/static_routes.py
+from core.static_routes import init_static_routes
+init_static_routes(app)
 
 from flask import request, jsonify
 
