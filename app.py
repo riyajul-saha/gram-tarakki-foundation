@@ -71,10 +71,10 @@ def csrf_protect():
         
         if origin:
             if origin != host_url and not origin.startswith(host_url):
-                return jsonify({"status": "error", "message": "CSRF verification failed (Origin mismatch)"}), 403
+                return jsonify({"status": "error", "message": f"CSRF verification failed (Origin mismatch). Origin: {origin}, Host: {host_url}"}), 403
         elif referer:
             if not referer.startswith(host_url):
-                return jsonify({"status": "error", "message": "CSRF verification failed (Referer mismatch)"}), 403
+                return jsonify({"status": "error", "message": f"CSRF verification failed (Referer mismatch). Referer: {referer}, Host: {host_url}"}), 403
         else:
             return jsonify({"status": "error", "message": "CSRF verification failed (Missing Origin/Referer)"}), 403
 
@@ -104,4 +104,5 @@ if __name__ == "__main__":
     else:
         print(f"Running in Production Mode (Waitress) on port {port}")
         from waitress import serve
-        serve(app, host="0.0.0.0", port=port)
+        # Allow proxy headers to reach ProxyFix by setting clear_untrusted_proxy_headers=False
+        serve(app, host="0.0.0.0", port=port, clear_untrusted_proxy_headers=False)
