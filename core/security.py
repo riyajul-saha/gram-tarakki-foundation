@@ -9,22 +9,27 @@ RATE_LIMIT_STORE = {}
 RATE_LIMIT_MAX = 5
 RATE_LIMIT_WINDOW = 3600
 
-def rate_limit(f):
+def rate_limit(f=None, max_reqs=RATE_LIMIT_MAX, window=RATE_LIMIT_WINDOW):
+    if f is None:
+        return lambda f: rate_limit(f, max_reqs=max_reqs, window=window)
+
     @wraps(f)
     def decorated_function(*args, **kwargs):
         ip = request.remote_addr
+        endpoint = request.endpoint
+        key = f"{ip}:{endpoint}"
         now = time.time()
         
         # Clean up old entries
-        if ip in RATE_LIMIT_STORE:
-            RATE_LIMIT_STORE[ip] = [t for t in RATE_LIMIT_STORE[ip] if now - t < RATE_LIMIT_WINDOW]
+        if key in RATE_LIMIT_STORE:
+            RATE_LIMIT_STORE[key] = [t for t in RATE_LIMIT_STORE[key] if now - t < window]
         else:
-            RATE_LIMIT_STORE[ip] = []
+            RATE_LIMIT_STORE[key] = []
             
-        if len(RATE_LIMIT_STORE[ip]) >= RATE_LIMIT_MAX:
+        if len(RATE_LIMIT_STORE[key]) >= max_reqs:
             return jsonify({"status": "error", "message": "Too many requests. Please try again later."}), 429
             
-        RATE_LIMIT_STORE[ip].append(now)
+        RATE_LIMIT_STORE[key].append(now)
         return f(*args, **kwargs)
     return decorated_function
 

@@ -11,14 +11,14 @@ if os.path.exists(".env"):
 
 app = Flask(__name__)
 
-import secrets
 app.secret_key = os.getenv("SECRET_KEY")
 if not app.secret_key:
-    _is_debug = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "t")
-    if not _is_debug:
-        raise ValueError("No SECRET_KEY set for Flask application in production!")
-    app.secret_key = secrets.token_hex(32)
+    raise ValueError("No SECRET_KEY set for Flask application!")
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SECURE'] = True       # Enable in production (HTTPS)
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 MB max
 
 # Set up upload folder for resumes and partner logos
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload', 'resume')
@@ -35,11 +35,16 @@ from core.db import init_db
 init_db()
 
 # Serve uploaded files (student images, resumes, logos, etc.)
-from flask import send_from_directory
+from flask import send_from_directory, abort
+from pathlib import Path
+
 UPLOAD_BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload')
 
 @app.route('/upload/<path:filename>')
 def serve_upload(filename):
+    safe_path = Path(UPLOAD_BASE) / filename
+    if not safe_path.resolve().is_relative_to(Path(UPLOAD_BASE).resolve()):
+        abort(403)
     return send_from_directory(UPLOAD_BASE, filename)
 
 
@@ -55,7 +60,7 @@ from flask import request, jsonify
 
 @app.before_request
 def csrf_protect():
-    if request.method == "POST" and request.path.startswith('/admin/'):
+    if request.method == "POST":
         origin = request.headers.get('Origin')
         referer = request.headers.get('Referer')
         host_url = request.host_url.rstrip('/')
@@ -68,6 +73,14 @@ def csrf_protect():
                 return jsonify({"status": "error", "message": "CSRF verification failed (Referer mismatch)"}), 403
         else:
             return jsonify({"status": "error", "message": "CSRF verification failed (Missing Origin/Referer)"}), 403
+
+@app.after_request
+def set_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return response
 
 # Import routes from core and admin modules
 import core.routes

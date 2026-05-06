@@ -442,9 +442,8 @@ def init_routes(app):
         def sanitize(text):
             if not text:
                 return text
-            text = re.sub(r'<[^>]*>', '', text)
-            text = re.sub(r'(?i)(<script>|javascript:|onerror=|onload=)', '', text)
-            return text.strip()
+            import html
+            return html.escape(text.strip())
 
         # Extract and sanitize form data
         job_id = request.form.get("jobId")
@@ -576,6 +575,7 @@ def init_routes(app):
         return render_template('donate.html')
 
     @app.route("/api/donate/initiate", methods=["POST"])
+    @rate_limit
     def initiate_donation():
         """
         Initiate a donation transaction.

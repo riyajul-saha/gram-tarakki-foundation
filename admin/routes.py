@@ -91,7 +91,9 @@ def init_routes(app):
         return render_template('admin/login.html')
 
 
+    from core.security import rate_limit
     @app.route("/verify-otp", methods=["POST"])
+    @rate_limit(max_reqs=20, window=300)
     def verify_otp():
         """
         Verifies the OTP sent to admin email for 2-step authentication.
@@ -120,7 +122,14 @@ def init_routes(app):
             return jsonify({"status": "error", "message": "Verification code has expired. Please login again."}), 401
 
         # Verify OTP
+        otp_attempts = session.get('otp_attempts', 0)
+        if otp_attempts >= 5:
+            for key in ['otp_code', 'otp_expiry', 'otp_admin_id', 'otp_admin_email', 'otp_admin_name', 'otp_verified', 'otp_attempts']:
+                session.pop(key, None)
+            return jsonify({"status": "error", "message": "Too many attempts. Please login again."}), 429
+
         if otp_input != stored_otp:
+            session['otp_attempts'] = otp_attempts + 1
             return jsonify({"status": "error", "message": "Invalid verification code. Please try again."}), 401
 
         # OTP verified — complete login
@@ -329,9 +338,9 @@ def init_routes(app):
             print(f"Error adding student: {e}")
             if "Duplicate entry" in str(e):
                 return jsonify({"status": "error", "message": "A student with this name and email already exists"}), 409
-            return jsonify({"status": "error", "message": str(e)}), 500
+            return jsonify({"status": "error", "message": "An internal error occurred"}), 500
 
-        return jsonify({"status": "error", "message": "Database connection failed"}), 500
+        return jsonify({"status": "error", "message": "An internal error occurred"}), 500
 
     @app.route("/admin/update-request-status", methods=["POST"])
     def update_request_status():
@@ -348,6 +357,10 @@ def init_routes(app):
         if not request_id or not new_status:
             return jsonify({"status": "error", "message": "Missing ID or status"}), 400
             
+        ALLOWED_STATUSES = {'pending', 'active', 'rejected'}
+        if new_status not in ALLOWED_STATUSES:
+            return jsonify({"status": "error", "message": "Invalid status"}), 400
+            
         try:
             from core.db import get_db_connection
             conn = get_db_connection()
@@ -360,9 +373,9 @@ def init_routes(app):
                 return jsonify({"status": "success", "message": f"Request {new_status}ed successfully"})
         except Exception as e:
             print(f"Error updating request status: {e}")
-            return jsonify({"status": "error", "message": str(e)}), 500
+            return jsonify({"status": "error", "message": "An internal error occurred"}), 500
             
-        return jsonify({"status": "error", "message": "Database connection failed"}), 500
+        return jsonify({"status": "error", "message": "An internal error occurred"}), 500
 
     # ==========================================================================
     # JOB & APPLICANT MANAGEMENT ROUTES
@@ -458,7 +471,7 @@ def init_routes(app):
                 return jsonify({"status": "success", "jobs": jobs})
             except Exception as e:
                 print(f"Error in api_jobs POST: {e}")
-                return jsonify({"status": "error", "message": str(e)}), 500
+                return jsonify({"status": "error", "message": "An internal error occurred"}), 500
 
     @app.route("/admin/api/applicants", methods=["GET", "POST"])
     def api_applicants():
@@ -542,9 +555,9 @@ def init_routes(app):
                 conn.close()
         except Exception as e:
             print(f"Error handling applicants API: {e}")
-            return jsonify({"status": "error", "message": str(e)}), 500
+            return jsonify({"status": "error", "message": "An internal error occurred"}), 500
             
-        return jsonify({"status": "error", "message": "Database error"}), 500
+        return jsonify({"status": "error", "message": "An internal error occurred"}), 500
 
     @app.route("/admin/api/schedule_interview", methods=["POST"])
     def api_schedule_interview():
@@ -599,9 +612,9 @@ def init_routes(app):
                 return jsonify({"status": "success"})
         except Exception as e:
             print(f"Error scheduling interview: {e}")
-            return jsonify({"status": "error", "message": str(e)}), 500
+            return jsonify({"status": "error", "message": "An internal error occurred"}), 500
             
-        return jsonify({"status": "error", "message": "Database error"}), 500
+        return jsonify({"status": "error", "message": "An internal error occurred"}), 500
 
     # ==========================================================================
     # TEAM MANAGEMENT ROUTES
@@ -699,7 +712,7 @@ def init_routes(app):
                             print(f"Error adding admin: {e}")
                             if "Duplicate entry" in str(e):
                                 return jsonify({"status": "error", "message": "An admin with this email or ID already exists"}), 400
-                            return jsonify({"status": "error", "message": str(e)}), 500
+                            return jsonify({"status": "error", "message": "An internal error occurred"}), 500
 
                     elif staff_type == 'Volunteer':
                         service_type = data.get('serviceType')
@@ -713,7 +726,7 @@ def init_routes(app):
                             return jsonify({"status": "success"})
                         except Exception as e:
                             print(f"Error adding volunteer: {e}")
-                            return jsonify({"status": "error", "message": str(e)}), 500
+                            return jsonify({"status": "error", "message": "An internal error occurred"}), 500
 
                     elif staff_type == 'Other Staff':
                         role_of_staff = data.get('roleOfStaff')
@@ -726,7 +739,7 @@ def init_routes(app):
                             return jsonify({"status": "success"})
                         except Exception as e:
                             print(f"Error adding other staff: {e}")
-                            return jsonify({"status": "error", "message": str(e)}), 500
+                            return jsonify({"status": "error", "message": "An internal error occurred"}), 500
 
                     return jsonify({"status": "error", "message": "Invalid type"}), 400
 
@@ -801,7 +814,7 @@ def init_routes(app):
                         return jsonify({"status": "success"})
                     except Exception as e:
                         print(f"Error editing staff: {e}")
-                        return jsonify({"status": "error", "message": str(e)}), 500
+                        return jsonify({"status": "error", "message": "An internal error occurred"}), 500
 
                 # Existing logic for update_status or remove
                 member_id = data.get('id') if data else None
@@ -813,14 +826,19 @@ def init_routes(app):
                     conn.close()
                     return jsonify({"status": "error", "message": "Missing parameters"}), 400
 
-                if source == 'admin':
-                    table = 'admin'
-                elif source == 'our_staff':
-                    table = 'our_staff'
-                elif source == 'volunteer':
-                    table = 'join_volunteer'
-                else:
-                    table = 'join_staff'
+                ALLOWED_TABLES = {
+                    'admin': 'admin',
+                    'our_staff': 'our_staff',
+                    'volunteer': 'join_volunteer',
+                    'staff': 'join_staff',
+                    'join_staff': 'join_staff'
+                }
+                table = ALLOWED_TABLES.get(source)
+                
+                if not table:
+                    cursor.close()
+                    conn.close()
+                    return jsonify({"status": "error", "message": "Invalid source"}), 400
 
                 if action == 'remove':
                     cursor.execute(f"DELETE FROM {table} WHERE id = %s", (member_id,))
@@ -956,4 +974,4 @@ def init_routes(app):
             return jsonify({"status": "success", "team": team})
         except Exception as e:
             print(f"Error in team API: {e}")
-            return jsonify({"status": "error", "message": str(e)}), 500
+            return jsonify({"status": "error", "message": "An internal error occurred"}), 500
