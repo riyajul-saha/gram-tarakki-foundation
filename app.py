@@ -51,6 +51,9 @@ def serve_upload(filename):
         abort(403)
     return send_from_directory(UPLOAD_BASE, filename)
 
+@app.route('/40add09e418b4c4ea130cd8b453e3d74.txt')
+def bing_site_auth():
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), '40add09e418b4c4ea130cd8b453e3d74.txt')
 
 @app.route('/sitemap.xml')
 def sitemap():
@@ -59,6 +62,8 @@ def sitemap():
 @app.route('/BingSiteAuth.xml')
 def bing_site_auth():
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'BingSiteAuth.xml')
+
+
 
 @app.route('/robots.txt')
 def robots():
