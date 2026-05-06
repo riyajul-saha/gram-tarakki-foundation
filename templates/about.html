@@ -1,4 +1,17 @@
 {% extends "base.html" %}
+{% block title %}About Us — Gram Tarakki Foundation | Mission, Vision & Team{% endblock %}
+{% block meta %}
+<meta name="description" content="Learn about Gram Tarakki Foundation's mission, vision, journey and team — dedicated to grassroots community empowerment in rural West Bengal.">
+<meta name="keywords" content="about Gram Tarakki, NGO mission, rural empowerment, community development team, West Bengal NGO">
+{% endblock %}
+{% block og %}
+<meta property="og:title" content="About Us — Gram Tarakki Foundation">
+<meta property="og:description" content="Our mission, vision, journey and team — dedicated to grassroots community empowerment.">
+<meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">{% endblock %}
 {% block content %}
@@ -95,7 +108,7 @@
             <div class="team-card">
                 <div class="team-card-img">
                     <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        loading="lazy" alt="Team Member">
+                        loading="lazy" alt="ABC, Founder and Director of Gram Tarakki Foundation">
                 </div>
                 <div class="team-card-content">
                     <h3>ABC</h3>
@@ -106,7 +119,7 @@
             <div class="team-card">
                 <div class="team-card-img">
                     <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        loading="lazy" alt="Team Member">
+                        loading="lazy" alt="XYZ, Program Manager at Gram Tarakki Foundation">
                 </div>
                 <div class="team-card-content">
                     <h3>XYZ</h3>
@@ -117,7 +130,7 @@
             <div class="team-card">
                 <div class="team-card-img">
                     <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        loading="lazy" alt="Team Member">
+                        loading="lazy" alt="PQR, Education Coordinator at Gram Tarakki Foundation">
                 </div>
                 <div class="team-card-content">
                     <h3>PQR</h3>
@@ -128,7 +141,7 @@
             <div class="team-card">
                 <div class="team-card-img">
                     <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        loading="lazy" alt="Team Member">
+                        loading="lazy" alt="LMN, Health Program Lead at Gram Tarakki Foundation">
                 </div>
                 <div class="team-card-content">
                     <h3>LMN</h3>
@@ -139,7 +152,7 @@
             <div class="team-card">
                 <div class="team-card-img">
                     <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                        loading="lazy" alt="Team Member">
+                        loading="lazy" alt="DEF, Karate and Yoga Instructor at Gram Tarakki Foundation">
                 </div>
                 <div class="team-card-content">
                     <h3>DEF</h3>

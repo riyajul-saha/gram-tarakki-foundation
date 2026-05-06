@@ -1,4 +1,34 @@
 {% extends "base.html" %}
+{% block title %}Internship Program — Technical & Non-Technical Tracks | Gram Tarakki Foundation{% endblock %}
+{% block meta %}
+<meta name="description" content="Apply for technical and non-technical internships at Gram Tarakki Foundation. Gain real-world experience, mentorship, and a certificate of completion.">
+<meta name="keywords" content="internship India, technical internship, NGO internship, web development internship, remote internship, community project internship">
+{% endblock %}
+{% block og %}
+<meta property="og:title" content="Internship Program — Gram Tarakki Foundation">
+<meta property="og:description" content="Hands-on internship in technical and non-technical domains with mentorship and certification.">
+<meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+{% block schema %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "Internship Program",
+    "description": "Hands-on internship program in technical and non-technical domains with mentorship, real-world project experience and certificate of completion.",
+    "provider": {
+        "@type": "Organization",
+        "name": "Gram Tarakki Foundation",
+        "url": "https://gram-tarakki-foundation.onrender.com"
+    },
+    "educationalLevel": "College Students and Fresh Graduates",
+    "isAccessibleForFree": true
+}
+</script>
+{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/programs/programs-internship.css') }}">{% endblock %}
 {% block content %}
@@ -343,7 +373,7 @@
 </section>
 {% endblock %}
 {% block js %}
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/lucide@0.263.0"></script>
 <script src="{{ url_for('static', filename='js/programs/programs-internship.js') }}"></script>
 <script>
     lucide.createIcons();

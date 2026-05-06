@@ -1,4 +1,17 @@
 {% extends "base.html" %}
+{% block title %}Donate — Support Rural Education & Healthcare | Gram Tarakki Foundation{% endblock %}
+{% block meta %}
+<meta name="description" content="Support rural children's education and martial arts training. Donate securely via UPI, card, or bank transfer to Gram Tarakki Foundation.">
+<meta name="keywords" content="donate to NGO, support rural education, donate India, Gram Tarakki donation, charity India, karate training donation">
+{% endblock %}
+{% block og %}
+<meta property="og:title" content="Donate — Support Rural Education & Healthcare">
+<meta property="og:description" content="Your donation helps us continue our work in education, karate, yoga and livelihood programs for rural communities.">
+<meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/donate.css') }}">{% endblock %}
 {% block content %}

@@ -1,4 +1,51 @@
 {% extends "base.html" %}
+{% block title %}Career & Internship Opportunities — Gram Tarakki Foundation{% endblock %}
+{% block meta %}
+<meta name="description" content="View open positions and internships at Gram Tarakki Foundation. Join a mission-driven team creating real impact in rural communities.">
+<meta name="keywords" content="NGO jobs India, internship rural development, career Gram Tarakki, volunteer jobs, community work opportunities">
+{% endblock %}
+{% block og %}
+<meta property="og:title" content="Career & Internship Opportunities — Gram Tarakki Foundation">
+<meta property="og:description" content="Join our team — open positions in tech, education, marketing and operations.">
+<meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+{% block schema %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "How long does the hiring process take?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Typically 1-2 weeks from application to decision. We'll keep you updated."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Can I apply for multiple roles?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, you can apply for as many roles as you're interested in."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Do you offer internships?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, we have internships in various departments. Check open positions."
+            }
+        }
+    ]
+}
+</script>
+{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/career.css') }}">{% endblock %}
 

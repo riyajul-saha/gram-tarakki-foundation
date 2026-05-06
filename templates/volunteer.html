@@ -1,4 +1,17 @@
 {% extends "base.html" %}
+{% block title %}Become a Volunteer — Join Our Mission | Gram Tarakki Foundation{% endblock %}
+{% block meta %}
+<meta name="description" content="Register as a volunteer at Gram Tarakki Foundation — teach, train, or support community projects across rural Bengal. Make a real difference.">
+<meta name="keywords" content="volunteer India, NGO volunteer, community volunteer, teach rural India, Gram Tarakki volunteer, social work">
+{% endblock %}
+{% block og %}
+<meta property="og:title" content="Become a Volunteer — Gram Tarakki Foundation">
+<meta property="og:description" content="Join Gram Tarakki Foundation and help transform rural lives through teaching, training and community work.">
+<meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/volunteer.css') }}">
 {% endblock %}
@@ -333,6 +346,6 @@
 </div>
 {% endblock %}
 {% block js %}
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/lucide@0.263.0"></script>
 <script src="{{ url_for('static', filename='js/volunteer.js') }}"></script>
 {% endblock %}

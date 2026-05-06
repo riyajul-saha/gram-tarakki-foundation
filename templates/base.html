@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 
 <head>
     <!-- google site verification -->
@@ -7,7 +7,37 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gram Tarakki Foundation</title>
+
+    <!-- SEO: Per-page title (overridden by child templates) -->
+    <title>{% block title %}Gram Tarakki Foundation — Empowering Rural Communities{% endblock %}</title>
+
+    <!-- SEO: Per-page meta description (overridden by child templates) -->
+    {% block meta %}
+    <meta name="description"
+        content="Gram Tarakki Foundation empowers rural communities through education, healthcare, karate training, yoga, and sustainable livelihood programs in West Bengal, India.">
+    <meta name="keywords"
+        content="Gram Tarakki Foundation, NGO, rural development, education, karate, yoga, West Bengal, community empowerment, volunteer, donate">
+    {% endblock %}
+
+    <!-- SEO: Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+
+    <!-- SEO: Open Graph & Twitter Card tags (overridden by child templates) -->
+    {% block og %}
+    <meta property="og:title" content="Gram Tarakki Foundation — Empowering Rural Communities">
+    <meta property="og:description"
+        content="Empowering rural communities through education, healthcare, karate, yoga and sustainable livelihood programs in West Bengal, India.">
+    <meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Gram Tarakki Foundation">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Gram Tarakki Foundation — Empowering Rural Communities">
+    <meta name="twitter:description"
+        content="Empowering rural communities through education, healthcare, karate, yoga and livelihood programs.">
+    <meta name="twitter:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+    {% endblock %}
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap"
@@ -16,9 +46,41 @@
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     {% block css %}{% endblock %}
-    <!-- Config for JS -->
-    <!-- <div id="program-info-config" data-url="/api/data/program_info.json"
-        style="display:none;"></div> -->
+
+    <!-- SEO: Organization JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "NGO",
+        "name": "Gram Tarakki Foundation",
+        "url": "https://gram-tarakki-foundation.onrender.com",
+        "logo": "https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp",
+        "description": "Empowering rural communities through education, healthcare, and sustainable livelihood programs.",
+        "foundingDate": "2026",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "MADHAKHALI BHUPATINAGAR",
+            "addressLocality": "Bhupatinagar",
+            "addressRegion": "West Bengal",
+            "postalCode": "721425",
+            "addressCountry": "IN"
+        },
+        "telephone": "+919475321004",
+        "email": "info@gtfoundations.in",
+        "sameAs": [
+            "https://www.youtube.com/gramtarakki",
+            "https://www.facebook.com/share/1AkacWAsBC/",
+            "https://www.instagram.com/gramtarakki"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+919475321004",
+            "contactType": "customer service",
+            "availableLanguage": ["English", "Hindi", "Bengali"]
+        }
+    }
+    </script>
+    {% block schema %}{% endblock %}
 </head>
 
 <body>
@@ -27,11 +89,10 @@
         <!-- Header & Navigation -->
         <header>
             <div class="container">
-                <nav class="navbar">
+                <nav class="navbar" aria-label="Main navigation">
                     <a href="{{ url_for('home') }}" class="logo">
-                        <!-- Replace with actual logo -->
-                        <img src="{{ url_for('static', filename='images/home/logo.webp') }}" loading="lazy"
-                            alt="Gram Tarakki Logo" style="height: 40px; width: auto; margin-right: 10px;">
+                        <img src="{{ url_for('static', filename='images/home/logo.webp') }}"
+                            alt="Gram Tarakki Foundation Logo" style="height: 40px; width: auto; margin-right: 10px;">
                         Gram Tarakki
                     </a>
                     <ul class="nav-menu">
@@ -93,19 +154,17 @@
                         <h3>Follow Us</h3>
                         <p>Stay connected with our latest updates and activities.</p>
                         <div class="social-icons">
-                            <a href="https://www.youtube.com/gramtarakki" class="social-icon" target="_blank">
+                            <a href="https://www.youtube.com/gramtarakki" class="social-icon" target="_blank"
+                                rel="noopener noreferrer" aria-label="YouTube">
                                 <i class="fab fa-youtube"></i>
                             </a>
                             <a href="https://www.facebook.com/share/1AkacWAsBC/?mibextid=wwXIfr" class="social-icon"
-                                target="_blank">
+                                target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
                             <a href="https://www.instagram.com/gramtarakki?igsh=MTZydmd3NzdlM2FwOA%3D%3D&utm_source=qr"
-                                class="social-icon">
+                                class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                                 <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="social-icon">
-                                <i class="fab fa-x-twitter"></i>
                             </a>
                         </div>
                     </div>

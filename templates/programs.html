@@ -1,4 +1,17 @@
 {% extends "base.html" %}
+{% block title %}Our Programs — Education, Karate, Yoga & Skill Training | Gram Tarakki Foundation{% endblock %}
+{% block meta %}
+<meta name="description" content="Explore community programs in karate, yoga, education, skill training, environment and more. Join Gram Tarakki Foundation's initiatives in rural West Bengal.">
+<meta name="keywords" content="karate training, yoga program, education program, skill training, rural development programs, West Bengal NGO programs">
+{% endblock %}
+{% block og %}
+<meta property="og:title" content="Our Programs — Gram Tarakki Foundation">
+<meta property="og:description" content="Karate, yoga, education, skill training and more — community programs for rural empowerment.">
+<meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/programs.css') }}">{% endblock %}
 {% block content %}
@@ -60,7 +73,7 @@
                     <li>Library and reading initiatives</li>
                     <li>Scholarship opportunities for meritorious students</li>
                 </ul>
-                <a href="program-education.html" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}#education" class="btn btn-primary">Know More</a>
                 <a href="{{ url_for('join') }}" class="btn btn-secondary">Join Program</a>
             </div>
             <div class="program-image">
@@ -85,7 +98,7 @@
                     <li>First-aid training workshops</li>
                     <li>Mental health awareness sessions</li>
                 </ul>
-                <a href="program-health.html" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}#health" class="btn btn-primary">Know More</a>
                 <a href="{{ url_for('join') }}" class="btn btn-secondary">Join Program</a>
             </div>
             <div class="program-image">
@@ -110,7 +123,7 @@
                     <li>Handicraft and artisan training</li>
                     <li>Entrepreneurship development programs</li>
                 </ul>
-                <a href="program-skill-training.html" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}#skill-training" class="btn btn-primary">Know More</a>
                 <a href="{{ url_for('join') }}" class="btn btn-secondary">Join Program</a>
             </div>
             <div class="program-image">
@@ -161,7 +174,7 @@
                     <li>Nutrition support for malnourished children</li>
                     <li>Health monitoring for senior citizens</li>
                 </ul>
-                <a href="program-children-elders.html" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}#children-elders" class="btn btn-primary">Know More</a>
                 <a href="{{ url_for('join') }}" class="btn btn-secondary">Join Program</a>
             </div>
             <div class="program-image">
@@ -188,7 +201,7 @@
                     <li>Rainwater harvesting projects</li>
                     <li>Environmental education in schools</li>
                 </ul>
-                <a href="program-environment.html" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}#environment" class="btn btn-primary">Know More</a>
                 <a href="{{ url_for('join') }}" class="btn btn-secondary">Join Program</a>
             </div>
             <div class="program-image">

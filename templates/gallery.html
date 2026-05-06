@@ -1,4 +1,17 @@
 {% extends "base.html" %}
+{% block title %}Gallery — Moments of Impact | Gram Tarakki Foundation{% endblock %}
+{% block meta %}
+<meta name="description" content="Browse photos from Gram Tarakki Foundation's community events, karate championships, yoga sessions, and education programs across rural West Bengal.">
+<meta name="keywords" content="Gram Tarakki gallery, NGO photos, karate championship, community events, rural development photos">
+{% endblock %}
+{% block og %}
+<meta property="og:title" content="Gallery — Gram Tarakki Foundation">
+<meta property="og:description" content="Moments of impact from our community programs, events and activities.">
+<meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}">{% endblock %}
 {% block content %}
@@ -54,5 +67,5 @@
 </div>
 {% endblock %}
 {% block js %}
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/lucide@0.263.0"></script>
 <script src="{{ url_for('static', filename='js/gallery.js') }}"></script>{% endblock %}

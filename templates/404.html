@@ -1,0 +1,429 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found — Gram Tarakki Foundation{% endblock %}
+{% block meta %}
+<meta name="description"
+    content="The page you're looking for doesn't exist. Explore Gram Tarakki Foundation's programs, volunteer opportunities, and more.">
+<meta name="robots" content="noindex, follow">
+{% endblock %}
+{% block css %}
+<style>
+    /* Fix: base container definition (normally loaded via page CSS) */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        color: var(--dark-text);
+        background-color: #F3F8F5;
+        line-height: 1.6;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* ===== 404 Page ===== */
+    .error-page {
+        min-height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 20px;
+        background: linear-gradient(160deg, #f0faf3 0%, #e9f5ed 40%, #f8fdf9 100%);
+    }
+
+    .error-wrapper {
+        max-width: 620px;
+        width: 100%;
+        text-align: center;
+        animation: errorFadeIn 0.7s ease-out;
+    }
+
+    @keyframes errorFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== Icon Ring ===== */
+    .error-icon-ring {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(44, 122, 75, 0.08), rgba(217, 115, 59, 0.08));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 28px;
+        position: relative;
+        animation: ringPulse 3s ease-in-out infinite;
+    }
+
+    .error-icon-ring::before {
+        content: '';
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
+        border: 2px dashed rgba(44, 122, 75, 0.15);
+        animation: ringRotate 20s linear infinite;
+    }
+
+    .error-icon-ring i {
+        font-size: 2.2rem;
+        color: var(--earth-green);
+    }
+
+    @keyframes ringPulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    @keyframes ringRotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* ===== 404 Number ===== */
+    .error-code-block {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 16px;
+    }
+
+    .error-number {
+        font-size: 8rem;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+        line-height: 1;
+        letter-spacing: -4px;
+        color: transparent;
+        background: linear-gradient(135deg, #2C7A4B 0%, #3aaf6a 50%, #D9733B 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+    }
+
+    .error-tag {
+        position: absolute;
+        top: 6px;
+        right: -18px;
+        background: linear-gradient(135deg, #D9733B, #e8864a);
+        color: white;
+        font-size: 0.58rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 20px;
+        letter-spacing: 1px;
+        box-shadow: 0 3px 10px rgba(217, 115, 59, 0.3);
+        animation: tagBounce 2.5s ease-in-out infinite;
+    }
+
+    @keyframes tagBounce {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-4px);
+        }
+    }
+
+    /* ===== Text ===== */
+    .error-heading {
+        font-size: 1.55rem;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        color: var(--dark-text);
+        margin-bottom: 10px;
+    }
+
+    .error-desc {
+        font-size: 1rem;
+        color: var(--light-text);
+        line-height: 1.8;
+        margin-bottom: 34px;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* ===== Action Buttons ===== */
+    .error-actions {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 42px;
+    }
+
+    .err-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 28px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.92rem;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    .err-btn i {
+        font-size: 0.9rem;
+        transition: transform 0.3s;
+    }
+
+    .err-btn-primary {
+        background: var(--earth-green);
+        color: var(--white);
+        box-shadow: 0 4px 14px rgba(44, 122, 75, 0.2);
+    }
+
+    .err-btn-primary:hover {
+        background: #236b3f;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(44, 122, 75, 0.3);
+    }
+
+    .err-btn-primary:hover i {
+        transform: translateX(-3px);
+    }
+
+    .err-btn-outline {
+        background: var(--white);
+        color: var(--earth-green);
+        border: 2px solid rgba(44, 122, 75, 0.18);
+    }
+
+    .err-btn-outline:hover {
+        border-color: var(--earth-green);
+        background: rgba(44, 122, 75, 0.03);
+        transform: translateY(-2px);
+    }
+
+    /* ===== Quick Links Card ===== */
+    .quick-links-card {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 26px 28px 22px;
+        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(44, 122, 75, 0.06);
+    }
+
+    .quick-links-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--light-text);
+        margin-bottom: 18px;
+    }
+
+    .quick-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+
+    .quick-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 6px 12px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--dark-text);
+        font-size: 0.8rem;
+        font-weight: 500;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    .quick-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+    }
+
+    /* Individual icon colors */
+    .quick-item:nth-child(1) .quick-icon {
+        background: #e8f5ec;
+        color: #2C7A4B;
+    }
+
+    .quick-item:nth-child(2) .quick-icon {
+        background: #fef0e8;
+        color: #D9733B;
+    }
+
+    .quick-item:nth-child(3) .quick-icon {
+        background: #eef2ff;
+        color: #4f6ef7;
+    }
+
+    .quick-item:nth-child(4) .quick-icon {
+        background: #f3eeff;
+        color: #7c5cf5;
+    }
+
+    .quick-item:hover {
+        background: #f7faf8;
+        transform: translateY(-3px);
+    }
+
+    .quick-item:hover .quick-icon {
+        transform: scale(1.12);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+        .error-page {
+            min-height: 65vh;
+            padding: 50px 16px;
+        }
+
+        .error-number {
+            font-size: 6rem;
+            letter-spacing: -3px;
+        }
+
+        .error-icon-ring {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        .error-icon-ring i {
+            font-size: 1.8rem;
+        }
+
+        .error-heading {
+            font-size: 1.3rem;
+        }
+
+        .error-desc {
+            font-size: 0.92rem;
+        }
+
+        .quick-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .error-tag {
+            right: -10px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .error-number {
+            font-size: 5rem;
+            letter-spacing: -2px;
+        }
+
+        .error-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .err-btn {
+            justify-content: center;
+        }
+
+        .quick-links-card {
+            padding: 20px 16px 16px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <div class="error-wrapper">
+
+        <!-- Animated Icon -->
+        <div class="error-icon-ring">
+            <i class="fas fa-map-signs"></i>
+        </div>
+
+        <!-- 404 Number -->
+        <div class="error-code-block">
+            <div class="error-number">404</div>
+            <span class="error-tag">Oops!</span>
+        </div>
+
+        <h1 class="error-heading">Page Not Found</h1>
+        <p class="error-desc">
+            The page you're looking for doesn't exist or has been moved.
+            Let's help you find your way back.
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="error-actions">
+            <a href="{{ url_for('home') }}" class="err-btn err-btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            <a href="{{ url_for('programs') }}" class="err-btn err-btn-outline">
+                <i class="fas fa-th-large"></i> Our Programs
+            </a>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="quick-links-card">
+            <div class="quick-links-label">Popular Pages</div>
+            <div class="quick-grid">
+                <a href="{{ url_for('about') }}" class="quick-item">
+                    <div class="quick-icon"><i class="fas fa-users"></i></div>
+                    About Us
+                </a>
+                <a href="{{ url_for('donate') }}" class="quick-item">
+                    <div class="quick-icon"><i class="fas fa-heart"></i></div>
+                    Donate
+                </a>
+                <a href="{{ url_for('career') }}" class="quick-item">
+                    <div class="quick-icon"><i class="fas fa-briefcase"></i></div>
+                    Career
+                </a>
+                <a href="{{ url_for('volunteer') }}" class="quick-item">
+                    <div class="quick-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    Volunteer
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

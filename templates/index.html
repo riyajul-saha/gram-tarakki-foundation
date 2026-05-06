@@ -1,4 +1,18 @@
 {% extends "base.html" %}
+{% block title %}Gram Tarakki Foundation — Empowering Rural Communities Through Education & Health{% endblock %}
+{% block meta %}
+<meta name="description" content="Gram Tarakki Foundation empowers rural communities through education, healthcare, karate, yoga and sustainable livelihood programs across West Bengal, India.">
+<meta name="keywords" content="Gram Tarakki, NGO India, rural education, karate training, yoga program, community development, West Bengal, volunteer, donate">
+{% endblock %}
+{% block og %}
+<meta property="og:title" content="Gram Tarakki Foundation — Empowering Rural Communities">
+<meta property="og:description" content="Education, healthcare, karate, yoga and livelihood programs for rural communities in West Bengal.">
+<meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Gram Tarakki Foundation">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">{% endblock %}
 {% block content %}
@@ -23,19 +37,19 @@
                 <i class="fas fa-graduation-cap"></i>
                 <h3>Education</h3>
                 <p>Providing quality education and learning resources to rural children and youth.</p>
-                <a href="#" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}#education" class="btn btn-primary">Know More</a>
             </div>
             <div class="card">
                 <i class="fas fa-heartbeat"></i>
                 <h3>Health</h3>
                 <p>Ensuring accessible healthcare services and health awareness programs.</p>
-                <a href="#" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}#health" class="btn btn-primary">Know More</a>
             </div>
             <div class="card">
                 <i class="fas fa-tools"></i>
                 <h3>Skill Training</h3>
                 <p>Vocational training to enhance employability and self-sufficiency.</p>
-                <a href="#" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}#skill-training" class="btn btn-primary">Know More</a>
             </div>
             <div class="card">
                 <i class="fas fa-fist-raised"></i>
@@ -53,31 +67,31 @@
                 <i class="fas fa-hands-helping"></i>
                 <h3>Children & Elders</h3>
                 <p>Special care and support programs for vulnerable age groups.</p>
-                <a href="#" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}#children-elders" class="btn btn-primary">Know More</a>
             </div>
             <div class="card">
                 <i class="fas fa-leaf"></i>
                 <h3>Environment</h3>
                 <p>Tree plantation, waste management and environmental awareness campaigns.</p>
-                <a href="#" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}#environment" class="btn btn-primary">Know More</a>
             </div>
             <div class="card">
                 <i class="fas fa-chalkboard-user"></i>
                 <h3>Coaching</h3>
                 <p>Expert guidance and personalized coaching for academic excellence.</p>
-                <a href="#" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}" class="btn btn-primary">Know More</a>
             </div>
             <div class="card">
                 <i class="fas fa-magnifying-glass-chart"></i>
                 <h3>Research and Advocacy</h3>
                 <p>Evidence-based research to drive policy change and social advocacy.</p>
-                <a href="#" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}" class="btn btn-primary">Know More</a>
             </div>
             <div class="card">
                 <i class="fas fa-comments"></i>
                 <h3>Spoken English</h3>
                 <p>Interactive courses to improve communication skills and fluency.</p>
-                <a href="#" class="btn btn-primary">Know More</a>
+                <a href="{{ url_for('programs') }}" class="btn btn-primary">Know More</a>
             </div>
             <div class="card">
                 <i class="fas fa-laptop-code"></i>
@@ -118,7 +132,7 @@
             <p>Join us for the biggest karate championship in West Bengal, bringing together talented martial
                 artists from across the state. This event aims to promote discipline, self-defence skills, and
                 physical fitness among youth.</p>
-            <a href="#" class="btn btn-secondary">Learn More</a>
+            <a href="{{ url_for('programs') }}#karate" class="btn btn-secondary">Learn More</a>
         </div>
     </div>
 </section>
@@ -130,35 +144,35 @@
         <div class="gallery-grid">
             <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary1.webp') }}">
                 <img src="{{ url_for('static', filename='images/gallery/galary1.webp') }}" loading="lazy"
-                    alt="Gallery Image 1">
+                    alt="Karate students training at Gram Tarakki Foundation community centre">
             </div>
             <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary2.webp') }}">
                 <img src="{{ url_for('static', filename='images/gallery/galary2.webp') }}" loading="lazy"
-                    alt="Gallery Image 2">
+                    alt="Community education program session in rural West Bengal">
             </div>
             <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary3.webp') }}">
                 <img src="{{ url_for('static', filename='images/gallery/galary3.webp') }}" loading="lazy"
-                    alt="Gallery Image 3">
+                    alt="Yoga and meditation session conducted by Gram Tarakki Foundation">
             </div>
             <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary4.webp') }}">
                 <img src="{{ url_for('static', filename='images/gallery/galary4.webp') }}" loading="lazy"
-                    alt="Gallery Image 4">
+                    alt="Skill training workshop for rural youth at Gram Tarakki">
             </div>
             <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary5.webp') }}">
                 <img src="{{ url_for('static', filename='images/gallery/galary5.webp') }}" loading="lazy"
-                    alt="Gallery Image 5">
+                    alt="Health awareness camp organised by Gram Tarakki Foundation">
             </div>
             <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary6.webp') }}">
                 <img src="{{ url_for('static', filename='images/gallery/galary6.webp') }}" loading="lazy"
-                    alt="Gallery Image 6">
+                    alt="Tree plantation drive by Gram Tarakki Foundation volunteers">
             </div>
             <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary7.webp') }}">
                 <img src="{{ url_for('static', filename='images/gallery/galary7.webp') }}" loading="lazy"
-                    alt="Gallery Image 7">
+                    alt="Belt promotion ceremony for karate students at Gram Tarakki">
             </div>
             <div class="gallery-item" data-src="{{ url_for('static', filename='images/gallery/galary8.webp') }}">
                 <img src="{{ url_for('static', filename='images/gallery/galary8.webp') }}" loading="lazy"
-                    alt="Gallery Image 8">
+                    alt="Community celebration event at Gram Tarakki Foundation">
             </div>
         </div>
     </div>

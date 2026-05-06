@@ -1,4 +1,17 @@
 {% extends "base.html" %}
+{% block title %}Partner With Us — Corporate & Community Partnerships | Gram Tarakki Foundation{% endblock %}
+{% block meta %}
+<meta name="description" content="Partner with Gram Tarakki Foundation for corporate CSR, training partnerships, event sponsorship and community collaborations in rural India.">
+<meta name="keywords" content="NGO partnership, CSR India, corporate social responsibility, community partner, event sponsor, rural development partner">
+{% endblock %}
+{% block og %}
+<meta property="og:title" content="Partner With Us — Gram Tarakki Foundation">
+<meta property="og:description" content="Collaborate with us for corporate CSR, training, sponsorship and community impact.">
+<meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/partners.css') }}">{% endblock %}
 {% block content %}
