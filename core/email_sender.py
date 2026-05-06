@@ -45,7 +45,7 @@ def send_email_async(email, html_body, subject="Application Received – Gram Ta
     try:
         print(f"Starting to send email to {email}...", flush=True)
         gmail_user = os.getenv("GMAIL")
-        gmail_password = os.getenv("GMAIL_PASSWOR")
+        gmail_password = os.getenv("GMAIL_PASSWORD")
         
         if gmail_user and gmail_password:
             gmail_user = gmail_user.strip()
