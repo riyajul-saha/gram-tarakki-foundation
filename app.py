@@ -11,6 +11,10 @@ if os.path.exists(".env"):
 
 app = Flask(__name__)
 
+# Apply ProxyFix to correctly handle X-Forwarded-* headers in deployment environments
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
 app.secret_key = os.getenv("SECRET_KEY")
 if not app.secret_key:
     raise ValueError("No SECRET_KEY set for Flask application!")
