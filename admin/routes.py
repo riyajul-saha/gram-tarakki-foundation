@@ -35,7 +35,9 @@ def init_routes(app):
         return dict(current_admin=None)
 
 
+    from core.security import rate_limit
     @app.route("/login", methods=["GET", "POST"])
+    @rate_limit(max_reqs=10, window=300)
     def login():
         """
         Admin Login Page and API.
@@ -91,7 +93,6 @@ def init_routes(app):
         return render_template('admin/login.html')
 
 
-    from core.security import rate_limit
     @app.route("/verify-otp", methods=["POST"])
     @rate_limit(max_reqs=20, window=300)
     def verify_otp():

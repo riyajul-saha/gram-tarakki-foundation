@@ -67,12 +67,12 @@ def csrf_protect():
         
         if origin:
             if origin != host_url and not origin.startswith(host_url):
-                return jsonify({"status": "error", "message": f"CSRF verification failed (Origin mismatch). Origin: {origin}, Host: {host_url}"}), 403
+                return jsonify({"status": "error", "message": "CSRF verification failed"}), 403
         elif referer:
             if not referer.startswith(host_url):
-                return jsonify({"status": "error", "message": f"CSRF verification failed (Referer mismatch). Referer: {referer}, Host: {host_url}"}), 403
+                return jsonify({"status": "error", "message": "CSRF verification failed"}), 403
         else:
-            return jsonify({"status": "error", "message": "CSRF verification failed (Missing Origin/Referer)"}), 403
+            return jsonify({"status": "error", "message": "CSRF verification failed"}), 403
 
 @app.after_request
 def set_security_headers(response):

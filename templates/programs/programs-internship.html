@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Internship — Technical & Non-Technical Tracks | GTFoundation{% endblock %}
+{% block title %}Internship Program — All Domains | GTFoundation{% endblock %}
 {% block meta %}
-<meta name="description" content="Apply for technical and non-technical internships at Gram Tarakki Foundation. Gain real-world experience, mentorship, and a certificate of completion.">
-<meta name="keywords" content="internship India, technical internship, NGO internship, web development internship, remote internship, community project internship">
+<meta name="description" content="Apply for internships across all domains at Gram Tarakki Foundation. Gain real-world experience, mentorship, and a certificate of completion.">
+<meta name="keywords" content="internship India, NGO internship, web development internship, content writing internship, remote internship, community project internship">
 {% endblock %}
 {% block og %}
 <meta property="og:title" content="Internship Program — Gram Tarakki Foundation">
-<meta property="og:description" content="Hands-on internship in technical and non-technical domains with mentorship and certification.">
+<meta property="og:description" content="Hands-on internship across all domains with mentorship and certification.">
 <meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
 <meta property="og:url" content="{{ request.url }}">
 <meta property="og:type" content="website">
@@ -18,7 +18,7 @@
     "@context": "https://schema.org",
     "@type": "Course",
     "name": "Internship Program",
-    "description": "Hands-on internship program in technical and non-technical domains with mentorship, real-world project experience and certificate of completion.",
+    "description": "Hands-on internship program across all domains with mentorship, real-world project experience and certificate of completion.",
     "provider": {
         "@type": "Organization",
         "name": "Gram Tarakki Foundation",
@@ -43,7 +43,7 @@
                 Internship Program
             </h1>
             <p class="hero-tagline">
-                Technical • Non-Technical • Mentorship • Real-World Experience
+                All Domains • Mentorship • Real-World Experience • Career Growth
             </p>
 
             <!-- Feature Box -->
@@ -63,8 +63,8 @@
                     </li>
                 </ul>
                 <div class="hero-cta-wrapper">
-                    <a href="{{ url_for('join') }}" class="btn btn-primary">
-                        Apply Now
+                    <a href="{{ url_for('career') }}" class="btn btn-primary">
+                        View Openings & Apply
                         <i data-lucide="arrow-right" class="icon-sm"></i>
                     </a>
                 </div>
@@ -103,124 +103,171 @@
             <p>Gram Tarakki Foundation's Internship Program is designed to bridge the gap between education and
                 professional experience. We provide aspiring students and young professionals with meaningful
                 opportunities to develop skills, build networks and contribute to impactful community projects.</p>
-            <p>Our program offers two distinct tracks — <strong>Technical</strong> and <strong>Non-Technical</strong>
-                — ensuring that interns from all academic backgrounds can find a role that aligns with their
-                interests and career goals.</p>
+            <p>We offer internships across a wide range of domains — from technology and design to management,
+                media and community outreach — ensuring that interns from all academic backgrounds can find a role
+                that aligns with their interests and career goals.</p>
             <p>Interns work alongside experienced mentors on real projects, gaining practical knowledge that
                 enhances their resumes and prepares them for the professional world. Duration ranges from 1 to 6
-                months, with flexible scheduling options.</p>
+                months, with flexible scheduling options. To view current openings and apply, visit our
+                <a href="{{ url_for('career') }}">Career page</a>.</p>
         </div>
     </div>
 </section>
 
-<!-- 3. Internship Tracks Section -->
-<section class="section tracks-section">
+<!-- 3. Internship Domains Section -->
+<section class="section domains-section">
+    <div class="domains-bg-pattern"></div>
     <div class="container">
         <div class="scroll-reveal">
-            <h2 class="section-title text-center mb-large">Internship Tracks</h2>
+            <div class="section-header">
+                <h2 class="section-title">Internship Domains</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle text-center">Explore internship opportunities across a diverse range of fields — and we're always expanding!</p>
+            </div>
 
-            <!-- Technical Track -->
-            <div class="track-block">
-                <div class="track-visual">
-                    <div class="track-card-img">
-                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=700&q=80"
-                            alt="Technical Internship" />
-                        <div class="track-overlay">
-                            <span class="track-label"><i data-lucide="code-2" class="icon-sm"></i> Technical</span>
-                        </div>
+            <div class="domains-grid">
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="globe" class="domain-icon"></i>
                     </div>
+                    <h3>Web Development</h3>
+                    <p>Build modern, responsive websites and web applications.</p>
                 </div>
-                <div class="track-details">
-                    <h3><i data-lucide="code-2" class="icon-brand"></i> Technical Internship</h3>
-                    <p>Our Technical Internship track is ideal for students pursuing engineering, computer science
-                        or IT-related fields. Interns work on live projects that make a real difference.</p>
-                    <div class="track-roles">
-                        <div class="role-chip">
-                            <i data-lucide="globe" class="icon-xs"></i>
-                            <span>Web Development</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="smartphone" class="icon-xs"></i>
-                            <span>App Development</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="bar-chart-3" class="icon-xs"></i>
-                            <span>Data Analytics</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="palette" class="icon-xs"></i>
-                            <span>UI/UX Design</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="server" class="icon-xs"></i>
-                            <span>IT Support</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="database" class="icon-xs"></i>
-                            <span>Database Management</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="brain" class="icon-xs"></i>
-                            <span>Machine Learning</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="cpu" class="icon-xs"></i>
-                            <span>Artificial Intelligence</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="terminal" class="icon-xs"></i>
-                            <span>Programming</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="layout" class="icon-xs"></i>
-                            <span>System Design</span>
-                        </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="smartphone" class="domain-icon"></i>
                     </div>
+                    <h3>App Development</h3>
+                    <p>Create cross-platform mobile applications.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="bar-chart-3" class="domain-icon"></i>
+                    </div>
+                    <h3>Data Analytics</h3>
+                    <p>Analyse data to derive meaningful insights.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="palette" class="domain-icon"></i>
+                    </div>
+                    <h3>UI/UX Design</h3>
+                    <p>Design intuitive and delightful user experiences.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="brain" class="domain-icon"></i>
+                    </div>
+                    <h3>Machine Learning</h3>
+                    <p>Explore intelligent algorithms and predictive models.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="cpu" class="domain-icon"></i>
+                    </div>
+                    <h3>Artificial Intelligence</h3>
+                    <p>Work on AI-driven solutions for real-world problems.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="terminal" class="domain-icon"></i>
+                    </div>
+                    <h3>Programming</h3>
+                    <p>Strengthen your coding skills on live projects.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="database" class="domain-icon"></i>
+                    </div>
+                    <h3>Database Management</h3>
+                    <p>Design and manage robust database systems.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="pen-tool" class="domain-icon"></i>
+                    </div>
+                    <h3>Content Writing</h3>
+                    <p>Craft engaging content for diverse audiences.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="share-2" class="domain-icon"></i>
+                    </div>
+                    <h3>Social Media</h3>
+                    <p>Manage campaigns and grow online communities.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="calendar" class="domain-icon"></i>
+                    </div>
+                    <h3>Event Management</h3>
+                    <p>Plan and execute impactful community events.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="file-text" class="domain-icon"></i>
+                    </div>
+                    <h3>Research & Docs</h3>
+                    <p>Conduct research and prepare professional documentation.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="megaphone" class="domain-icon"></i>
+                    </div>
+                    <h3>Community Outreach</h3>
+                    <p>Connect with communities and drive social impact.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="clipboard-list" class="domain-icon"></i>
+                    </div>
+                    <h3>HR & Admin</h3>
+                    <p>Support operations, hiring and organisational tasks.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="trending-up" class="domain-icon"></i>
+                    </div>
+                    <h3>Marketing</h3>
+                    <p>Develop strategies to amplify brand reach.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="image" class="domain-icon"></i>
+                    </div>
+                    <h3>Graphic Design</h3>
+                    <p>Create compelling visuals and brand assets.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="server" class="domain-icon"></i>
+                    </div>
+                    <h3>IT Support</h3>
+                    <p>Provide technical support and infrastructure management.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon-wrap">
+                        <i data-lucide="layout" class="domain-icon"></i>
+                    </div>
+                    <h3>System Design</h3>
+                    <p>Architect scalable and efficient software systems.</p>
                 </div>
             </div>
 
-            <!-- Non-Technical Track -->
-            <div class="track-block reverse">
-                <div class="track-visual">
-                    <div class="track-card-img">
-                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=700&q=80"
-                            alt="Non-Technical Internship" />
-                        <div class="track-overlay">
-                            <span class="track-label"><i data-lucide="users" class="icon-sm"></i>
-                                Non-Technical</span>
-                        </div>
+            <!-- CTA Banner -->
+            <div class="domains-cta-banner">
+                <div class="cta-banner-content">
+                    <div class="cta-banner-icon">
+                        <i data-lucide="rocket" class="cta-rocket-icon"></i>
                     </div>
-                </div>
-                <div class="track-details">
-                    <h3><i data-lucide="users" class="icon-brand"></i> Non-Technical Internship</h3>
-                    <p>Our Non-Technical track is perfect for students in management, arts, media, social sciences
-                        and humanities. Develop professional skills while making a community impact.</p>
-                    <div class="track-roles">
-                        <div class="role-chip">
-                            <i data-lucide="pen-tool" class="icon-xs"></i>
-                            <span>Content Writing</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="share-2" class="icon-xs"></i>
-                            <span>Social Media</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="calendar" class="icon-xs"></i>
-                            <span>Event Management</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="file-text" class="icon-xs"></i>
-                            <span>Research & Documentation</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="megaphone" class="icon-xs"></i>
-                            <span>Community Outreach</span>
-                        </div>
-                        <div class="role-chip">
-                            <i data-lucide="clipboard-list" class="icon-xs"></i>
-                            <span>HR & Admin</span>
-                        </div>
+                    <div class="cta-banner-text">
+                        <h3>Ready to start your internship journey?</h3>
+                        <p>Browse current openings and apply directly through our Career page.</p>
                     </div>
+                    <a href="{{ url_for('career') }}" class="btn btn-white cta-banner-btn">
+                        View Available Internships
+                        <i data-lucide="arrow-right" class="icon-sm"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -292,7 +339,7 @@
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3>Apply Online</h3>
-                        <p>Fill out the application form and select your preferred track.</p>
+                        <p>Browse available internships on our Career page and submit your application.</p>
                     </div>
                 </div>
                 <div class="process-step">
@@ -335,8 +382,8 @@
                 <span>Fresh Graduates</span>
             </div>
             <div class="join-card">
-                <i data-lucide="code-2" class="icon-brand-lg"></i>
-                <span>Tech Enthusiasts</span>
+                <i data-lucide="lightbulb" class="icon-brand-lg"></i>
+                <span>Aspiring Professionals</span>
             </div>
             <div class="join-card">
                 <i data-lucide="heart" class="icon-brand-lg"></i>
@@ -361,8 +408,8 @@
                 Join our internship program and gain industry-ready skills while making a real impact.
             </p>
             <div class="cta-actions">
-                <a href="{{ url_for('join') }}" class="btn btn-white">
-                    Apply Now
+                <a href="{{ url_for('career') }}" class="btn btn-white">
+                    View Openings & Apply
                 </a>
                 <a href="tel:+919475321004" class="btn btn-white">
                     Contact Now

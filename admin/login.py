@@ -1,6 +1,6 @@
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-import random
+import secrets
 import string
 from datetime import datetime, timedelta
 
@@ -66,8 +66,8 @@ def verify_admin_login(email, password):
 
 
 def generate_otp(length=6):
-    """Generate a secure random numeric OTP."""
-    return ''.join(random.choices(string.digits, k=length))
+    """Generate a cryptographically secure random numeric OTP."""
+    return ''.join(secrets.choice(string.digits) for _ in range(length))
 
 
 def send_otp_email(app, admin_email, admin_name, otp_code, expiry_minutes=5):
