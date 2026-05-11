@@ -15,12 +15,14 @@ app = Flask(__name__)
 from werkzeug.middleware.proxy_fix import ProxyFix
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
+debug_mode = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "t")
+
 app.secret_key = os.getenv("SECRET_KEY")
 if not app.secret_key:
     raise ValueError("No SECRET_KEY set for Flask application!")
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15) # After provided minutes admin will be logged out
 app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SECURE'] = True       # Enable in production (HTTPS)
+app.config['SESSION_COOKIE_SECURE'] = not debug_mode       # Enable in production (HTTPS) only
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 MB max
 
@@ -94,9 +96,6 @@ core.routes.init_routes(app)
 admin.routes.init_routes(app)
 
 if __name__ == "__main__":
-    # Check if we should run in debug mode
-    debug_mode = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "t")
-    
     port = int(os.getenv("PORT", 3000))
 
     if debug_mode:

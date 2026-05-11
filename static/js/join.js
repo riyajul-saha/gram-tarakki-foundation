@@ -35,7 +35,7 @@
     const removeImageBtn = document.getElementById('removeImageBtn');
 
     const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-    const MAX_SIZE_MB = 2;
+    const MAX_SIZE_KB = 100;
 
     // Click to open file picker
     imageUploadArea.addEventListener('click', function (e) {
@@ -76,8 +76,8 @@
             return;
         }
         // Validate size
-        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-            showPopup('fail', 'File Too Large', `Image must be under ${MAX_SIZE_MB} MB.`);
+        if (file.size > MAX_SIZE_KB * 1024) {
+            showPopup('fail', 'File Too Large', `Image must be under ${MAX_SIZE_KB} KB.`);
             studentImageInput.value = '';
             return;
         }

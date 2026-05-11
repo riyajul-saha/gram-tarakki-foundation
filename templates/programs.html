@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Programs — Education, Karate & Yoga | GTFoundation{% endblock %}
 {% block meta %}
-<meta name="description" content="Explore community programs in karate, yoga, education, skill training, environment and more. Join Gram Tarakki Foundation's initiatives in rural West Bengal.">
-<meta name="keywords" content="karate training, yoga program, education program, skill training, rural development programs, West Bengal NGO programs">
+<meta name="description"
+    content="Explore community programs in karate, yoga, education, skill training, environment and more. Join Gram Tarakki Foundation's initiatives in rural West Bengal.">
+<meta name="keywords"
+    content="karate training, yoga program, education program, skill training, rural development programs, West Bengal NGO programs">
 {% endblock %}
 {% block og %}
 <meta property="og:title" content="Our Programs — Gram Tarakki Foundation">
-<meta property="og:description" content="Karate, yoga, education, skill training and more — community programs for rural empowerment.">
+<meta property="og:description"
+    content="Karate, yoga, education, skill training and more — community programs for rural empowerment.">
 <meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
 <meta property="og:url" content="{{ request.url }}">
 <meta property="og:type" content="website">
@@ -51,8 +54,8 @@
                 <a href="{{ url_for('join') }}" class="btn btn-secondary">Join Program</a>
             </div>
             <div class="program-image">
-                <img src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                    alt="Karate Training" loading="lazy">
+                <img src="{{ url_for('static', filename='images/programs/karate.webp') }}" alt="Karate Training"
+                    loading="lazy">
             </div>
         </div>
     </div>
@@ -231,7 +234,7 @@
                 <a href="{{ url_for('career') }}" class="btn btn-secondary">Apply Now</a>
             </div>
             <div class="program-image">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                <img src="{{ url_for('static', filename='images/internship/internship.webp') }}"
                     alt="Internship Program" loading="lazy">
             </div>
         </div>

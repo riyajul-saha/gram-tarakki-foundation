@@ -22,10 +22,11 @@ def _send_via_google_script(email, subject, html_body):
         }
         
         headers = {'Content-Type': 'application/json; charset=utf-8'}
-        payload_bytes = json.dumps(payload, ensure_ascii=False).encode('utf-8')
         
-        # Try sending as UTF-8 explicitly; using timeout=15
-        response = requests.post(script_url, data=payload_bytes, headers=headers, timeout=15)
+        # Use json=payload to let requests properly format the payload with ensure_ascii=True (default),
+        # which sends ASCII-escaped unicode that Google Apps Script's JSON.parse can natively understand,
+        # preventing charset corruption for emojis.
+        response = requests.post(script_url, json=payload, headers=headers, timeout=15)
         
         if response.status_code in (200, 201):
             try:
@@ -51,10 +52,12 @@ def send_email_async(email, html_body, subject="Application Received – Gram Ta
             gmail_user = gmail_user.strip()
             gmail_password = gmail_password.strip()
             
+            from email.header import Header
             msg = MIMEMultipart()
             msg['From'] = gmail_user
             msg['To'] = email
-            msg['Subject'] = subject
+            # Encode subject properly to prevent emojis from rendering as "" in email clients
+            msg['Subject'] = Header(subject, 'utf-8')
             
             msg.attach(MIMEText(html_body, 'html'))
             

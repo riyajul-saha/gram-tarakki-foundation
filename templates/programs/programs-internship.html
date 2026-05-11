@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Internship Program — All Domains | GTFoundation{% endblock %}
 {% block meta %}
-<meta name="description" content="Apply for internships across all domains at Gram Tarakki Foundation. Gain real-world experience, mentorship, and a certificate of completion.">
-<meta name="keywords" content="internship India, NGO internship, web development internship, content writing internship, remote internship, community project internship">
+<meta name="description"
+    content="Apply for internships across all domains at Gram Tarakki Foundation. Gain real-world experience, mentorship, and a certificate of completion.">
+<meta name="keywords"
+    content="internship India, NGO internship, web development internship, content writing internship, remote internship, community project internship">
 {% endblock %}
 {% block og %}
 <meta property="og:title" content="Internship Program — Gram Tarakki Foundation">
@@ -74,7 +76,7 @@
         <!-- Hero Image -->
         <div class="hero-image-wrapper fade-in-scale">
             <div class="hero-image-container">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                <img src="{{ url_for('static', filename='images/internship/internship.webp') }}"
                     alt="Internship Program" class="hero-image" />
                 <div class="hero-image-overlay"></div>
             </div>
@@ -109,7 +111,8 @@
             <p>Interns work alongside experienced mentors on real projects, gaining practical knowledge that
                 enhances their resumes and prepares them for the professional world. Duration ranges from 1 to 6
                 months, with flexible scheduling options. To view current openings and apply, visit our
-                <a href="{{ url_for('career') }}">Career page</a>.</p>
+                <a href="{{ url_for('career') }}">Career page</a>.
+            </p>
         </div>
     </div>
 </section>
@@ -122,7 +125,8 @@
             <div class="section-header">
                 <h2 class="section-title">Internship Domains</h2>
                 <div class="section-divider"></div>
-                <p class="section-subtitle text-center">Explore internship opportunities across a diverse range of fields — and we're always expanding!</p>
+                <p class="section-subtitle text-center">Explore internship opportunities across a diverse range of
+                    fields — and we're always expanding!</p>
             </div>
 
             <div class="domains-grid">

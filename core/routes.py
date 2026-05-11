@@ -117,12 +117,12 @@ def init_routes(app):
                         return jsonify({"status": "error", "message": "Only JPG, PNG and WebP images are allowed. SVG not permitted."}), 400
                     if not validate_image_file(file):
                         return jsonify({"status": "error", "message": "Invalid image file."}), 400
-                    # Check file size (max 2 MB for student photo)
+                    # Check file size (max 100 KB for student photo)
                     file.seek(0, 2)
                     file_size = file.tell()
                     file.seek(0)
-                    if file_size > 2 * 1024 * 1024:
-                        return jsonify({"status": "error", "message": "Photo must be under 2 MB."}), 400
+                    if file_size > 100 * 1024:
+                        return jsonify({"status": "error", "message": "Photo must be under 100 KB."}), 400
                     unique_filename = f"{uuid.uuid4().hex}_{filename}"
                     os.makedirs(app.config['STUDENT_IMAGE_FOLDER'], exist_ok=True)
                     file_path = os.path.join(app.config['STUDENT_IMAGE_FOLDER'], unique_filename)

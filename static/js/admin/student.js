@@ -73,8 +73,8 @@ function handleAddStudent(e) {
             showToast('Only JPG, PNG and WebP images are allowed. SVG not permitted.', 'error');
             return;
         }
-        if (file.size > 2 * 1024 * 1024) {
-            showToast('Photo must be under 2 MB.', 'error');
+        if (file.size > 100 * 1024) {
+            showToast('Photo must be under 100 KB.', 'error');
             return;
         }
         formData.append('image', file);

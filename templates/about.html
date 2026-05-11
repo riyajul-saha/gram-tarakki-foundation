@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 {% block title %}About Us — Mission, Vision & Team | GTFoundation{% endblock %}
 {% block meta %}
-<meta name="description" content="Learn about Gram Tarakki Foundation's mission, vision, journey and team — dedicated to grassroots community empowerment in rural West Bengal.">
-<meta name="keywords" content="about Gram Tarakki, NGO mission, rural empowerment, community development team, West Bengal NGO">
+<meta name="description"
+    content="Learn about Gram Tarakki Foundation's mission, vision, journey and team — dedicated to grassroots community empowerment in rural West Bengal.">
+<meta name="keywords"
+    content="about Gram Tarakki, NGO mission, rural empowerment, community development team, West Bengal NGO">
 {% endblock %}
 {% block og %}
 <meta property="og:title" content="About Us — Gram Tarakki Foundation">
-<meta property="og:description" content="Our mission, vision, journey and team — dedicated to grassroots community empowerment.">
+<meta property="og:description"
+    content="Our mission, vision, journey and team — dedicated to grassroots community empowerment.">
 <meta property="og:image" content="https://gram-tarakki-foundation.onrender.com/static/images/home/logo.webp">
 <meta property="og:url" content="{{ request.url }}">
 <meta property="og:type" content="website">
@@ -87,13 +90,13 @@
             <div class="journey-images">
                 <div class="journey-image">
                     <!-- In production, replace with event1.webp -->
-                    <img src="{{ url_for('static', filename='images/about/journey1.webp') }}" loading="lazy"
-                        alt="Early Community Program">
+                    <img src="{{ url_for('static', filename='images/karate/karate1.webp') }}" loading="lazy"
+                        alt="Karate Program">
                 </div>
                 <div class="journey-image">
                     <!-- In production, replace with event2.webp -->
-                    <img src="{{ url_for('static', filename='images/about/journey2.webp') }}" loading="lazy"
-                        alt="Expansion to Multiple Villages">
+                    <img src="{{ url_for('static', filename='images/yoga/yoga1.webp') }}" loading="lazy"
+                        alt="Yoga Program">
                 </div>
             </div>
         </div>
