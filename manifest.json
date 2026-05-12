@@ -1,0 +1,16 @@
+{
+  "name": "Gram Tarakki Foundation",
+  "short_name": "Gram Tarakki",
+  "description": "Empowering rural communities through education, healthcare, and sustainable livelihood programs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/static/images/home/logo.webp",
+      "sizes": "192x192 512x512",
+      "type": "image/webp"
+    }
+  ]
+}

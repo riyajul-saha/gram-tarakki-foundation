@@ -23,3 +23,12 @@ def init_static_routes(app):
     @app.route('/robots.txt')
     def robots():
         return send_from_directory(BASE_DIR, 'robots.txt')
+
+    @app.route('/manifest.json')
+    def manifest():
+        return send_from_directory(BASE_DIR, 'manifest.json')
+
+    @app.route('/sw.js')
+    def service_worker():
+        # Service workers must be served with the correct MIME type
+        return send_from_directory(BASE_DIR, 'sw.js', mimetype='application/javascript')
