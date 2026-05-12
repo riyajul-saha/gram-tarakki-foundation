@@ -58,3 +58,53 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(contactSection);
     }
 });
+
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        })
+        .catch(err => {
+            console.log('ServiceWorker registration failed: ', err);
+        });
+    });
+}
+
+// Handle custom Install App prompt
+let deferredPrompt;
+const installNavBtn = document.getElementById('installAppNavBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    // Update UI notify the user they can add to home screen
+    if(installNavBtn) installNavBtn.style.display = 'block';
+});
+
+function handleInstallClick(e) {
+    if(e) e.preventDefault();
+    if(!deferredPrompt) return;
+    // Show the prompt
+    deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the A2HS prompt');
+        } else {
+            console.log('User dismissed the A2HS prompt');
+        }
+        deferredPrompt = null;
+        if(installNavBtn) installNavBtn.style.display = 'none';
+    });
+}
+
+if(installNavBtn) installNavBtn.addEventListener('click', handleInstallClick);
+
+window.addEventListener('appinstalled', (evt) => {
+    console.log('App was successfully installed');
+    if(installNavBtn) installNavBtn.style.display = 'none';
+});
