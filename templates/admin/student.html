@@ -228,39 +228,116 @@
 </div>
 
 <div id="studentModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content detail-modal">
         <span class="close-modal" onclick="closeModal('studentModal')">&times;</span>
-        <h2>Student Details</h2>
-        <div style="display: flex; gap: 20px; margin: 20px 0;">
-            <div id="modalStudentPhotoContainer">
-                <img id="modalStudentPhoto" src=""
-                    style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; display: none;">
-                <div id="modalStudentIcon"
-                    style="width: 100px; height: 100px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #94a3b8;">
-                    <i class="fas fa-user"></i>
+
+        <!-- Hero Header -->
+        <div class="detail-header">
+            <div class="detail-header-bg"></div>
+            <div class="detail-avatar-wrap">
+                <img id="modalStudentPhoto" src="" class="detail-avatar-img">
+                <div id="modalStudentIcon" class="detail-avatar-icon">
+                    <i class="fas fa-user-graduate"></i>
                 </div>
             </div>
-            <div>
-                <p><strong>Name:</strong> <span id="modalStudentName"></span></p>
-                <p><strong>Email:</strong> <span id="modalStudentEmail"></span></p>
-                <p><strong>Phone:</strong> <span id="modalStudentPhone"></span></p>
-                <p><strong>Address:</strong> <span id="modalStudentAddress"></span></p>
-                <p><strong>Course:</strong> <span id="modalStudentCourse"></span></p>
-                <p><strong>Age:</strong> <span id="modalStudentAge"></span></p>
-                <p><strong>Gender:</strong> <span id="modalStudentGender"></span></p>
-                <p><strong>School:</strong> <span id="modalStudentSchool"></span></p>
+            <h2 class="detail-name" id="modalStudentName"></h2>
+            <span class="detail-program-badge" id="modalStudentCourse"></span>
+        </div>
+
+        <!-- Scrollable Body -->
+        <div class="detail-body">
+            <!-- Contact Strip -->
+            <div class="detail-contact-strip">
+                <a class="detail-contact-item" id="detailEmailLink" href="#">
+                    <i class="fas fa-envelope"></i>
+                    <span id="modalStudentEmail"></span>
+                </a>
+                <a class="detail-contact-item" id="detailPhoneLink" href="#">
+                    <i class="fas fa-phone-alt"></i>
+                    <span id="modalStudentPhone"></span>
+                </a>
+            </div>
+
+            <!-- Section: Personal Info -->
+            <div class="detail-section">
+                <div class="detail-section-heading">
+                    <i class="fas fa-id-card"></i>
+                    <h3>Personal Information</h3>
+                </div>
+                <div class="detail-info-grid">
+                    <div class="detail-info-card">
+                        <span class="detail-info-label"><i class="fas fa-birthday-cake"></i> Age</span>
+                        <span class="detail-info-value" id="modalStudentAge"></span>
+                    </div>
+                    <div class="detail-info-card">
+                        <span class="detail-info-label"><i class="fas fa-venus-mars"></i> Gender</span>
+                        <span class="detail-info-value" id="modalStudentGender"></span>
+                    </div>
+                    <div class="detail-info-card detail-info-card-full">
+                        <span class="detail-info-label"><i class="fas fa-map-marker-alt"></i> Address</span>
+                        <span class="detail-info-value" id="modalStudentAddress"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Academic Info -->
+            <div class="detail-section">
+                <div class="detail-section-heading">
+                    <i class="fas fa-school"></i>
+                    <h3>Academic Information</h3>
+                </div>
+                <div class="detail-info-grid">
+                    <div class="detail-info-card detail-info-card-full">
+                        <span class="detail-info-label"><i class="fas fa-graduation-cap"></i> School / College</span>
+                        <span class="detail-info-value" id="modalStudentSchool"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Guardian Info -->
+            <div class="detail-section">
+                <div class="detail-section-heading">
+                    <i class="fas fa-user-friends"></i>
+                    <h3>Guardian Details</h3>
+                </div>
+                <div class="detail-info-grid">
+                    <div class="detail-info-card">
+                        <span class="detail-info-label"><i class="fas fa-user-tie"></i> Parent Name</span>
+                        <span class="detail-info-value" id="modalStudentParentName"></span>
+                    </div>
+                    <div class="detail-info-card">
+                        <span class="detail-info-label"><i class="fas fa-phone"></i> Parent Contact</span>
+                        <span class="detail-info-value" id="modalStudentParentContact"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Medical -->
+            <div class="detail-section">
+                <div class="detail-section-heading">
+                    <i class="fas fa-notes-medical"></i>
+                    <h3>Medical Information</h3>
+                </div>
+                <div class="detail-info-grid">
+                    <div class="detail-info-card detail-info-card-full">
+                        <span class="detail-info-label"><i class="fas fa-heartbeat"></i> Health Details</span>
+                        <span class="detail-info-value" id="modalStudentMedical"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Experience -->
+            <div class="detail-section">
+                <div class="detail-section-heading">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Reason for Joining / Experience</h3>
+                </div>
+                <div class="detail-experience-box" id="modalStudentExperience"></div>
             </div>
         </div>
-        <div style="display: flex; gap: 20px; margin: 20px 0;">
-            <div>
-                <p><strong>Parent Name:</strong> <span id="modalStudentParentName"></span></p>
-                <p><strong>Parent Contact:</strong> <span id="modalStudentParentContact"></span></p>
-                <p><strong>Medical Info:</strong> <span id="modalStudentMedical"></span></p>
-            </div>
-        </div>
-        <h3>Reason for Joining / Experience</h3>
-        <p style="margin: 10px 0;" id="modalStudentExperience"></p>
-        <div style="display: flex; gap: 10px; margin-top: 20px;" id="modalActionBtns">
+
+        <!-- Sticky Action Footer -->
+        <div class="detail-footer" id="modalActionBtns">
             <!-- Actions will be injected here -->
         </div>
     </div>

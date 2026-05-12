@@ -791,6 +791,7 @@ tr:hover td {
     align-items: center;
     justify-content: center;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 .modal.active {
@@ -819,6 +820,7 @@ tr:hover td {
     position: relative;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
     animation: slideUpModal 0.3s ease;
+    box-sizing: border-box;
 }
 
 @keyframes slideUpModal {
@@ -863,6 +865,12 @@ tr:hover td {
     border-bottom: 1px solid #f1f5f9;
 }
 
+/* Job Form Action Buttons */
+.job-form-actions {
+    display: flex;
+    gap: 10px;
+}
+
 .form-group {
     margin-bottom: 18px;
 }
@@ -885,6 +893,7 @@ tr:hover td {
     font-size: 0.9rem;
     transition: all 0.2s;
     color: #1e293b;
+    box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -1333,5 +1342,108 @@ tr:hover td {
 
     .interview-row {
         grid-template-columns: 1fr;
+    }
+
+    /* Job Modal — mobile fixes */
+    .modal {
+        padding: 10px;
+    }
+
+    .modal-content {
+        padding: 24px 20px;
+        border-radius: 16px;
+        max-height: 95vh;
+    }
+
+    .modal-content h2 {
+        font-size: 1.2rem;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+    }
+
+    .interview-modal-content {
+        max-width: 100% !important;
+    }
+
+    .delete-confirm-content {
+        padding: 28px 20px !important;
+    }
+
+    .delete-confirm-actions {
+        flex-direction: column;
+    }
+
+    .delete-confirm-actions .btn {
+        width: 100%;
+        min-width: unset;
+    }
+
+    /* Job form buttons stack vertically */
+    .job-form-actions {
+        flex-direction: column;
+    }
+
+    .job-form-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Full-screen modals on very small screens */
+    .modal {
+        padding: 0;
+    }
+
+    .modal-content {
+        border-radius: 0;
+        max-height: 100vh;
+        height: 100%;
+        padding: 20px 16px;
+    }
+
+    .modal-content h2 {
+        font-size: 1.1rem;
+        padding-right: 30px;
+    }
+
+    .close-modal {
+        top: 12px;
+        right: 12px;
+    }
+
+    .interview-modal-content {
+        border-radius: 0 !important;
+        height: 100% !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .interview-modal-header {
+        flex-shrink: 0;
+        padding: 18px 16px;
+    }
+
+    .interview-header-icon {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+    }
+
+    .interview-modal-content form {
+        padding: 16px;
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .delete-confirm-content {
+        border-radius: 0 !important;
+        height: auto !important;
+    }
+
+    .toast {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
     }
 }

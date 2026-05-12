@@ -210,19 +210,35 @@ function updateStudentStatus(id, newStatus) {
 }
 
 function openStudentDetails(student) {
+    // Header info
     document.getElementById('modalStudentName').innerText = student.fullname || 'N/A';
-    document.getElementById('modalStudentEmail').innerText = student.email || 'N/A';
-    document.getElementById('modalStudentPhone').innerText = student.phone || 'N/A';
-    document.getElementById('modalStudentAddress').innerText = student.address || 'N/A';
     document.getElementById('modalStudentCourse').innerText = student.program || 'N/A';
+
+    // Contact strip
+    const email = student.email || 'N/A';
+    const phone = student.phone || 'N/A';
+    document.getElementById('modalStudentEmail').innerText = email;
+    document.getElementById('modalStudentPhone').innerText = phone;
+    document.getElementById('detailEmailLink').href = email !== 'N/A' ? 'mailto:' + email : '#';
+    document.getElementById('detailPhoneLink').href = phone !== 'N/A' ? 'tel:' + phone : '#';
+
+    // Personal info
     document.getElementById('modalStudentAge').innerText = student.age || 'N/A';
     document.getElementById('modalStudentGender').innerText = student.gender || 'N/A';
+    document.getElementById('modalStudentAddress').innerText = student.address || 'N/A';
+
+    // Academic
     document.getElementById('modalStudentSchool').innerText = student.school || 'N/A';
+
+    // Guardian
     document.getElementById('modalStudentParentName').innerText = student.parent_name || 'N/A';
     document.getElementById('modalStudentParentContact').innerText = student.parent_contact || 'N/A';
+
+    // Medical & Experience
     document.getElementById('modalStudentMedical').innerText = student.medical || 'N/A';
     document.getElementById('modalStudentExperience').innerText = student.experience || 'N/A';
 
+    // Avatar
     if (student.image) {
         document.getElementById('modalStudentPhoto').src = student.image;
         document.getElementById('modalStudentPhoto').style.display = 'block';
@@ -232,13 +248,21 @@ function openStudentDetails(student) {
         document.getElementById('modalStudentIcon').style.display = 'flex';
     }
 
+    // Action footer
     const actionBtns = document.getElementById('modalActionBtns');
     actionBtns.innerHTML = '';
     if (student.status === 'pending') {
         actionBtns.innerHTML = `
-            <button class="btn" onclick="updateStudentStatus('${student.id}', 'active')">Approve</button>
-            <button class="btn btn-outline" onclick="updateStudentStatus('${student.id}', 'rejected')">Reject</button>
+            <button class="detail-btn detail-btn-approve" onclick="updateStudentStatus('${student.id}', 'active')">
+                <i class="fas fa-check-circle"></i> Approve
+            </button>
+            <button class="detail-btn detail-btn-reject" onclick="updateStudentStatus('${student.id}', 'rejected')">
+                <i class="fas fa-times-circle"></i> Reject
+            </button>
         `;
+        actionBtns.style.display = 'flex';
+    } else {
+        actionBtns.style.display = 'none';
     }
 
     document.getElementById('studentModal').classList.add('active');

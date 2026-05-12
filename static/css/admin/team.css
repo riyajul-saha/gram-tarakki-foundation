@@ -721,6 +721,7 @@ td small,
     justify-content: center;
     padding: 20px;
     backdrop-filter: blur(6px);
+    box-sizing: border-box;
 }
 
 .modal.active {
@@ -866,7 +867,8 @@ td small,
 .add-staff-modal {
     max-width: 640px !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
 }
 
 .add-staff-modal>.close-modal {
@@ -1739,14 +1741,21 @@ td small,
         justify-content: center;
     }
 
+    /* Modal overlay — reduce padding on mobile */
+    .modal {
+        padding: 10px;
+    }
+
     .modal-content {
         padding: 24px 20px;
         border-radius: 16px;
+        max-height: 95vh;
     }
 
     /* Add Staff Modal - Mobile */
     .add-staff-modal {
         max-width: 100% !important;
+        max-height: 95vh !important;
     }
 
     .add-staff-header {
@@ -1766,6 +1775,7 @@ td small,
 
     .add-staff-modal form {
         padding: 20px 20px 24px;
+        max-height: calc(95vh - 100px);
     }
 
     .form-section {
@@ -1781,9 +1791,15 @@ td small,
         grid-template-columns: 1fr;
     }
 
+    /* File upload cards — stack on mobile */
+    #uploadRow.form-row-2col {
+        grid-template-columns: 1fr;
+    }
+
     /* Edit Staff Modal - Mobile */
     .edit-staff-modal {
         max-width: 100% !important;
+        max-height: 95vh !important;
     }
 
     .edit-staff-header {
@@ -1796,6 +1812,7 @@ td small,
 
     .edit-staff-modal form {
         padding: 20px 20px 24px;
+        max-height: calc(95vh - 140px);
     }
 
     .edit-photo-preview,
@@ -1831,23 +1848,70 @@ td small,
         font-size: 1.35rem;
     }
 
+    /* Full-screen modals on very small screens */
+    .modal {
+        padding: 0;
+    }
+
+    .modal-content {
+        border-radius: 0;
+        max-height: 100vh;
+        height: 100%;
+    }
+
+    .add-staff-modal {
+        border-radius: 0 !important;
+        max-height: 100vh !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
     .add-staff-header {
         padding: 18px 16px;
+        flex-shrink: 0;
     }
 
     .add-staff-modal form {
         padding: 16px 16px 20px;
+        flex: 1;
+        max-height: none;
     }
 
     .form-section {
         padding: 14px 12px;
     }
 
+    .add-staff-submit-btn {
+        border-radius: 10px !important;
+        padding: 12px 20px !important;
+    }
+
+    .edit-staff-modal {
+        border-radius: 0 !important;
+        max-height: 100vh !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
     .edit-staff-header {
         padding: 18px 16px;
+        flex-shrink: 0;
     }
 
     .edit-staff-modal form {
         padding: 16px 16px 20px;
+        flex: 1;
+        max-height: none;
+    }
+
+    .edit-save-btn {
+        border-radius: 10px !important;
+    }
+
+    .close-modal {
+        top: 12px;
+        right: 12px;
     }
 }
