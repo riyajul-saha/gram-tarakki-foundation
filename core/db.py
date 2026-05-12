@@ -30,10 +30,15 @@ def init_db():
                 medical TEXT,
                 image VARCHAR(255),
                 status VARCHAR(50) DEFAULT 'pending',
+                student_id VARCHAR(20) DEFAULT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(fullname, email)
             )
         """)
+        try:
+            cursor.execute("ALTER TABLE join_student ADD COLUMN student_id VARCHAR(20) DEFAULT NULL AFTER status")
+        except mysql.connector.Error:
+            pass
         try:
             cursor.execute("ALTER TABLE join_student ADD UNIQUE(fullname, email)")
         except mysql.connector.Error:

@@ -187,7 +187,7 @@
                             </div>
                         </td>
                         {% endif %}
-                        <td>STU10{{ student.id }}</td>
+                        <td>{{ student.student_id if student.student_id else 'STU10' ~ student.id }}</td>
                         <td>
                             <div class="name-email"><span class="name">{{ student.fullname }}</span><br><span
                                     class="email">{{ student.email }}</span></div>
@@ -267,45 +267,132 @@
 </div>
 
 <div id="addStudentModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content add-student-modal">
         <span class="close-modal" onclick="closeModal('addStudentModal')">&times;</span>
-        <h2>Add New Student</h2>
-        <form onsubmit="handleAddStudent(event)">
-            <div class="form-group"><label>Name *</label><input type="text" id="addStudentName" required></div>
-            <div class="form-group"><label>Email *</label><input type="email" id="addStudentEmail" required></div>
-            <div class="form-group"><label>Phone *</label><input type="tel" id="addStudentPhone" required></div>
-            <div class="form-group"><label>Age *</label><input type="number" id="addStudentAge" required></div>
-            <div class="form-group"><label>Course</label>
-                <select id="addStudentCourse">
-                    <option>Karate</option>
-                    <option>Education</option>
-                    <option>Skill Training</option>
-                    <option>Health</option>
-                    <option>Yoga</option>
-                </select>
+
+        <!-- Modal Header -->
+        <div class="add-modal-header">
+            <div class="add-modal-header-icon">
+                <i class="fas fa-user-graduate"></i>
             </div>
-            <div class="form-group"><label>Gender</label>
-                <select id="addStudentGender">
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
+            <div>
+                <h2 class="add-modal-title">Add New Student</h2>
+                <p class="add-modal-subtitle">Fill in the details to register a new student</p>
             </div>
-            <div class="form-group"><label>School / College</label><input type="text" id="addStudentSchool"
-                    placeholder="Enter school or college name"></div>
-            <div class="form-group"><label>Address</label><textarea rows="2" id="addStudentAddress"></textarea></div>
-            <div class="form-group"><label>Medical Info</label><textarea rows="2" id="addStudentMedical"
-                    placeholder="Any medical conditions or allergies"></textarea></div>
-            <div class="form-group"><label>Upload Photo</label>
-                <div class="file-upload" onclick="document.getElementById('addStudentImage').click()"
-                    style="cursor: pointer;">
-                    <i class="fas fa-cloud-upload-alt"></i> <span id="addStudentImageText">Click to upload</span>
+        </div>
+
+        <form onsubmit="handleAddStudent(event)" id="addStudentForm">
+            <!-- Photo Upload Section -->
+            <div class="add-photo-section">
+                <div class="add-photo-preview" id="addPhotoPreview" onclick="document.getElementById('addStudentImage').click()">
+                    <img id="addPhotoPreviewImg" src="" alt="" style="display:none;">
+                    <div id="addPhotoPlaceholder" class="add-photo-placeholder">
+                        <i class="fas fa-camera"></i>
+                        <span>Upload Photo</span>
+                    </div>
                 </div>
                 <input type="file" id="addStudentImage" style="display: none;" accept="image/jpeg,image/png,image/webp"
-                    onchange="document.getElementById('addStudentImageText').innerText = this.files[0] ? this.files[0].name : 'Click to upload'">
+                    onchange="previewStudentPhoto(this)">
+                <p class="add-photo-hint"><i class="fas fa-info-circle"></i> JPG, PNG or WebP — max 100 KB</p>
             </div>
-            <button type="submit" class="btn" style="width:100%">Add Student</button>
+
+            <!-- Section: Personal Info -->
+            <div class="add-form-section">
+                <div class="add-section-heading">
+                    <i class="fas fa-id-card"></i>
+                    <h3>Personal Information</h3>
+                </div>
+                <div class="add-form-grid">
+                    <div class="form-group">
+                        <label for="addStudentName"><i class="fas fa-user"></i> Full Name <span class="required">*</span></label>
+                        <input type="text" id="addStudentName" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addStudentEmail"><i class="fas fa-envelope"></i> Email <span class="required">*</span></label>
+                        <input type="email" id="addStudentEmail" placeholder="student@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addStudentPhone"><i class="fas fa-phone"></i> Phone <span class="required">*</span></label>
+                        <input type="tel" id="addStudentPhone" placeholder="+91 XXXXX XXXXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addStudentAge"><i class="fas fa-birthday-cake"></i> Age <span class="required">*</span></label>
+                        <input type="number" id="addStudentAge" placeholder="e.g. 14" min="3" max="99" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addStudentGender"><i class="fas fa-venus-mars"></i> Gender</label>
+                        <select id="addStudentGender">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="addStudentSchool"><i class="fas fa-school"></i> School / College</label>
+                        <input type="text" id="addStudentSchool" placeholder="Enter school or college name">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Program -->
+            <div class="add-form-section">
+                <div class="add-section-heading">
+                    <i class="fas fa-book-open"></i>
+                    <h3>Program Details</h3>
+                </div>
+                <div class="add-form-grid">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="addStudentCourse"><i class="fas fa-layer-group"></i> Select Program</label>
+                        <div class="add-program-options">
+                            <label class="add-program-chip active">
+                                <input type="radio" name="program" value="Karate" checked> <i class="fas fa-fist-raised"></i> Karate
+                            </label>
+                            <label class="add-program-chip">
+                                <input type="radio" name="program" value="Education"> <i class="fas fa-graduation-cap"></i> Education
+                            </label>
+                            <label class="add-program-chip">
+                                <input type="radio" name="program" value="Skill Training"> <i class="fas fa-tools"></i> Skill Training
+                            </label>
+                            <label class="add-program-chip">
+                                <input type="radio" name="program" value="Health"> <i class="fas fa-heartbeat"></i> Health
+                            </label>
+                            <label class="add-program-chip">
+                                <input type="radio" name="program" value="Yoga"> <i class="fas fa-spa"></i> Yoga
+                            </label>
+                        </div>
+                        <!-- Hidden select for form submission compatibility -->
+                        <select id="addStudentCourse" style="display:none;">
+                            <option value="Karate" selected>Karate</option>
+                            <option value="Education">Education</option>
+                            <option value="Skill Training">Skill Training</option>
+                            <option value="Health">Health</option>
+                            <option value="Yoga">Yoga</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Additional Details -->
+            <div class="add-form-section">
+                <div class="add-section-heading">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Additional Details</h3>
+                </div>
+                <div class="form-group">
+                    <label for="addStudentAddress"><i class="fas fa-map-marker-alt"></i> Address</label>
+                    <textarea rows="2" id="addStudentAddress" placeholder="Enter full address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="addStudentMedical"><i class="fas fa-notes-medical"></i> Medical Information</label>
+                    <textarea rows="2" id="addStudentMedical" placeholder="Any medical conditions or allergies (optional)"></textarea>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="add-submit-btn">
+                <i class="fas fa-user-plus"></i> Add Student
+            </button>
         </form>
     </div>
 </div>
@@ -317,68 +404,4 @@
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/admin/student.js') }}"></script>
-<script>
-    function updateStudentStatus(id, newStatus) {
-        fetch('/admin/update-request-status', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: id,
-                status: newStatus
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showToast(newStatus === 'active' ? 'Approved' : 'Rejected', newStatus === 'active' ? 'success' : 'error');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-                } else {
-                    showToast(data.message, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('An error occurred', 'error');
-            });
-    }
-
-    function openStudentDetails(student) {
-        document.getElementById('modalStudentName').innerText = student.fullname || 'N/A';
-        document.getElementById('modalStudentEmail').innerText = student.email || 'N/A';
-        document.getElementById('modalStudentPhone').innerText = student.phone || 'N/A';
-        document.getElementById('modalStudentAddress').innerText = student.address || 'N/A';
-        document.getElementById('modalStudentCourse').innerText = student.program || 'N/A';
-        document.getElementById('modalStudentAge').innerText = student.age || 'N/A';
-        document.getElementById('modalStudentGender').innerText = student.gender || 'N/A';
-        document.getElementById('modalStudentSchool').innerText = student.school || 'N/A';
-        document.getElementById('modalStudentParentName').innerText = student.parent_name || 'N/A';
-        document.getElementById('modalStudentParentContact').innerText = student.parent_contact || 'N/A';
-        document.getElementById('modalStudentMedical').innerText = student.medical || 'N/A';
-        document.getElementById('modalStudentExperience').innerText = student.experience || 'N/A';
-
-        if (student.image) {
-            document.getElementById('modalStudentPhoto').src = student.image;
-            document.getElementById('modalStudentPhoto').style.display = 'block';
-            document.getElementById('modalStudentIcon').style.display = 'none';
-        } else {
-            document.getElementById('modalStudentPhoto').style.display = 'none';
-            document.getElementById('modalStudentIcon').style.display = 'flex';
-        }
-
-        const actionBtns = document.getElementById('modalActionBtns');
-        actionBtns.innerHTML = '';
-        if (student.status === 'pending') {
-            actionBtns.innerHTML = `
-                <button class="btn" onclick="updateStudentStatus('${student.id}', 'active')">Approve</button>
-                <button class="btn btn-outline" onclick="updateStudentStatus('${student.id}', 'rejected')">Reject</button>
-            `;
-        }
-
-        document.getElementById('studentModal').classList.add('active');
-    }
-</script>
 {% endblock %}

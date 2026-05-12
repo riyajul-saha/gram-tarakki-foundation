@@ -100,6 +100,45 @@ function handleAddStudent(e) {
     });
 }
 
+// Live Photo Preview
+function previewStudentPhoto(input) {
+    const preview = document.getElementById('addPhotoPreviewImg');
+    const placeholder = document.getElementById('addPhotoPlaceholder');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.style.display = 'none';
+        preview.src = '';
+        placeholder.style.display = 'flex';
+    }
+}
+
+// Program Chip Selection
+document.addEventListener('DOMContentLoaded', function () {
+    const chips = document.querySelectorAll('.add-program-chip');
+    const hiddenSelect = document.getElementById('addStudentCourse');
+
+    chips.forEach(chip => {
+        chip.addEventListener('click', function () {
+            chips.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            const radio = this.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+                if (hiddenSelect) {
+                    hiddenSelect.value = radio.value;
+                }
+            }
+        });
+    });
+});
+
 // Filter students by status in Students List tab
 function filterStudents(filter) {
     const rows = document.querySelectorAll('#studentsTableBody tr[data-status]');
@@ -141,3 +180,66 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+function updateStudentStatus(id, newStatus) {
+    fetch('/admin/update-request-status', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id: id,
+            status: newStatus
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showToast(newStatus === 'active' ? 'Approved' : 'Rejected', newStatus === 'active' ? 'success' : 'error');
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } else {
+                showToast(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('An error occurred', 'error');
+        });
+}
+
+function openStudentDetails(student) {
+    document.getElementById('modalStudentName').innerText = student.fullname || 'N/A';
+    document.getElementById('modalStudentEmail').innerText = student.email || 'N/A';
+    document.getElementById('modalStudentPhone').innerText = student.phone || 'N/A';
+    document.getElementById('modalStudentAddress').innerText = student.address || 'N/A';
+    document.getElementById('modalStudentCourse').innerText = student.program || 'N/A';
+    document.getElementById('modalStudentAge').innerText = student.age || 'N/A';
+    document.getElementById('modalStudentGender').innerText = student.gender || 'N/A';
+    document.getElementById('modalStudentSchool').innerText = student.school || 'N/A';
+    document.getElementById('modalStudentParentName').innerText = student.parent_name || 'N/A';
+    document.getElementById('modalStudentParentContact').innerText = student.parent_contact || 'N/A';
+    document.getElementById('modalStudentMedical').innerText = student.medical || 'N/A';
+    document.getElementById('modalStudentExperience').innerText = student.experience || 'N/A';
+
+    if (student.image) {
+        document.getElementById('modalStudentPhoto').src = student.image;
+        document.getElementById('modalStudentPhoto').style.display = 'block';
+        document.getElementById('modalStudentIcon').style.display = 'none';
+    } else {
+        document.getElementById('modalStudentPhoto').style.display = 'none';
+        document.getElementById('modalStudentIcon').style.display = 'flex';
+    }
+
+    const actionBtns = document.getElementById('modalActionBtns');
+    actionBtns.innerHTML = '';
+    if (student.status === 'pending') {
+        actionBtns.innerHTML = `
+            <button class="btn" onclick="updateStudentStatus('${student.id}', 'active')">Approve</button>
+            <button class="btn btn-outline" onclick="updateStudentStatus('${student.id}', 'rejected')">Reject</button>
+        `;
+    }
+
+    document.getElementById('studentModal').classList.add('active');
+}

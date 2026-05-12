@@ -235,21 +235,21 @@ def init_routes(app):
                 cursor = conn.cursor(dictionary=True)
                 
                 # Active Students
-                cursor.execute("SELECT id, fullname, email, phone, program, created_at, image, status, address, experience, medical, parent_name, parent_contact, school, age, gender FROM join_student WHERE status = 'active' ORDER BY created_at DESC")
+                cursor.execute("SELECT id, fullname, email, phone, program, created_at, image, status, address, experience, medical, parent_name, parent_contact, school, age, gender, student_id FROM join_student WHERE status = 'active' ORDER BY created_at DESC")
                 active_students = cursor.fetchall()
                 total_active = len(active_students)
                 for s in active_students:
                     s['date'] = s['created_at'].strftime('%d %b %Y') if s.get('created_at') else ''
                 
                 # Pending Students
-                cursor.execute("SELECT id, fullname, email, phone, program, created_at, image, status, address, experience, medical, parent_name, parent_contact, school, age, gender FROM join_student WHERE status = 'pending' ORDER BY created_at DESC")
+                cursor.execute("SELECT id, fullname, email, phone, program, created_at, image, status, address, experience, medical, parent_name, parent_contact, school, age, gender, student_id FROM join_student WHERE status = 'pending' ORDER BY created_at DESC")
                 pending_students = cursor.fetchall()
                 total_pending = len(pending_students)
                 for s in pending_students:
                     s['date'] = s['created_at'].strftime('%d %b %Y') if s.get('created_at') else ''
                 
                 # Rejected Students
-                cursor.execute("SELECT id, fullname, email, phone, program, created_at, image, status, address, experience, medical, parent_name, parent_contact, school, age, gender FROM join_student WHERE status = 'rejected' ORDER BY created_at DESC")
+                cursor.execute("SELECT id, fullname, email, phone, program, created_at, image, status, address, experience, medical, parent_name, parent_contact, school, age, gender, student_id FROM join_student WHERE status = 'rejected' ORDER BY created_at DESC")
                 rejected_students = cursor.fetchall()
                 total_rejected = len(rejected_students)
                 for s in rejected_students:
@@ -324,13 +324,41 @@ def init_routes(app):
 
         try:
             from core.db import get_db_connection
+            import datetime
             conn = get_db_connection()
             if conn:
-                cursor = conn.cursor()
+                cursor = conn.cursor(dictionary=True)
+                
+                # Generate Student ID
+                prog_map = {
+                    "Karate": "KR",
+                    "Education": "ED",
+                    "Skill Training": "ST",
+                    "Health": "HL",
+                    "Yoga": "YG"
+                }
+                prog_code = prog_map.get(program, program[:2].upper() if len(program) >= 2 else "PR")
+                now = datetime.datetime.now()
+                year_str = str(now.year)[-2:]
+                
+                prefix_search = f"GTF__{year_str}%"
+                cursor.execute("SELECT student_id FROM join_student WHERE student_id LIKE %s", (prefix_search,))
+                existing_rolls = cursor.fetchall()
+                max_seq = 0
+                for row in existing_rolls:
+                    rn = row['student_id']
+                    if rn and len(rn) >= 3 and rn[-3:].isdigit():
+                        seq = int(rn[-3:])
+                        if seq > max_seq:
+                            max_seq = seq
+                
+                count = max_seq + 1
+                student_id = f"GTF{prog_code}{year_str}{count:03d}"
+                
                 cursor.execute("""
-                    INSERT INTO join_student (fullname, email, phone, age, program, gender, school, address, medical, status, image)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', %s)
-                """, (fullname, email, phone, age, program, gender or None, school or None, address, medical or None, image_path if image_path else None))
+                    INSERT INTO join_student (fullname, email, phone, age, program, gender, school, address, medical, status, image, student_id)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', %s, %s)
+                """, (fullname, email, phone, age, program, gender or None, school or None, address, medical or None, image_path if image_path else None, student_id))
                 conn.commit()
                 cursor.close()
                 conn.close()
@@ -364,10 +392,48 @@ def init_routes(app):
             
         try:
             from core.db import get_db_connection
+            import datetime
             conn = get_db_connection()
             if conn:
-                cursor = conn.cursor()
-                cursor.execute("UPDATE join_student SET status = %s WHERE id = %s", (new_status, request_id))
+                cursor = conn.cursor(dictionary=True)
+                
+                # Fetch current info
+                cursor.execute("SELECT status, program, student_id FROM join_student WHERE id = %s", (request_id,))
+                student = cursor.fetchone()
+                if not student:
+                    return jsonify({"status": "error", "message": "Student not found"}), 404
+
+                if new_status == 'active' and not student.get('student_id'):
+                    program = student.get('program', 'PR')
+                    prog_map = {
+                        "Karate": "KR",
+                        "Education": "ED",
+                        "Skill Training": "ST",
+                        "Health": "HL",
+                        "Yoga": "YG"
+                    }
+                    prog_code = prog_map.get(program, program[:2].upper() if len(program) >= 2 else "PR")
+                    now = datetime.datetime.now()
+                    year_str = str(now.year)[-2:]
+                    
+                    prefix_search = f"GTF__{year_str}%"
+                    cursor.execute("SELECT student_id FROM join_student WHERE student_id LIKE %s", (prefix_search,))
+                    existing_rolls = cursor.fetchall()
+                    max_seq = 0
+                    for row in existing_rolls:
+                        rn = row['student_id']
+                        if rn and len(rn) >= 3 and rn[-3:].isdigit():
+                            seq = int(rn[-3:])
+                            if seq > max_seq:
+                                max_seq = seq
+                    
+                    count = max_seq + 1
+                    student_id = f"GTF{prog_code}{year_str}{count:03d}"
+                    
+                    cursor.execute("UPDATE join_student SET status = %s, student_id = %s WHERE id = %s", (new_status, student_id, request_id))
+                else:
+                    cursor.execute("UPDATE join_student SET status = %s WHERE id = %s", (new_status, request_id))
+                
                 conn.commit()
                 cursor.close()
                 conn.close()
