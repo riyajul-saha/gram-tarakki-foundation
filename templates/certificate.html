@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Certificate Verification — Gram Tarakki Foundation{% endblock %}
+
+{% block meta %}
+<meta name="description"
+    content="Verify official certificates issued by Gram Tarakki Foundation to students, interns, and volunteers.">
+<meta name="keywords"
+    content="certificate verification, Gram Tarakki Foundation, verify certificate, intern certificate, volunteer certificate, student certificate">
+{% endblock %}
+
+{% block og %}
+<meta property="og:title" content="Certificate Verification — Gram Tarakki Foundation">
+<meta property="og:description"
+    content="Verify official certificates issued by Gram Tarakki Foundation to students, interns, and volunteers.">
+<meta property="og:image" content="https://gtfoundations.in/static/images/home/logo.webp">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Certificate Verification — Gram Tarakki Foundation">
+<meta name="twitter:description" content="Verify official certificates issued by Gram Tarakki Foundation.">
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/certificate.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="cert-hero">
+    <div class="container">
+        <span class="hero-icon"><i class="fas fa-shield-alt"></i></span>
+        <h1>Certificate Verification Portal</h1>
+        <p>Verify official certificates issued by Gram Tarakki Foundation to students, interns, and volunteers</p>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="cert-search-section">
+    <div class="container">
+        <div class="search-card">
+            <h2 class="search-card-title"><i class="fas fa-search"></i> Verify a Certificate</h2>
+            <p class="search-card-sub">Enter the unique Certificate ID printed on your certificate to verify its
+                authenticity.</p>
+            <div class="search-form">
+                <div class="search-input-wrap">
+                    <i class="fas fa-hashtag icon-search"></i>
+                    <input type="text" id="certInput" placeholder="Enter Certificate ID (e.g. GTFIN26001)"
+                        autocomplete="off" spellcheck="false">
+                </div>
+                <button class="verify-btn" id="verifyBtn">
+                    <span class="btn-text"><i class="fas fa-check-circle"></i> Verify</span>
+                    <span class="spinner"><span class="spinner-circle"></span></span>
+                </button>
+            </div>
+        </div>
+        <div class="sample-ids">
+            Try sample IDs:
+            <code onclick="fillSample('GTFIN26001')">GTFIN26001</code>
+            <code onclick="fillSample('GTFVOL26001')">GTFVOL26001</code>
+            <code onclick="fillSample('GTFSTD26001')">GTFSTD26001</code>
+        </div>
+    </div>
+</section>
+
+<!-- Result Section -->
+<section class="cert-result-section">
+    <div class="container">
+        <div class="result-area" id="resultArea"></div>
+    </div>
+</section>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/certificate.js') }}"></script>
+{% endblock %}

@@ -82,5 +82,5 @@ def send_otp_email(app, admin_email, admin_name, otp_code, expiry_minutes=5):
                                     otp_code=otp_code,
                                     expiry_minutes=expiry_minutes)
         
-        subject = "🔐 Admin Login Verification Code – Gram Tarakki Foundation"
+        subject = "Admin Login Verification Code – Gram Tarakki Foundation"
         send_email_async(admin_email, html_body, subject=subject)

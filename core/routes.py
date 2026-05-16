@@ -47,6 +47,11 @@ def init_routes(app):
         """Render the volunteer information page."""
         return render_template('volunteer.html')
 
+    @app.route("/certificate")
+    def certificate():
+        """Render the certificate verification portal page."""
+        return render_template('certificate.html')
+
     @app.route("/partners")
     def partners():
         """Render the partners information page."""

@@ -1,0 +1,378 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Intern Management | Gram Tarakki Foundation{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/intern.css') }}">
+{% endblock %}
+
+{% block blog_active %}active{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-header-content">
+        <div class="header-left">
+            <div class="header-icon"><i class="fas fa-user-graduate"></i></div>
+            <div class="header-title">
+                <h1>Intern Management</h1>
+                <p>Manage all present and previous interns</p>
+            </div>
+        </div>
+        <div class="header-buttons">
+            <button class="btn" onclick="openModal('addInternModal')"><i class="fas fa-plus"></i> Add Intern</button>
+            <button class="btn btn-outline" onclick="openModal('emailModal')"><i class="fas fa-envelope"></i> Send
+                Email</button>
+            <button class="btn btn-outline" onclick="openModal('certModal')"><i class="fas fa-certificate"></i> Approve
+                Certificates</button>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-left">
+            <h3 id="countTotal">0</h3>
+            <p>Total Interns</p>
+        </div>
+        <div class="stat-right"><i class="fas fa-users"></i></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-left">
+            <h3 id="countActive">0</h3>
+            <p>Active Interns</p>
+        </div>
+        <div class="stat-right"><i class="fas fa-user-check"></i></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-left">
+            <h3 id="countResigned">0</h3>
+            <p>Resigned</p>
+        </div>
+        <div class="stat-right"><i class="fas fa-user-minus"></i></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-left">
+            <h3 id="countCertified">0</h3>
+            <p>Certified</p>
+        </div>
+        <div class="stat-right"><i class="fas fa-award"></i></div>
+    </div>
+</div>
+
+<!-- Tabs & Content -->
+<div class="tabs-container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('all')">All Interns <span class="badge"
+                id="badgeAll">0</span></button>
+        <button class="tab-btn" onclick="switchTab('active')">Active <span class="badge"
+                id="badgeActive">0</span></button>
+        <button class="tab-btn" onclick="switchTab('resigned')">Resigned <span class="badge"
+                id="badgeResigned">0</span></button>
+        <button class="tab-btn" onclick="switchTab('certified')">Certified <span class="badge"
+                id="badgeCertified">0</span></button>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-left">
+            <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by name, ID or field..."
+                    oninput="applyFilters()">
+            </div>
+            <select class="filter-select" id="fieldFilter" onchange="applyFilters()">
+                <option value="">All Fields</option>
+                <option value="Web Development">Web Development</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="Content Writing">Content Writing</option>
+                <option value="Social Media">Social Media Marketing</option>
+                <option value="Data Entry">Data Entry</option>
+                <option value="Video Editing">Video Editing</option>
+                <option value="App Development">App Development</option>
+            </select>
+            <select class="filter-select" id="statusFilter" onchange="applyFilters()">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="resigned">Resigned</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
+        <div class="filter-right">
+            <button class="btn btn-sm btn-outline" onclick="resetFilters()"><i class="fas fa-redo"></i> Reset</button>
+            <button class="btn btn-sm" onclick="exportCSV()"><i class="fas fa-download"></i> Export</button>
+        </div>
+    </div>
+
+    <!-- Bulk Actions Bar -->
+    <div class="bulk-bar" id="bulkBar" style="display:none;">
+        <div class="bulk-info">
+            <i class="fas fa-check-circle"></i>
+            <span id="bulkCount">0</span> intern(s) selected
+        </div>
+        <div class="bulk-actions">
+            <button class="btn btn-sm" onclick="bulkEmail()"><i class="fas fa-envelope"></i> Email Selected</button>
+            <button class="btn btn-sm btn-success" onclick="bulkApproveCert()"><i class="fas fa-certificate"></i>
+                Approve Certs</button>
+            <button class="btn btn-sm btn-secondary" onclick="clearSelection()"><i class="fas fa-times"></i>
+                Clear</button>
+        </div>
+    </div>
+
+    <!-- Table View -->
+    <div class="table-wrapper" id="tableView">
+        <table id="internTable">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+                    <th>Photo</th>
+                    <th>Name / ID</th>
+                    <th>Field</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Certificate</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Cards View (Mobile) -->
+    <div class="cards-view" id="cardsView"></div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+</div>
+
+<!-- Add Intern Modal -->
+<div id="addInternModal" class="modal">
+    <div class="modal-content add-intern-modal">
+        <span class="close-modal" onclick="closeModal('addInternModal')">&times;</span>
+        <div class="modal-header-icon">
+            <div class="modal-icon-circle"><i class="fas fa-user-plus"></i></div>
+            <div>
+                <h2>Add New Intern</h2>
+                <p class="modal-subtitle">Fill in the details to register a new intern</p>
+            </div>
+        </div>
+        <form onsubmit="handleAddIntern(event)" id="addInternForm">
+            <div class="form-section">
+                <div class="form-section-title"><i class="fas fa-id-card"></i> Personal Information</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name <span class="required-star">*</span></label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="internName" placeholder="Enter full name" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row form-row-2col">
+                    <div class="form-group">
+                        <label>Email <span class="required-star">*</span></label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="internEmail" placeholder="email@example.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone <span class="required-star">*</span></label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="internPhone" placeholder="+91 XXXXX XXXXX" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-section">
+                <div class="form-section-title"><i class="fas fa-briefcase"></i> Internship Details</div>
+                <div class="form-row form-row-2col">
+                    <div class="form-group">
+                        <label>Field of Internship <span class="required-star">*</span></label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-laptop-code"></i>
+                            <select id="internField" required>
+                                <option value="">Select Field</option>
+                                <option value="Web Development">Web Development</option>
+                                <option value="Graphic Design">Graphic Design</option>
+                                <option value="Content Writing">Content Writing</option>
+                                <option value="Social Media Marketing">Social Media Marketing</option>
+                                <option value="Data Entry">Data Entry</option>
+                                <option value="Video Editing">Video Editing</option>
+                                <option value="App Development">App Development</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Duration</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-clock"></i>
+                            <select id="internDuration">
+                                <option value="1 Month">1 Month</option>
+                                <option value="2 Months">2 Months</option>
+                                <option value="3 Months" selected>3 Months</option>
+                                <option value="6 Months">6 Months</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row form-row-2col">
+                    <div class="form-group">
+                        <label>Start Date <span class="required-star">*</span></label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-calendar-alt"></i>
+                            <input type="date" id="internStartDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-calendar-check"></i>
+                            <input type="date" id="internEndDate">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-section">
+                <div class="form-section-title"><i class="fas fa-map-marker-alt"></i> Additional Info</div>
+                <div class="form-group">
+                    <label>College / University</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-university"></i>
+                        <input type="text" id="internCollege" placeholder="Enter college name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <div class="input-icon-wrapper textarea-wrapper">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <textarea id="internAddress" rows="2" placeholder="Enter address"></textarea>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn add-intern-submit-btn"><i class="fas fa-plus-circle"></i> Add
+                Intern</button>
+        </form>
+    </div>
+</div>
+
+<!-- View Intern Detail Modal -->
+<div id="viewInternModal" class="modal">
+    <div class="modal-content view-intern-modal">
+        <span class="close-modal" onclick="closeModal('viewInternModal')">&times;</span>
+        <div id="viewInternContent"></div>
+    </div>
+</div>
+
+<!-- Email Modal -->
+<div id="emailModal" class="modal">
+    <div class="modal-content email-modal">
+        <span class="close-modal" onclick="closeModal('emailModal')">&times;</span>
+        <div class="modal-header-icon">
+            <div class="modal-icon-circle email-icon"><i class="fas fa-paper-plane"></i></div>
+            <div>
+                <h2>Send Email to Interns</h2>
+                <p class="modal-subtitle">Compose and send email to selected interns</p>
+            </div>
+        </div>
+        <form onsubmit="handleSendEmail(event)" id="emailForm">
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Recipients</label>
+                    <div class="email-recipients-selector">
+                        <button type="button" class="recipient-btn active" onclick="setRecipient('all', this)">All
+                            Interns</button>
+                        <button type="button" class="recipient-btn" onclick="setRecipient('active', this)">Active
+                            Only</button>
+                        <button type="button" class="recipient-btn" onclick="setRecipient('selected', this)">Selected
+                            Only</button>
+                    </div>
+                    <div class="recipient-count" id="recipientCount"><i class="fas fa-users"></i> <span>0</span>
+                        recipients</div>
+                </div>
+                <div class="form-group">
+                    <label>Subject <span class="required-star">*</span></label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-heading"></i>
+                        <input type="text" id="emailSubject" placeholder="Email subject line" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Message <span class="required-star">*</span></label>
+                    <textarea id="emailBody" rows="6" class="email-textarea" placeholder="Write your message here..."
+                        required></textarea>
+                </div>
+            </div>
+            <div class="email-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('emailModal')"><i
+                        class="fas fa-times"></i> Cancel</button>
+                <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Send Email</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Certificate Approval Modal -->
+<div id="certModal" class="modal">
+    <div class="modal-content cert-modal">
+        <span class="close-modal" onclick="closeModal('certModal')">&times;</span>
+        <div class="modal-header-icon">
+            <div class="modal-icon-circle cert-icon"><i class="fas fa-award"></i></div>
+            <div>
+                <h2>Approve Internship Certificates</h2>
+                <p class="modal-subtitle">Select interns to approve their certificates</p>
+            </div>
+        </div>
+        <div class="cert-controls">
+            <div class="search-input cert-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="certSearchInput" placeholder="Search interns..." oninput="filterCertList()">
+            </div>
+            <button type="button" class="btn btn-sm" onclick="selectAllCert()"><i class="fas fa-check-double"></i>
+                Select All</button>
+        </div>
+        <div class="cert-list" id="certList"></div>
+        <div class="cert-footer">
+            <div class="cert-selected-count"><i class="fas fa-check-circle"></i> <span id="certSelectedCount">0</span>
+                selected for approval</div>
+            <div class="cert-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('certModal')">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="approveCertificates()"><i
+                        class="fas fa-certificate"></i> Approve Certificates</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" style="display: none;">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMessage">Action completed</span>
+</div>
+
+<!-- Confirm Modal -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content" style="max-width: 420px;">
+        <div style="text-align: center; padding: 8px 0;">
+            <div
+                style="width:56px;height:56px;margin:0 auto 16px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-exclamation-triangle" style="font-size:1.4rem;color:#f59e0b;"></i>
+            </div>
+            <h3 id="confirmTitle" style="margin-bottom:8px;">Confirm Action</h3>
+            <p id="confirmMessage" style="color:#64748b;">Are you sure?</p>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 24px;">
+                <button class="btn" id="confirmYes" style="min-width:100px;">Yes, Confirm</button>
+                <button class="btn btn-secondary" onclick="closeModal('confirmModal')"
+                    style="min-width:100px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin/intern.js') }}"></script>
+{% endblock %}

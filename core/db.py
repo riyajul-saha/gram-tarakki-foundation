@@ -199,6 +199,33 @@ def init_db():
                 notes TEXT,
                 job_type VARCHAR(50),
                 status VARCHAR(50) DEFAULT 'active',
+                staff_id VARCHAR(20) DEFAULT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        try:
+            cursor.execute("ALTER TABLE our_staff ADD COLUMN staff_id VARCHAR(20) DEFAULT NULL AFTER status")
+        except mysql.connector.Error:
+            pass
+            
+        # Create our_intern table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS our_intern (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                fullname VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                phone VARCHAR(50),
+                address TEXT,
+                field VARCHAR(100),
+                duration VARCHAR(50),
+                start_date DATE,
+                end_date DATE,
+                status VARCHAR(50) DEFAULT 'active',
+                cert_approved BOOLEAN DEFAULT FALSE,
+                intern_id VARCHAR(50),
+                photo VARCHAR(255),
+                resume VARCHAR(255),
+                college VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)

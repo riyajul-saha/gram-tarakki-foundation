@@ -6,6 +6,35 @@ from datetime import datetime, timedelta
 # ==============================================================================
 # Initialization
 # ==============================================================================
+def generate_staff_id(cursor, job_type):
+    import datetime
+    now = datetime.datetime.now()
+    year_str = str(now.year)[-2:]
+    job_type_lower = job_type.lower()
+    prefix = 'GTFSTFF'
+    if job_type_lower == 'volunteer':
+        prefix = 'GTFVOL'
+    elif job_type_lower == 'internship':
+        prefix = 'GTFIN'
+    
+    if job_type_lower == 'internship':
+        try:
+            cursor.execute("SELECT intern_id as staff_id FROM our_intern WHERE intern_id IS NOT NULL")
+            existing_ids = cursor.fetchall()
+        except:
+            existing_ids = []
+    else:
+        cursor.execute("SELECT staff_id FROM our_staff WHERE staff_id IS NOT NULL")
+        existing_ids = cursor.fetchall()
+    max_seq = 0
+    for row in existing_ids:
+        sid = row.get('staff_id') if isinstance(row, dict) else row[0]
+        if sid and len(sid) >= 5 and sid[-5:-3] == year_str and sid[-3:].isdigit():
+            seq = int(sid[-3:])
+            if seq > max_seq:
+                max_seq = seq
+    return f"{prefix}{year_str}{max_seq + 1:03d}"
+
 def init_routes(app):
     """
     Initializes all admin-facing routes.
@@ -609,10 +638,17 @@ def init_routes(app):
                                                         job_type = 'staff'
                                                     break
                                         except: pass
-                                cursor.execute("""
-                                    INSERT INTO our_staff (fullname, email, phone, location, linkedin, cover_letter, position, experience, resume, photo, skills, notes, job_type, status)
-                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'active')
-                                """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('location'), member.get('linkedin'), member.get('cover_letter'), member.get('position'), member.get('experience'), member.get('resume'), member.get('photo'), member.get('skills'), member.get('notes'), job_type))
+                                staff_id = generate_staff_id(cursor, job_type)
+                                if job_type == 'internship':
+                                    cursor.execute("""
+                                        INSERT INTO our_intern (fullname, email, phone, address, field, photo, resume, intern_id, status)
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'active')
+                                    """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('location'), job_title, member.get('photo'), member.get('resume'), staff_id))
+                                else:
+                                    cursor.execute("""
+                                        INSERT INTO our_staff (fullname, email, phone, location, linkedin, cover_letter, position, experience, resume, photo, skills, notes, job_type, status, staff_id)
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', %s)
+                                    """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('location'), member.get('linkedin'), member.get('cover_letter'), member.get('position'), member.get('experience'), member.get('resume'), member.get('photo'), member.get('skills'), member.get('notes'), job_type, staff_id))
                         
                         conn.commit()
                         return jsonify({"status": "success"})
@@ -785,10 +821,11 @@ def init_routes(app):
                         service_type = data.get('serviceType')
                         availability = data.get('availability')
                         try:
+                            staff_id = generate_staff_id(cursor, 'volunteer')
                             cursor.execute("""
-                                INSERT INTO our_staff (fullname, email, phone, location, role, availability, job_type, status, photo, resume)
-                                VALUES (%s, %s, %s, %s, %s, %s, 'volunteer', 'active', %s, %s)
-                            """, (name, email, phone, address, service_type, availability, photo_path, resume_path))
+                                INSERT INTO our_staff (fullname, email, phone, location, role, availability, job_type, status, photo, resume, staff_id)
+                                VALUES (%s, %s, %s, %s, %s, %s, 'volunteer', 'active', %s, %s, %s)
+                            """, (name, email, phone, address, service_type, availability, photo_path, resume_path, staff_id))
                             conn.commit()
                             return jsonify({"status": "success"})
                         except Exception as e:
@@ -798,10 +835,11 @@ def init_routes(app):
                     elif staff_type == 'Other Staff':
                         role_of_staff = data.get('roleOfStaff')
                         try:
+                            staff_id = generate_staff_id(cursor, 'staff')
                             cursor.execute("""
-                                INSERT INTO our_staff (fullname, email, phone, location, role, job_type, status, photo, resume)
-                                VALUES (%s, %s, %s, %s, %s, 'staff', 'active', %s, %s)
-                            """, (name, email, phone, address, role_of_staff, photo_path, resume_path))
+                                INSERT INTO our_staff (fullname, email, phone, location, role, job_type, status, photo, resume, staff_id)
+                                VALUES (%s, %s, %s, %s, %s, 'staff', 'active', %s, %s, %s)
+                            """, (name, email, phone, address, role_of_staff, photo_path, resume_path, staff_id))
                             conn.commit()
                             return jsonify({"status": "success"})
                         except Exception as e:
@@ -925,13 +963,11 @@ def init_routes(app):
                         if member:
                             if source == 'volunteer':
                                 job_type = 'volunteer'
-                                role_lower = str(member.get('role', '')).lower()
-                                if 'intern' in role_lower:
-                                    job_type = 'internship'
+                                staff_id = generate_staff_id(cursor, job_type)
                                 cursor.execute("""
-                                    INSERT INTO our_staff (fullname, email, phone, city, age, role, skills, availability, resume, photo, job_type, status)
-                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'active')
-                                """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('city'), member.get('age'), member.get('role'), member.get('skills'), member.get('availability'), member.get('resume_path'), member.get('profile_photo'), job_type))
+                                    INSERT INTO our_staff (fullname, email, phone, city, age, role, skills, availability, resume, photo, job_type, status, staff_id)
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', %s)
+                                """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('city'), member.get('age'), member.get('role'), member.get('skills'), member.get('availability'), member.get('resume_path'), member.get('profile_photo'), job_type, staff_id))
                             elif source == 'staff':
                                 job_type = 'staff'
                                 pos = str(member.get('position', ''))
@@ -956,10 +992,17 @@ def init_routes(app):
                                                         job_type = 'staff'
                                                     break
                                         except: pass
-                                cursor.execute("""
-                                    INSERT INTO our_staff (fullname, email, phone, location, linkedin, cover_letter, position, experience, resume, photo, skills, notes, job_type, status)
-                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'active')
-                                """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('location'), member.get('linkedin'), member.get('cover_letter'), member.get('position'), member.get('experience'), member.get('resume'), member.get('photo'), member.get('skills'), member.get('notes'), job_type))
+                                staff_id = generate_staff_id(cursor, job_type)
+                                if job_type == 'internship':
+                                    cursor.execute("""
+                                        INSERT INTO our_intern (fullname, email, phone, address, field, photo, resume, intern_id, status)
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'active')
+                                    """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('location'), job_title, member.get('photo'), member.get('resume'), staff_id))
+                                else:
+                                    cursor.execute("""
+                                        INSERT INTO our_staff (fullname, email, phone, location, linkedin, cover_letter, position, experience, resume, photo, skills, notes, job_type, status, staff_id)
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', %s)
+                                    """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('location'), member.get('linkedin'), member.get('cover_letter'), member.get('position'), member.get('experience'), member.get('resume'), member.get('photo'), member.get('skills'), member.get('notes'), job_type, staff_id))
 
                 conn.commit()
                 cursor.close()
@@ -1001,7 +1044,7 @@ def init_routes(app):
 
             # Fetch from our_staff
             try:
-                cursor.execute("SELECT id, fullname as name, email, phone, COALESCE(location, city) as address, COALESCE(role, position) as role, photo, status, created_at as appliedDate, resume, job_type FROM our_staff")
+                cursor.execute("SELECT id, fullname as name, email, phone, COALESCE(location, city) as address, COALESCE(role, position) as role, photo, status, created_at as appliedDate, resume, job_type, staff_id FROM our_staff")
                 our_staff = cursor.fetchall()
                 
                 for o in our_staff:
@@ -1041,4 +1084,134 @@ def init_routes(app):
             return jsonify({"status": "success", "team": team})
         except Exception as e:
             print(f"Error in team API: {e}")
+            return jsonify({"status": "error", "message": "An internal error occurred"}), 500
+
+    # ==========================================================================
+    # INTERN MANAGEMENT ROUTES
+    # Handles viewing and managing interns
+    # ==========================================================================
+
+    @app.route("/admin/our-interns")
+    def our_interns():
+        """Render the intern management page."""
+        if not session.get('admin_logged_in'):
+            return redirect(url_for('login'))
+        return render_template('admin/intern.html')
+
+    @app.route("/admin/api/interns", methods=["GET", "POST"])
+    def api_interns():
+        """
+        API for Intern Management.
+        GET: Retrieves a list of all interns from our_intern table.
+        POST: Updates intern data (add, edit, status, etc).
+        """
+        if not session.get('admin_logged_in'):
+            return jsonify({"status": "error", "message": "Unauthorized"}), 401
+            
+        try:
+            from core.db import get_db_connection
+            conn = get_db_connection()
+            if not conn:
+                return jsonify({"status": "error", "message": "Database error"}), 500
+
+            cursor = conn.cursor(dictionary=True)
+
+            if request.method == "POST":
+                data = request.form if request.form else request.json
+                action = data.get('action') if data else None
+
+                if action == 'add_intern':
+                    name = data.get('name')
+                    email = data.get('email')
+                    phone = data.get('phone')
+                    address = data.get('address')
+                    field = data.get('field')
+                    duration = data.get('duration')
+                    
+                    import os, uuid
+                    from werkzeug.utils import secure_filename
+                    
+                    photo_path = ""
+                    if 'photo' in request.files:
+                        file = request.files['photo']
+                        if file and file.filename != '':
+                            filename = secure_filename(file.filename)
+                            ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                            if ext in {'jpg', 'jpeg', 'png', 'webp'}:
+                                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                                upload_dir = os.path.join(os.getcwd(), 'upload', 'student_image')
+                                os.makedirs(upload_dir, exist_ok=True)
+                                file.save(os.path.join(upload_dir, unique_filename))
+                                photo_path = f"/upload/student_image/{unique_filename}"
+                                
+                    intern_id = generate_staff_id(cursor, 'internship')
+                    
+                    cursor.execute("""
+                        INSERT INTO our_intern (fullname, email, phone, address, field, duration, photo, intern_id, status)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'active')
+                    """, (name, email, phone, address, field, duration, photo_path, intern_id))
+                    conn.commit()
+                    return jsonify({"status": "success"})
+                    
+                elif action == 'edit_intern':
+                    edit_id = data.get('id')
+                    name = data.get('name')
+                    email = data.get('email')
+                    phone = data.get('phone')
+                    address = data.get('address')
+                    field = data.get('field')
+                    duration = data.get('duration')
+                    status = data.get('status')
+                    
+                    cursor.execute("UPDATE our_intern SET fullname=%s, email=%s, phone=%s, address=%s, field=%s, duration=%s, status=%s WHERE id=%s", (name, email, phone, address, field, duration, status, edit_id))
+                    conn.commit()
+                    return jsonify({"status": "success"})
+
+                elif action == 'remove':
+                    member_id = data.get('id')
+                    if member_id:
+                        cursor.execute("DELETE FROM our_intern WHERE id = %s", (member_id,))
+                        conn.commit()
+                    return jsonify({"status": "success"})
+                    
+                elif action == 'update_status':
+                    member_id = data.get('id')
+                    status = data.get('status')
+                    if member_id and status:
+                        cursor.execute("UPDATE our_intern SET status = %s WHERE id = %s", (status, member_id))
+                        conn.commit()
+                    return jsonify({"status": "success"})
+                    
+                elif action == 'approve_cert':
+                    member_ids = data.get('ids', [])
+                    if member_ids:
+                        format_strings = ','.join(['%s'] * len(member_ids))
+                        cursor.execute(f"UPDATE our_intern SET cert_approved = TRUE WHERE id IN ({format_strings})", tuple(member_ids))
+                        conn.commit()
+                    return jsonify({"status": "success"})
+                    
+                return jsonify({"status": "error", "message": "Unknown action"}), 400
+                
+            # GET request
+            try:
+                cursor.execute("SELECT * FROM our_intern ORDER BY created_at DESC")
+                interns = cursor.fetchall()
+                for i in interns:
+                    if i.get('created_at'):
+                        i['created_at'] = i['created_at'].strftime('%Y-%m-%d')
+                    if i.get('start_date'):
+                        i['start_date'] = i['start_date'].strftime('%Y-%m-%d')
+                    if i.get('end_date'):
+                        i['end_date'] = i['end_date'].strftime('%Y-%m-%d')
+                
+                cursor.close()
+                conn.close()
+                return jsonify({"status": "success", "interns": interns})
+            except mysql.connector.Error as err:
+                if err.errno == 1146: # Table doesn't exist
+                    return jsonify({"status": "success", "interns": []})
+                raise
+
+        except Exception as e:
+            print(f"Error in interns API: {e}")
             return jsonify({"status": "error", "message": "An internal error occurred"}), 500

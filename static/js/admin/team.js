@@ -91,11 +91,18 @@ function renderTable() {
             displayRole += ' <small>(staff)</small>';
         }
 
+        let staffIdDisplay = '';
+        if (item.source === 'our_staff' && item.staff_id) {
+            staffIdDisplay = `<br><small style="color:#64748b; font-weight:600;">ID: ${item.staff_id}</small>`;
+        } else if (item.source === 'admin') {
+            staffIdDisplay = `<br><small style="color:#64748b; font-weight:600;">ID: Admin</small>`;
+        }
+
         // Table row
         tableHtml += `
             <tr>
                 <td><img src="${item.photo}" class="team-photo"></td>
-                <td><div class="name-role"><span class="name">${item.name}</span><br><span class="email">${item.email}</span></div></td>
+                <td><div class="name-role"><span class="name">${item.name}</span>${staffIdDisplay}<br><span class="email">${item.email}</span></div></td>
                 <td>${displayRole}</td>
                 <td>${item.phone || 'N/A'}</td>
                 <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
@@ -128,11 +135,19 @@ function renderTable() {
         }
 
         // Card for mobile
+        let cardIdDisplay = '';
+        if (item.source === 'our_staff' && item.staff_id) {
+            cardIdDisplay = `<p style="font-size:0.8rem;color:#64748b;font-weight:600;margin:2px 0;">ID: ${item.staff_id}</p>`;
+        } else if (item.source === 'admin') {
+            cardIdDisplay = `<p style="font-size:0.8rem;color:#64748b;font-weight:600;margin:2px 0;">ID: Admin</p>`;
+        }
+        
         cardsHtml += `
             <div class="team-card">
                 <div class="card-photo"><img src="${item.photo}"></div>
                 <div class="card-info">
                     <h4>${item.name}</h4>
+                    ${cardIdDisplay}
                     <p>${displayRole}</p>
                     <span class="status-badge ${statusClass}">${statusDisplay}</span>
                 </div>
@@ -218,11 +233,19 @@ function viewDetails(source, id) {
     const statusDisplay = item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : 'Unknown';
     const statusClass = itemStatus === 'pending' ? 'status-pending' : ((itemStatus === 'active' || itemStatus === 'approved' || itemStatus === 'selected') ? 'status-active' : 'status-inactive');
 
+    let modalIdDisplay = '';
+    if (item.source === 'our_staff' && item.staff_id) {
+        modalIdDisplay = `<p style="margin:0 0 8px;font-size:0.85rem;color:#64748b;font-weight:600;">ID: ${item.staff_id}</p>`;
+    } else if (item.source === 'admin') {
+        modalIdDisplay = `<p style="margin:0 0 8px;font-size:0.85rem;color:#64748b;font-weight:600;">ID: Admin</p>`;
+    }
+    
     const content = `
         <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 24px;">
             <img src="${item.photo}" style="width: 72px; height: 72px; border-radius: 16px; object-fit: cover; border: 3px solid #f1f5f9;">
             <div>
                 <h2 style="margin:0 0 4px;">${item.name}</h2>
+                ${modalIdDisplay}
                 <span class="status-badge ${statusClass}">${statusDisplay}</span>
             </div>
         </div>
