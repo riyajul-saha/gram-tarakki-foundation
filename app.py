@@ -53,6 +53,15 @@ def serve_upload(filename):
         abort(403)
     return send_from_directory(UPLOAD_BASE, filename)
 
+CERT_BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'certificate')
+
+@app.route('/certificate/<path:filename>')
+def serve_certificate(filename):
+    safe_path = Path(CERT_BASE) / filename
+    if not safe_path.resolve().is_relative_to(Path(CERT_BASE).resolve()):
+        abort(403)
+    return send_from_directory(CERT_BASE, filename)
+
 # Extra static file routes (e.g., sitemap.xml, robots.txt, Bing auth) 
 # have been moved to a separate file: core/static_routes.py
 from core.static_routes import init_static_routes

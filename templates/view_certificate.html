@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Verify {{ cert.certType }} - {{ cert.name }} | Gram Tarakki Foundation{% endblock %}
+
+{% block meta %}
+<meta name="description"
+    content="Official {{ cert.certType }} issued to {{ cert.name }} by Gram Tarakki Foundation. Verify the authenticity of this certificate (ID: {{ cert_id }}).">
+{% endblock %}
+
+{% block og %}
+<!-- Open Graph tags for LinkedIn, Twitter, Facebook, etc. -->
+<meta property="og:title" content="{{ cert.name }} - {{ cert.certType }} | Gram Tarakki Foundation">
+<meta property="og:description"
+    content="View and verify the official {{ cert.certType }} issued to {{ cert.name }} by Gram Tarakki Foundation. (Certificate ID: {{ cert_id }})">
+<!-- Use the absolute URL to the image for social media crawlers -->
+<meta property="og:image" content="{{ request.host_url.rstrip('/') }}{{ cert.file_path }}">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ cert.name }} - {{ cert.certType }} | Gram Tarakki Foundation">
+<meta name="twitter:description"
+    content="View and verify the official {{ cert.certType }} issued to {{ cert.name }} by Gram Tarakki Foundation.">
+<meta name="twitter:image" content="{{ request.host_url.rstrip('/') }}{{ cert.file_path }}">
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/view_certificate.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="view-cert-hero">
+    <!-- Decorative floating shapes -->
+    <div class="hero-shape hero-shape-1"></div>
+    <div class="hero-shape hero-shape-2"></div>
+
+    <div class="container">
+        <div class="hero-badge">
+            <i class="fas fa-shield-alt"></i>
+            Verified & Authenticated
+        </div>
+        <h1>Certificate Verified</h1>
+        <p>This is an official, verified certificate issued by Gram Tarakki Foundation.</p>
+    </div>
+</section>
+
+<section class="cert-display-section">
+    <div class="container">
+        <div class="cert-container">
+            <div class="cert-header">
+                <div class="cert-header-id">
+                    <span class="id-label">Certificate ID</span>
+                    <span class="id-value">{{ cert_id }}</span>
+                </div>
+                <div class="cert-status">
+                    <i class="fas fa-check-circle"></i> Officially Verified
+                </div>
+            </div>
+
+            <div class="cert-image-wrapper">
+                <img src="{{ cert.file_path }}" alt="Certificate for {{ cert.name }}" class="cert-image" loading="eager"
+                    style="display: block;"
+                    onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:3rem;text-align:center;color:#6c757d;&quot;><i class=&quot;fas fa-image&quot; style=&quot;font-size:3rem;margin-bottom:1rem;opacity:0.4&quot;></i><p>Certificate image is being generated.</p></div>';">
+            </div>
+
+            <div class="cert-details">
+                <div class="detail-item">
+                    <div class="detail-label">Recipient Name</div>
+                    <div class="detail-value">{{ cert.name }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Certificate Type</div>
+                    <div class="detail-value">{{ cert.certType }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Department / Field</div>
+                    <div class="detail-value">{{ cert.department }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Start Date</div>
+                    <div class="detail-value">{{ cert.startDate }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">End Date</div>
+                    <div class="detail-value">{{ cert.issueDate }}</div>
+                </div>
+                {% if cert.skills %}
+                <div class="detail-item">
+                    <div class="detail-label">Skills</div>
+                    <div class="detail-value">
+                        {% if cert.skills is string %}
+                        {{ cert.skills }}
+                        {% else %}
+                        {{ cert.skills | join(', ') }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="cert-actions">
+                <a href="{{ cert.file_path }}" download="Certificate_{{ cert_id }}.jpg" class="btn-download">
+                    <i class="fas fa-download"></i> Download Certificate
+                </a>
+
+                <!-- Share on LinkedIn Button -->
+                <a href="https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name={{ cert.certType }}&organizationName=Gram%20Tarakki%20Foundation&issueYear={{ cert.startDate[:4] if cert.startDate else (cert.issueDate[:4] if cert.issueDate else '') }}&issueMonth={{ cert.startDate[5:7] if cert.startDate else (cert.issueDate[5:7] if cert.issueDate else '') }}&expirationYear={{ cert.issueDate[:4] if cert.issueDate else '' }}&expirationMonth={{ cert.issueDate[5:7] if cert.issueDate else '' }}&certUrl={{ request.url | urlencode }}&certId={{ cert_id }}"
+                    target="_blank" class="btn-linkedin">
+                    <i class="fab fa-linkedin"></i> Add to LinkedIn Profile
+                </a>
+            </div>
+        </div>
+
+        <!-- Trust indicators below the card -->
+        <div class="cert-trust-footer">
+            <div class="trust-indicators">
+                <div class="trust-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Tamper-Proof</span>
+                </div>
+                <div class="trust-item">
+                    <i class="fas fa-certificate"></i>
+                    <span>Officially Issued</span>
+                </div>
+                <div class="trust-item">
+                    <i class="fas fa-globe"></i>
+                    <span>Publicly Verifiable</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

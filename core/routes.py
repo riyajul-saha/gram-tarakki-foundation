@@ -52,6 +52,55 @@ def init_routes(app):
         """Render the certificate verification portal page."""
         return render_template('certificate.html')
 
+    @app.route("/certificate/intern/<cert_id>")
+    def view_intern_certificate(cert_id):
+        """Render a specific intern certificate for public viewing/sharing (e.g., LinkedIn)."""
+        # If the request contains a dot (like .jpg), it's asking for the file itself
+        if '.' in cert_id:
+            from flask import send_from_directory
+            import os
+            CERT_BASE = os.path.join(app.root_path, 'certificate', 'intern')
+            return send_from_directory(CERT_BASE, cert_id)
+
+        cert_id = cert_id.strip().upper()
+        try:
+            conn = get_db_connection()
+            if not conn:
+                abort(500)
+            cursor = conn.cursor(dictionary=True)
+            
+            cursor.execute("SELECT intern_id as certId, fullname as name, field as department, duration, start_date as startDate, end_date as issueDate, status, 'Intern' as role, 'Internship Certificate' as certType, skills FROM our_intern WHERE intern_id = %s AND cert_approved = TRUE", (cert_id,))
+            cert = cursor.fetchone()
+            
+            cursor.close()
+            conn.close()
+            
+            if cert:
+                if cert['issueDate']:
+                    cert['issueDate'] = cert['issueDate'].strftime('%Y-%m-%d')
+                else:
+                    cert['issueDate'] = ""
+                    
+                if cert.get('startDate'):
+                    cert['startDate'] = cert['startDate'].strftime('%Y-%m-%d')
+                else:
+                    cert['startDate'] = ""
+                # file_path to image
+                cert['file_path'] = f"/certificate/intern/{cert_id}.jpg"
+                
+                # Check if the file actually exists
+                import os
+                if not os.path.exists(os.path.join(app.root_path, 'certificate', 'intern', f"{cert_id}.jpg")):
+                    # Fallback or just let the image fail gracefully if not generated
+                    pass
+                
+                return render_template('view_certificate.html', cert=cert, cert_id=cert_id)
+            else:
+                abort(404)
+        except Exception as e:
+            print(f"Error viewing cert: {e}")
+            abort(500)
+
     @app.route("/partners")
     def partners():
         """Render the partners information page."""
@@ -711,4 +760,52 @@ def init_routes(app):
         if not os.path.exists(file_path):
             abort(404)
             
-        return send_file(file_path, mimetype='application/json')
+    @app.route("/api/verify_certificate", methods=["POST"])
+    @rate_limit
+    def verify_certificate():
+        data = request.json
+        cert_id = data.get("certId", "").strip().upper()
+        if not cert_id:
+            return jsonify({"status": "error", "message": "Certificate ID required"}), 400
+        
+        try:
+            conn = get_db_connection()
+            if not conn:
+                return jsonify({"status": "error", "message": "Database error"}), 500
+            cursor = conn.cursor(dictionary=True)
+            
+            # Check in our_intern
+            cursor.execute("SELECT intern_id as certId, fullname as name, field as department, duration, start_date as startDate, end_date as issueDate, status, 'Intern' as role, 'Internship Certificate' as certType, skills FROM our_intern WHERE intern_id = %s AND cert_approved = TRUE", (cert_id,))
+            cert = cursor.fetchone()
+            
+            cursor.close()
+            conn.close()
+            
+            if cert:
+                # Format dates and return
+                if cert['issueDate']:
+                    cert['issueDate'] = cert['issueDate'].strftime('%Y-%m-%d')
+                else:
+                    cert['issueDate'] = ""
+                    
+                if cert.get('startDate'):
+                    cert['startDate'] = cert['startDate'].strftime('%Y-%m-%d')
+                else:
+                    cert['startDate'] = ""
+                    
+                if not cert.get('skills'):
+                    cert['skills'] = []
+                elif isinstance(cert['skills'], str):
+                    cert['skills'] = [s.strip() for s in cert['skills'].split(',') if s.strip()]
+                
+                
+                # Assign file path
+                cert['file_path'] = f"/certificate/intern/{cert_id}.jpg"
+                
+                return jsonify({"status": "success", "certificate": cert})
+            else:
+                return jsonify({"status": "error", "message": "Certificate not found"})
+                
+        except Exception as e:
+            print(f"Error verifying cert: {e}")
+            return jsonify({"status": "error", "message": "Internal error"}), 500

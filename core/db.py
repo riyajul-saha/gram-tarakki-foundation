@@ -226,9 +226,14 @@ def init_db():
                 photo VARCHAR(255),
                 resume VARCHAR(255),
                 college VARCHAR(255),
+                skills TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        try:
+            cursor.execute("ALTER TABLE our_intern ADD COLUMN skills TEXT")
+        except mysql.connector.Error:
+            pass
         
         connection.commit()
         cursor.close()

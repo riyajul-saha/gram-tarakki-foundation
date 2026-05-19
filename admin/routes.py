@@ -640,10 +640,12 @@ def init_routes(app):
                                         except: pass
                                 staff_id = generate_staff_id(cursor, job_type)
                                 if job_type == 'internship':
+                                    import datetime
+                                    current_date = datetime.datetime.now().strftime('%Y-%m-%d')
                                     cursor.execute("""
-                                        INSERT INTO our_intern (fullname, email, phone, address, field, photo, resume, intern_id, status)
-                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'active')
-                                    """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('location'), job_title, member.get('photo'), member.get('resume'), staff_id))
+                                        INSERT INTO our_intern (fullname, email, phone, address, field, photo, resume, intern_id, status, start_date, skills)
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'active', %s, %s)
+                                    """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('location'), job_title, member.get('photo'), member.get('resume'), staff_id, current_date, member.get('skills')))
                                 else:
                                     cursor.execute("""
                                         INSERT INTO our_staff (fullname, email, phone, location, linkedin, cover_letter, position, experience, resume, photo, skills, notes, job_type, status, staff_id)
@@ -994,10 +996,12 @@ def init_routes(app):
                                         except: pass
                                 staff_id = generate_staff_id(cursor, job_type)
                                 if job_type == 'internship':
+                                    import datetime
+                                    current_date = datetime.datetime.now().strftime('%Y-%m-%d')
                                     cursor.execute("""
-                                        INSERT INTO our_intern (fullname, email, phone, address, field, photo, resume, intern_id, status)
-                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'active')
-                                    """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('location'), job_title, member.get('photo'), member.get('resume'), staff_id))
+                                        INSERT INTO our_intern (fullname, email, phone, address, field, photo, resume, intern_id, status, start_date, skills)
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'active', %s, %s)
+                                    """, (member.get('fullname'), member.get('email'), member.get('phone'), member.get('location'), job_title, member.get('photo'), member.get('resume'), staff_id, current_date, member.get('skills')))
                                 else:
                                     cursor.execute("""
                                         INSERT INTO our_staff (fullname, email, phone, location, linkedin, cover_letter, position, experience, resume, photo, skills, notes, job_type, status, staff_id)
@@ -1127,6 +1131,13 @@ def init_routes(app):
                     address = data.get('address')
                     field = data.get('field')
                     duration = data.get('duration')
+                    start_date = data.get('start_date')
+                    end_date = data.get('end_date')
+                    college = data.get('college')
+                    skills = data.get('skills')
+                    
+                    if not start_date: start_date = None
+                    if not end_date: end_date = None
                     
                     import os, uuid
                     from werkzeug.utils import secure_filename
@@ -1147,9 +1158,9 @@ def init_routes(app):
                     intern_id = generate_staff_id(cursor, 'internship')
                     
                     cursor.execute("""
-                        INSERT INTO our_intern (fullname, email, phone, address, field, duration, photo, intern_id, status)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'active')
-                    """, (name, email, phone, address, field, duration, photo_path, intern_id))
+                        INSERT INTO our_intern (fullname, email, phone, address, field, duration, start_date, end_date, college, photo, intern_id, status, skills)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', %s)
+                    """, (name, email, phone, address, field, duration, start_date, end_date, college, photo_path, intern_id, skills))
                     conn.commit()
                     return jsonify({"status": "success"})
                     
@@ -1162,8 +1173,9 @@ def init_routes(app):
                     field = data.get('field')
                     duration = data.get('duration')
                     status = data.get('status')
+                    skills = data.get('skills')
                     
-                    cursor.execute("UPDATE our_intern SET fullname=%s, email=%s, phone=%s, address=%s, field=%s, duration=%s, status=%s WHERE id=%s", (name, email, phone, address, field, duration, status, edit_id))
+                    cursor.execute("UPDATE our_intern SET fullname=%s, email=%s, phone=%s, address=%s, field=%s, duration=%s, status=%s, skills=%s WHERE id=%s", (name, email, phone, address, field, duration, status, skills, edit_id))
                     conn.commit()
                     return jsonify({"status": "success"})
 
@@ -1185,10 +1197,106 @@ def init_routes(app):
                 elif action == 'approve_cert':
                     member_ids = data.get('ids', [])
                     if member_ids:
+                        import datetime
+                        current_date_db = datetime.datetime.now().strftime('%Y-%m-%d')
+                        current_date_cert = datetime.datetime.now().strftime('%d/%m/%Y')
+                        
                         format_strings = ','.join(['%s'] * len(member_ids))
-                        cursor.execute(f"UPDATE our_intern SET cert_approved = TRUE WHERE id IN ({format_strings})", tuple(member_ids))
+                        query_params = [current_date_db, current_date_db] + member_ids
+                        cursor.execute(f"UPDATE our_intern SET cert_approved = TRUE, end_date = %s, duration = CONCAT(DATEDIFF(%s, start_date), ' Days') WHERE id IN ({format_strings})", tuple(query_params))
                         conn.commit()
-                    return jsonify({"status": "success"})
+                        
+                        # Fetch intern details to generate certificates
+                        cursor.execute(f"SELECT intern_id, fullname, start_date FROM our_intern WHERE id IN ({format_strings})", tuple(member_ids))
+                        approved_interns = cursor.fetchall()
+                        from core.certificate_generate import generate_dynamic_certificate
+                        
+                        generated_count = 0
+                        failed_count = 0
+                        errors = []
+                        
+                        for intern in approved_interns:
+                            try:
+                                start_date_obj = intern.get("start_date")
+                                start_date_str = ""
+                                if start_date_obj:
+                                    if hasattr(start_date_obj, 'strftime'):
+                                        start_date_str = start_date_obj.strftime("%d/%m/%Y")
+                                    elif isinstance(start_date_obj, str):
+                                        try:
+                                            parsed = datetime.datetime.strptime(start_date_obj, "%Y-%m-%d")
+                                            start_date_str = parsed.strftime("%d/%m/%Y")
+                                        except:
+                                            start_date_str = start_date_obj
+                                            
+                                cert_data = {
+                                    "cert_id": intern.get("intern_id"),
+                                    "student_name": intern.get("fullname"),
+                                    "start_date": start_date_str,
+                                    "end_date": current_date_cert,
+                                    "verify_link": f"www.gtfoundations.in/certificate/{intern.get('intern_id')}"
+                                }
+                                generate_dynamic_certificate(cert_data)
+                                generated_count += 1
+                            except Exception as e:
+                                failed_count += 1
+                                error_msg = f"{intern.get('fullname', 'Unknown')} ({intern.get('intern_id', 'N/A')}): {str(e)}"
+                                errors.append(error_msg)
+                                print(f"Error generating certificate for {intern.get('intern_id')}: {e}")
+                        
+                        # Build response with generation results
+                        if failed_count == 0:
+                            return jsonify({
+                                "status": "success",
+                                "message": f"Certificates approved and generated for {generated_count} intern(s)"
+                            })
+                        elif generated_count > 0:
+                            return jsonify({
+                                "status": "partial",
+                                "message": f"{generated_count} certificate(s) generated, {failed_count} failed",
+                                "errors": errors
+                            })
+                        else:
+                            return jsonify({
+                                "status": "error",
+                                "message": f"Certificate approval saved but all {failed_count} certificate(s) failed to generate",
+                                "errors": errors
+                            }), 500
+                    else:
+                        return jsonify({"status": "error", "message": "No intern IDs provided"}), 400
+
+                elif action == 'cancel_cert':
+                    member_ids = data.get('ids', [])
+                    if member_ids:
+                        import os
+                        # Fetch intern_ids to locate certificate files before revoking
+                        format_strings = ','.join(['%s'] * len(member_ids))
+                        cursor.execute(f"SELECT intern_id FROM our_intern WHERE id IN ({format_strings})", tuple(member_ids))
+                        interns_to_cancel = cursor.fetchall()
+
+                        # Revoke cert approval and clear end_date
+                        cursor.execute(f"UPDATE our_intern SET cert_approved = FALSE, end_date = NULL WHERE id IN ({format_strings})", tuple(member_ids))
+                        conn.commit()
+
+                        # Delete certificate image files
+                        deleted = 0
+                        for intern in interns_to_cancel:
+                            intern_id = intern.get('intern_id')
+                            if intern_id:
+                                cert_path = os.path.join(app.root_path, 'certificate', 'intern', f"{intern_id}.jpg")
+                                if os.path.exists(cert_path):
+                                    try:
+                                        os.remove(cert_path)
+                                        deleted += 1
+                                    except Exception as e:
+                                        print(f"Error deleting certificate file {cert_path}: {e}")
+
+                        return jsonify({
+                            "status": "success",
+                            "message": f"Certificates cancelled for {len(member_ids)} intern(s). {deleted} file(s) deleted."
+                        })
+                    else:
+                        return jsonify({"status": "error", "message": "No intern IDs provided"}), 400
                     
                 return jsonify({"status": "error", "message": "Unknown action"}), 400
                 
@@ -1213,5 +1321,7 @@ def init_routes(app):
                 raise
 
         except Exception as e:
+            import traceback
             print(f"Error in interns API: {e}")
-            return jsonify({"status": "error", "message": "An internal error occurred"}), 500
+            traceback.print_exc()
+            return jsonify({"status": "error", "message": f"Server error: {str(e)}"}), 500

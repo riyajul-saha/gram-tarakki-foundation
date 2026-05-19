@@ -141,7 +141,10 @@ function renderTable() {
             <td><div class="action-btns">
                 <button class="action-btn view" title="View" onclick="viewIntern('${intern.id}')"><i class="fas fa-eye"></i></button>
                 <button class="action-btn email" title="Email" onclick="emailSingle('${intern.id}')"><i class="fas fa-envelope"></i></button>
-                <button class="action-btn cert" title="Approve Certificate" onclick="approveSingle('${intern.id}')"><i class="fas fa-certificate"></i></button>
+                ${intern.certApproved
+                    ? `<button class="action-btn remove" title="Cancel Certificate" onclick="cancelCertSingle('${intern.id}')"><i class="fas fa-times-circle"></i></button>`
+                    : `<button class="action-btn cert" title="Approve Certificate" onclick="approveSingle('${intern.id}')"><i class="fas fa-certificate"></i></button>`
+                }
                 <button class="action-btn remove" title="Remove" onclick="removeIntern('${intern.id}')"><i class="fas fa-trash-alt"></i></button>
             </div></td>
         </tr>
@@ -169,7 +172,10 @@ function renderCards() {
             </div>
             <div class="card-actions">
                 <button class="action-btn view" onclick="viewIntern('${intern.id}')"><i class="fas fa-eye"></i></button>
-                <button class="action-btn cert" onclick="approveSingle('${intern.id}')"><i class="fas fa-certificate"></i></button>
+                ${intern.certApproved
+                    ? `<button class="action-btn remove" onclick="cancelCertSingle('${intern.id}')"><i class="fas fa-times-circle"></i></button>`
+                    : `<button class="action-btn cert" onclick="approveSingle('${intern.id}')"><i class="fas fa-certificate"></i></button>`
+                }
             </div>
         </div>
     `).join('');
@@ -247,11 +253,17 @@ async function bulkApproveCert() {
         });
         const result = await res.json();
         if (result.status === 'success') {
-            showToast(`Certificates approved for ${selected.length} intern(s)`, 'success');
+            showToast(result.message || `Certificates approved for ${selected.length} intern(s)`, 'success');
             clearSelection();
             fetchInterns();
+        } else if (result.status === 'partial') {
+            showToast(result.message || 'Some certificates failed to generate', 'info');
+            clearSelection();
+            fetchInterns();
+        } else {
+            showToast(result.message || 'Error approving certificates', 'error');
         }
-    } catch (e) { showToast('Error approving certificates', 'error'); }
+    } catch (e) { showToast('Network error while approving certificates', 'error'); }
 }
 
 // Modal helpers
@@ -315,7 +327,10 @@ function viewIntern(id) {
         </div>
         <div class="view-actions">
             <button class="btn btn-sm" onclick="emailSingle('${intern.id}')"><i class="fas fa-envelope"></i> Send Email</button>
-            <button class="btn btn-sm btn-success" onclick="approveSingle('${intern.id}')"><i class="fas fa-certificate"></i> ${intern.certApproved ? 'Certified' : 'Approve Cert'}</button>
+            ${intern.certApproved
+                ? `<button class="btn btn-sm btn-danger" onclick="cancelCertSingle('${intern.id}')"><i class="fas fa-times-circle"></i> Cancel Cert</button>`
+                : `<button class="btn btn-sm btn-success" onclick="approveSingle('${intern.id}')"><i class="fas fa-certificate"></i> Approve Cert</button>`
+            }
             <button class="btn btn-sm btn-danger" onclick="removeIntern('${intern.id}')"><i class="fas fa-trash-alt"></i> Remove</button>
         </div>
     `;
@@ -347,11 +362,46 @@ async function approveSingle(id) {
         });
         const result = await res.json();
         if (result.status === 'success') {
-            showToast(`Certificate approved for ${intern.name}`, 'success');
+            showToast(result.message || `Certificate approved for ${intern.name}`, 'success');
             closeModal('viewInternModal');
             fetchInterns();
+        } else if (result.status === 'partial') {
+            showToast(result.message || `Certificate approved but generation had issues for ${intern.name}`, 'info');
+            closeModal('viewInternModal');
+            fetchInterns();
+        } else {
+            showToast(result.message || `Failed to approve certificate for ${intern.name}`, 'error');
         }
-    } catch (e) { showToast('Network error', 'error'); }
+    } catch (e) { showToast('Network error while approving certificate', 'error'); }
+}
+
+async function cancelCertSingle(id) {
+    const intern = allInterns.find(i => i.id === id);
+    if (!intern) return;
+    document.getElementById('confirmTitle').textContent = 'Cancel Certificate';
+    document.getElementById('confirmMessage').textContent = `Are you sure you want to cancel the certificate for ${intern.name}? This will delete the generated certificate image.`;
+    const yesBtn = document.getElementById('confirmYes');
+    yesBtn.onclick = async () => {
+        try {
+            const res = await fetch('/admin/api/interns', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'cancel_cert', ids: [intern.db_id] })
+            });
+            const result = await res.json();
+            if (result.status === 'success') {
+                closeModal('confirmModal');
+                closeModal('viewInternModal');
+                showToast(result.message || `Certificate cancelled for ${intern.name}`, 'success');
+                fetchInterns();
+            } else {
+                showToast(result.message || 'Error cancelling certificate', 'error');
+            }
+        } catch (e) {
+            showToast('Network error while cancelling certificate', 'error');
+        }
+    };
+    openModal('confirmModal');
 }
 
 function removeIntern(id) {
@@ -476,10 +526,16 @@ async function approveCertificates() {
         const result = await res.json();
         if (result.status === 'success') {
             closeModal('certModal');
-            showToast(`Certificates approved for ${checked.length} intern(s)!`, 'success');
+            showToast(result.message || `Certificates approved for ${checked.length} intern(s)!`, 'success');
             fetchInterns();
-        } else { showToast('Error approving certificates', 'error'); }
-    } catch (e) { showToast('Network error', 'error'); }
+        } else if (result.status === 'partial') {
+            closeModal('certModal');
+            showToast(result.message || 'Some certificates failed to generate', 'info');
+            fetchInterns();
+        } else {
+            showToast(result.message || 'Error approving certificates', 'error');
+        }
+    } catch (e) { showToast('Network error while approving certificates', 'error'); }
 }
 
 // Export

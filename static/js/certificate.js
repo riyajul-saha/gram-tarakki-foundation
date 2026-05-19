@@ -1,49 +1,12 @@
 // ===== Certificate Verification Page JS =====
 
-// --- Mock certificate database (UI demo only - will be replaced by backend) ---
-const MOCK_CERTS = {
-  "GTFIN26001": {
-    name: "Ariana Gantait",
-    certId: "GTFIN26001",
-    role: "Intern",
-    department: "Web Development",
-    duration: "2/01/2026 – 26/05/2026",
-    issueDate: "2026-05-26",
-    certType: "Internship Certificate",
-    status: "Active",
-    skills: ["HTML/CSS", "JavaScript", "Python", "Flask"]
-  },
-  "GTFVOL26001": {
-    name: "Amit Das",
-    certId: "GTFVOL26001",
-    role: "Volunteer",
-    department: "Community Outreach",
-    duration: "10/01/2026 – 10/07/2026",
-    issueDate: "2026-07-10",
-    certType: "Volunteer Certificate",
-    status: "Active",
-    skills: ["Leadership", "Event Planning", "Communication"]
-  },
-  "GTFSTD26001": {
-    name: "Priya Mondal",
-    certId: "GTFSTD26001",
-    role: "Student",
-    department: "Karate Training",
-    duration: "20/12/2025 – 20/12/2026",
-    issueDate: "2026-12-20",
-    certType: "Course Completion Certificate",
-    status: "Active",
-    skills: ["Karate", "Self-Defense", "Discipline", "Fitness"]
-  }
-};
-
 // --- DOM Elements ---
 const certInput = document.getElementById('certInput');
 const verifyBtn = document.getElementById('verifyBtn');
 const resultArea = document.getElementById('resultArea');
 
 // --- Verify certificate ---
-function verifyCertificate() {
+async function verifyCertificate() {
   const id = certInput.value.trim().toUpperCase();
   if (!id) {
     certInput.classList.add('shake');
@@ -55,21 +18,35 @@ function verifyCertificate() {
   verifyBtn.classList.add('loading');
   resultArea.innerHTML = '';
 
-  // Simulate API call
-  setTimeout(() => {
+  try {
+    const response = await fetch('/api/verify_certificate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ certId: id })
+    });
+
+    const result = await response.json();
     verifyBtn.classList.remove('loading');
-    const cert = MOCK_CERTS[id];
-    if (cert) {
-      renderCertCard(cert);
+
+    if (result.status === 'success' && result.certificate) {
+      renderCertCard(result.certificate);
     } else {
       renderError();
       certInput.classList.add('shake');
       setTimeout(() => certInput.classList.remove('shake'), 500);
     }
+  } catch (error) {
+    console.error('Error verifying certificate:', error);
+    verifyBtn.classList.remove('loading');
+    renderError();
+    certInput.classList.add('shake');
+    setTimeout(() => certInput.classList.remove('shake'), 500);
+  }
 
-    // Scroll to result
-    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 1200);
+  // Scroll to result
+  resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // --- Render certificate card ---
@@ -102,13 +79,14 @@ function renderCertCard(cert) {
         <!-- Certificate Image -->
         <div class="cert-image-side">
           <div class="cert-image-label">Certificate Preview</div>
-          <div class="cert-image-wrap" onclick="openCertImage()">
-            <img src="/static/images/internship/demo_certificate.png" alt="Certificate of ${cert.name}">
+          <div class="cert-image-wrap" onclick="window.open('${cert.file_path || ''}', '_blank')">
+            <img src="${cert.file_path || ''}" alt="Certificate of ${cert.name}" 
+                 onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div style=\'padding:3rem;text-align:center;color:#6c757d;\'><i class=\'fas fa-image\' style=\'font-size:3rem;margin-bottom:1rem;opacity:0.4\'></i><p>Certificate image is not available or still generating.</p></div>';">
             <div class="cert-image-overlay">
               <i class="fas fa-search-plus"></i> Click to view full size
             </div>
           </div>
-          <a href="/static/images/internship/demo_certificate.png" download class="cert-download-link">
+          <a href="${cert.file_path || '#'}" download class="cert-download-link">
             <i class="fas fa-download"></i> Download Certificate
           </a>
         </div>
@@ -145,10 +123,15 @@ function renderCertCard(cert) {
             </div>
             <div class="detail-item">
               <span class="detail-label"><i class="fas fa-clock"></i> Duration</span>
-              <span class="detail-value">${cert.duration}</span>
+              <span class="detail-value">${cert.duration || 'N/A'}</span>
             </div>
+            ${cert.startDate ? `
             <div class="detail-item">
-              <span class="detail-label"><i class="fas fa-calendar-alt"></i> Issue Date</span>
+              <span class="detail-label"><i class="fas fa-calendar-check"></i> Start Date</span>
+              <span class="detail-value">${new Date(cert.startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+            </div>` : ''}
+            <div class="detail-item">
+              <span class="detail-label"><i class="fas fa-calendar-alt"></i> End Date</span>
               <span class="detail-value">${formattedDate}</span>
             </div>
             <div class="detail-item" style="grid-column: 1 / -1;">
@@ -160,11 +143,6 @@ function renderCertCard(cert) {
       </div>
     </div>
   `;
-}
-
-// --- Open certificate image in new tab ---
-function openCertImage() {
-  window.open('/static/images/internship/demo_certificate.png', '_blank');
 }
 
 // --- Render error ---
