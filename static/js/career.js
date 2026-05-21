@@ -17,7 +17,10 @@ function renderJobs() {
     const loc = document.getElementById('locationFilter').value;
 
     const filtered = jobs.filter(job => {
-        const matchSearch = job.title.toLowerCase().includes(search) || job.desc.toLowerCase().includes(search);
+        if (job.status === 'draft') return false;
+        const titleMatch = (job.title || '').toLowerCase().includes(search);
+        const descMatch = (job.desc || '').toLowerCase().includes(search);
+        const matchSearch = titleMatch || descMatch;
         const matchDept = dept === 'all' || job.department === dept;
         const matchType = type === 'all' || job.type === type;
         const matchLoc = loc === 'all' || job.location === loc;

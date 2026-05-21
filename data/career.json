@@ -38,23 +38,5 @@
         "id": 2,
         "responsibilities": [],
         "tags": []
-    },
-    {
-        "title": "English Teacher",
-        "department": "English",
-        "type": "Part-time",
-        "location": "Madhakali",
-        "salary": "10000",
-        "desc": "",
-        "requirements": [
-            "MA in English.",
-            "Minimum 1 Year Experience."
-        ],
-        "deadline": "2026-06-07",
-        "status": "active",
-        "posted": "2026-05-09",
-        "id": 3,
-        "responsibilities": [],
-        "tags": []
     }
 ]

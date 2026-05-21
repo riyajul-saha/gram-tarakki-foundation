@@ -760,6 +760,8 @@ def init_routes(app):
         if not os.path.exists(file_path):
             abort(404)
             
+        return send_file(file_path)
+
     @app.route("/api/verify_certificate", methods=["POST"])
     @rate_limit
     def verify_certificate():
