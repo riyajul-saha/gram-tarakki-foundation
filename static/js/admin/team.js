@@ -101,7 +101,7 @@ function renderTable() {
         // Table row
         tableHtml += `
             <tr>
-                <td><img src="${item.photo}" class="team-photo"></td>
+                <td><img src="${item.photo}" class="team-photo" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('${item.name.replace(/'/g, "\\'")}');"></td>
                 <td><div class="name-role"><span class="name">${item.name}</span>${staffIdDisplay}<br><span class="email">${item.email}</span></div></td>
                 <td>${displayRole}</td>
                 <td>${item.phone || 'N/A'}</td>
@@ -144,7 +144,7 @@ function renderTable() {
         
         cardsHtml += `
             <div class="team-card">
-                <div class="card-photo"><img src="${item.photo}"></div>
+                <div class="card-photo"><img src="${item.photo}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('${item.name.replace(/'/g, "\\'")}');"></div>
                 <div class="card-info">
                     <h4>${item.name}</h4>
                     ${cardIdDisplay}
@@ -242,7 +242,7 @@ function viewDetails(source, id) {
     
     const content = `
         <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 24px;">
-            <img src="${item.photo}" style="width: 72px; height: 72px; border-radius: 16px; object-fit: cover; border: 3px solid #f1f5f9;">
+            <img src="${item.photo}" style="width: 72px; height: 72px; border-radius: 16px; object-fit: cover; border: 3px solid #f1f5f9;" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('${item.name.replace(/'/g, "\\'")}');">
             <div>
                 <h2 style="margin:0 0 4px;">${item.name}</h2>
                 ${modalIdDisplay}

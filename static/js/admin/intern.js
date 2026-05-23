@@ -9,6 +9,12 @@ let currentPage = 1;
 const perPage = 8;
 let emailRecipientType = 'all';
 
+// Signature Upload State
+let pendingApprovalIds = [];
+let pendingApprovalNames = [];
+let mentorSigFile = null;
+let headSigFile = null;
+
 // Init
 document.addEventListener('DOMContentLoaded', () => {
     fetchInterns();
@@ -132,7 +138,7 @@ function renderTable() {
     tbody.innerHTML = pageData.map(intern => `
         <tr data-id="${intern.id}">
             <td><input type="checkbox" ${intern.selected ? 'checked' : ''} onchange="toggleSelect('${intern.id}')"></td>
-            <td><img src="${intern.photo}" alt="${intern.name}" class="intern-photo"></td>
+             <td><img src="${intern.photo}" alt="${intern.name}" class="intern-photo" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent(this.alt);"></td>
             <td><div class="name-info"><span class="name">${intern.name}</span><span class="intern-id">${intern.id}</span></div></td>
             <td><span class="field-tag">${intern.field}</span></td>
             <td><span style="font-size:.82rem;color:#64748b;">${formatDate(intern.startDate)} – ${formatDate(intern.endDate)}</span><br><small style="color:#94a3b8">${intern.duration}</small></td>
@@ -164,7 +170,7 @@ function renderCards() {
 
     container.innerHTML = pageData.map(intern => `
         <div class="intern-card" data-id="${intern.id}">
-            <div class="card-photo"><img src="${intern.photo}" alt="${intern.name}"></div>
+             <div class="card-photo"><img src="${intern.photo}" alt="${intern.name}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent(this.alt);"></div>
             <div class="card-info">
                 <h4>${intern.name}</h4>
                 <p><span class="field-tag">${intern.field}</span></p>
@@ -241,30 +247,344 @@ function bulkEmail() {
     updateRecipientCount();
 }
 
-async function bulkApproveCert() {
-    const selected = allInterns.filter(i => i.selected);
-    const ids = selected.map(i => i.db_id);
-    if (ids.length === 0) return;
+// ============================================================
+// SIGNATURE UPLOAD & CERTIFICATE APPROVAL FLOW
+// ============================================================
+
+function openSignatureModal(ids, names) {
+    pendingApprovalIds = ids;
+    pendingApprovalNames = names;
+    mentorSigFile = null;
+    headSigFile = null;
+
+    // Reset upload zones
+    resetUploadZone('mentor');
+    resetUploadZone('head');
+
+    // Update intern count
+    document.getElementById('sigInternCount').textContent = ids.length;
+
+    // Close any other open modals
+    closeModal('certModal');
+    closeModal('viewInternModal');
+
+    openModal('signatureModal');
+}
+
+function closeSignatureModal() {
+    pendingApprovalIds = [];
+    pendingApprovalNames = [];
+    mentorSigFile = null;
+    headSigFile = null;
+    closeModal('signatureModal');
+}
+
+function resetUploadZone(type) {
+    const zone = document.getElementById(type + 'SigZone');
+    const input = document.getElementById(type + 'SigInput');
+    input.value = '';
+    zone.classList.remove('has-file');
+    zone.innerHTML = `
+        <input type="file" id="${type}SigInput" accept="image/png,image/jpeg,image/webp" onchange="handleSigSelect(event, '${type}')">
+        <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <div class="upload-text"><strong>Click to upload</strong> or drag & drop</div>
+        <div class="upload-hint">PNG, JPG or WEBP (signature image)</div>
+    `;
+}
+
+// Drag & Drop handlers
+function handleSigDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.add('dragover');
+}
+
+function handleSigDragLeave(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('dragover');
+}
+
+function handleSigDrop(e, type) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('dragover');
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith('image/')) {
+            setSigFile(type, file);
+        } else {
+            showToast('Please upload an image file (PNG, JPG, or WEBP)', 'error');
+        }
+    }
+}
+
+function handleSigSelect(e, type) {
+    e.stopPropagation();
+    const file = e.target.files[0];
+    if (file) {
+        setSigFile(type, file);
+    }
+}
+
+function setSigFile(type, file) {
+    if (type === 'mentor') mentorSigFile = file;
+    else headSigFile = file;
+
+    const zone = document.getElementById(type + 'SigZone');
+    zone.classList.add('has-file');
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        zone.innerHTML = `
+            <input type="file" id="${type}SigInput" accept="image/png,image/jpeg,image/webp" onchange="handleSigSelect(event, '${type}')">
+            <div class="sig-preview-container">
+                <button class="sig-remove-btn" onclick="event.stopPropagation(); removeSigFile('${type}')" title="Remove"><i class="fas fa-times"></i></button>
+                <img src="${e.target.result}" alt="${type} signature">
+                <div class="sig-preview-name"><i class="fas fa-check-circle"></i> ${file.name}</div>
+            </div>
+        `;
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeSigFile(type) {
+    if (type === 'mentor') mentorSigFile = null;
+    else headSigFile = null;
+    resetUploadZone(type);
+}
+
+// Confirm & Generate
+async function confirmCertApproval() {
+    if (!mentorSigFile) {
+        showToast('Please upload Mentor\'s Signature', 'error');
+        return;
+    }
+    if (!headSigFile) {
+        showToast('Please upload Head of Event\'s Signature', 'error');
+        return;
+    }
+
+    // Close signature modal
+    closeModal('signatureModal');
+
+    // Show generation overlay
+    showGenOverlay(pendingApprovalNames.length);
+
+    // Simulate progress animation while the actual request happens
+    const progressPromise = simulateProgress(pendingApprovalNames);
+
+    // Build FormData
+    const formData = new FormData();
+    formData.append('action', 'approve_cert');
+    formData.append('ids', JSON.stringify(pendingApprovalIds));
+    formData.append('mentor_signature', mentorSigFile);
+    formData.append('head_signature', headSigFile);
+
     try {
         const res = await fetch('/admin/api/interns', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'approve_cert', ids: ids })
+            body: formData
         });
         const result = await res.json();
+
+        // Wait for progress animation to finish
+        await progressPromise;
+
         if (result.status === 'success') {
-            showToast(result.message || `Certificates approved for ${selected.length} intern(s)`, 'success');
-            clearSelection();
+            showSuccessState(pendingApprovalNames.length, result.message);
             fetchInterns();
         } else if (result.status === 'partial') {
-            showToast(result.message || 'Some certificates failed to generate', 'info');
-            clearSelection();
+            showSuccessState(pendingApprovalNames.length, result.message);
             fetchInterns();
         } else {
+            closeGenOverlayImmediate();
             showToast(result.message || 'Error approving certificates', 'error');
         }
-    } catch (e) { showToast('Network error while approving certificates', 'error'); }
+    } catch (e) {
+        closeGenOverlayImmediate();
+        showToast('Network error while approving certificates', 'error');
+    }
+
+    // Reset
+    pendingApprovalIds = [];
+    pendingApprovalNames = [];
+    mentorSigFile = null;
+    headSigFile = null;
 }
+
+// ============================================================
+// CERTIFICATE GENERATION OVERLAY
+// ============================================================
+
+function showGenOverlay(totalCount) {
+    const overlay = document.getElementById('certGenOverlay');
+    const genState = document.getElementById('genGeneratingState');
+    const successState = document.getElementById('genSuccessState');
+
+    // Reset states
+    genState.classList.remove('hidden');
+    successState.classList.remove('active');
+
+    // Reset progress
+    document.getElementById('genProgressFill').style.width = '0%';
+    document.getElementById('genProgressText').textContent = `0 of ${totalCount} completed`;
+    document.getElementById('genProgressPercent').textContent = '0%';
+    document.getElementById('genCurrentName').textContent = '...';
+
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function simulateProgress(names) {
+    return new Promise(resolve => {
+        const total = names.length;
+        let current = 0;
+        const progressFill = document.getElementById('genProgressFill');
+        const progressText = document.getElementById('genProgressText');
+        const progressPercent = document.getElementById('genProgressPercent');
+        const currentName = document.getElementById('genCurrentName');
+
+        function updateStep() {
+            if (current >= total) {
+                progressFill.style.width = '100%';
+                progressPercent.textContent = '100%';
+                progressText.textContent = `${total} of ${total} completed`;
+                currentName.textContent = 'Finalizing...';
+                setTimeout(resolve, 400);
+                return;
+            }
+
+            currentName.textContent = names[current] || `Intern ${current + 1}`;
+            const percent = Math.round(((current + 0.5) / total) * 100);
+            progressFill.style.width = percent + '%';
+            progressPercent.textContent = percent + '%';
+            progressText.textContent = `${current} of ${total} completed`;
+
+            // Simulate per-intern time (300-800ms per intern, faster if more)
+            const delay = Math.max(200, Math.min(800, 2000 / total));
+            setTimeout(() => {
+                current++;
+                const newPercent = Math.round((current / total) * 100);
+                progressFill.style.width = newPercent + '%';
+                progressPercent.textContent = newPercent + '%';
+                progressText.textContent = `${current} of ${total} completed`;
+                setTimeout(updateStep, 150);
+            }, delay);
+        }
+
+        setTimeout(updateStep, 300);
+    });
+}
+
+function showSuccessState(count, message) {
+    const genState = document.getElementById('genGeneratingState');
+    const successState = document.getElementById('genSuccessState');
+    const successMsg = document.getElementById('genSuccessMessage');
+
+    genState.classList.add('hidden');
+    successMsg.innerHTML = message
+        ? message
+        : `All <strong>${count}</strong> certificates have been successfully created and are ready to view.`;
+    successState.classList.add('active');
+
+    // Launch confetti
+    launchConfetti();
+}
+
+function launchConfetti() {
+    const container = document.getElementById('confettiContainer');
+    container.innerHTML = '';
+    const colors = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ec4899', '#ef4444', '#06b6d4', '#f97316'];
+    const shapes = ['circle', 'square', 'triangle'];
+
+    for (let i = 0; i < 60; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.setProperty('--duration', (2 + Math.random() * 2) + 's');
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+        const shape = shapes[Math.floor(Math.random() * shapes.length)];
+        if (shape === 'circle') piece.style.borderRadius = '50%';
+        else if (shape === 'triangle') {
+            piece.style.width = '0';
+            piece.style.height = '0';
+            piece.style.background = 'transparent';
+            piece.style.borderLeft = '5px solid transparent';
+            piece.style.borderRight = '5px solid transparent';
+            piece.style.borderBottom = '10px solid ' + colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        const size = 6 + Math.random() * 8;
+        if (shape !== 'triangle') {
+            piece.style.width = size + 'px';
+            piece.style.height = size + 'px';
+        }
+
+        container.appendChild(piece);
+
+        // Stagger the activation
+        setTimeout(() => piece.classList.add('active'), i * 30);
+    }
+}
+
+function closeGenOverlay() {
+    const overlay = document.getElementById('certGenOverlay');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    clearSelection();
+}
+
+function closeGenOverlayImmediate() {
+    const overlay = document.getElementById('certGenOverlay');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// ============================================================
+// REWIRED APPROVAL FUNCTIONS (now open signature modal)
+// ============================================================
+
+function approveSingle(id) {
+    const intern = allInterns.find(i => i.id === id);
+    if (!intern) return;
+    openSignatureModal([intern.db_id], [intern.name]);
+}
+
+function bulkApproveCert() {
+    const selected = allInterns.filter(i => i.selected);
+    const ids = selected.map(i => i.db_id);
+    const names = selected.map(i => i.name);
+    if (ids.length === 0) { showToast('Please select at least one intern', 'error'); return; }
+    openSignatureModal(ids, names);
+}
+
+async function approveCertificates() {
+    const checked = document.querySelectorAll('.cert-check:checked');
+    if (checked.length === 0) { showToast('Please select at least one intern', 'error'); return; }
+
+    const ids = [];
+    const names = [];
+    checked.forEach(cb => {
+        const id = cb.getAttribute('data-id');
+        const intern = allInterns.find(i => i.id === id);
+        if (intern) {
+            ids.push(intern.db_id);
+            names.push(intern.name);
+        }
+    });
+
+    closeModal('certModal');
+    openSignatureModal(ids, names);
+}
+
+// ============================================================
+// EXISTING FUNCTIONALITY (unchanged)
+// ============================================================
 
 // Modal helpers
 function openModal(id) {
@@ -307,7 +627,7 @@ function viewIntern(id) {
     const content = document.getElementById('viewInternContent');
     content.innerHTML = `
         <div class="view-intern-header">
-            <img src="${intern.photo}" alt="${intern.name}">
+            <img src="${intern.photo}" alt="${intern.name}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent(this.alt);">
             <h3>${intern.name}</h3>
             <span class="view-id">${intern.id}</span>
             <div style="margin-top:8px;">
@@ -349,30 +669,6 @@ function emailSingle(id) {
     document.querySelectorAll('.recipient-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.recipient-btn')[2].classList.add('active');
     updateRecipientCount();
-}
-
-async function approveSingle(id) {
-    const intern = allInterns.find(i => i.id === id);
-    if (!intern) return;
-    try {
-        const res = await fetch('/admin/api/interns', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'approve_cert', ids: [intern.db_id] })
-        });
-        const result = await res.json();
-        if (result.status === 'success') {
-            showToast(result.message || `Certificate approved for ${intern.name}`, 'success');
-            closeModal('viewInternModal');
-            fetchInterns();
-        } else if (result.status === 'partial') {
-            showToast(result.message || `Certificate approved but generation had issues for ${intern.name}`, 'info');
-            closeModal('viewInternModal');
-            fetchInterns();
-        } else {
-            showToast(result.message || `Failed to approve certificate for ${intern.name}`, 'error');
-        }
-    } catch (e) { showToast('Network error while approving certificate', 'error'); }
 }
 
 async function cancelCertSingle(id) {
@@ -471,7 +767,7 @@ function renderCertList() {
     list.innerHTML = uncertified.map(intern => `
         <div class="cert-item" data-id="${intern.id}">
             <input type="checkbox" class="cert-check" data-id="${intern.id}">
-            <img src="${intern.photo}" alt="${intern.name}">
+            <img src="${intern.photo}" alt="${intern.name}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent(this.alt);">
             <div class="cert-item-info">
                 <div class="cert-name">${intern.name} <small style="color:#94a3b8">${intern.id}</small></div>
                 <div class="cert-field">${intern.field} · ${intern.duration}</div>
@@ -504,38 +800,6 @@ function selectAllCert() {
 function updateCertCount() {
     const count = document.querySelectorAll('.cert-check:checked').length;
     document.getElementById('certSelectedCount').textContent = count;
-}
-
-async function approveCertificates() {
-    const checked = document.querySelectorAll('.cert-check:checked');
-    if (checked.length === 0) { showToast('Please select at least one intern', 'error'); return; }
-
-    const ids = [];
-    checked.forEach(cb => {
-        const id = cb.getAttribute('data-id');
-        const intern = allInterns.find(i => i.id === id);
-        if (intern) ids.push(intern.db_id);
-    });
-
-    try {
-        const res = await fetch('/admin/api/interns', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'approve_cert', ids: ids })
-        });
-        const result = await res.json();
-        if (result.status === 'success') {
-            closeModal('certModal');
-            showToast(result.message || `Certificates approved for ${checked.length} intern(s)!`, 'success');
-            fetchInterns();
-        } else if (result.status === 'partial') {
-            closeModal('certModal');
-            showToast(result.message || 'Some certificates failed to generate', 'info');
-            fetchInterns();
-        } else {
-            showToast(result.message || 'Error approving certificates', 'error');
-        }
-    } catch (e) { showToast('Network error while approving certificates', 'error'); }
 }
 
 // Export

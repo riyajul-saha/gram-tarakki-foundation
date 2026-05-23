@@ -1195,75 +1195,124 @@ def init_routes(app):
                     return jsonify({"status": "success"})
                     
                 elif action == 'approve_cert':
-                    member_ids = data.get('ids', [])
-                    if member_ids:
-                        import datetime
-                        current_date_db = datetime.datetime.now().strftime('%Y-%m-%d')
-                        current_date_cert = datetime.datetime.now().strftime('%d/%m/%Y')
-                        
-                        format_strings = ','.join(['%s'] * len(member_ids))
-                        query_params = [current_date_db, current_date_db] + member_ids
-                        cursor.execute(f"UPDATE our_intern SET cert_approved = TRUE, end_date = %s, duration = CONCAT(DATEDIFF(%s, start_date), ' Days') WHERE id IN ({format_strings})", tuple(query_params))
-                        conn.commit()
-                        
-                        # Fetch intern details to generate certificates
-                        cursor.execute(f"SELECT intern_id, fullname, start_date FROM our_intern WHERE id IN ({format_strings})", tuple(member_ids))
-                        approved_interns = cursor.fetchall()
-                        from core.certificate_generate import generate_dynamic_certificate
-                        
-                        generated_count = 0
-                        failed_count = 0
-                        errors = []
-                        
-                        for intern in approved_interns:
-                            try:
-                                start_date_obj = intern.get("start_date")
-                                start_date_str = ""
-                                if start_date_obj:
-                                    if hasattr(start_date_obj, 'strftime'):
-                                        start_date_str = start_date_obj.strftime("%d/%m/%Y")
-                                    elif isinstance(start_date_obj, str):
-                                        try:
-                                            parsed = datetime.datetime.strptime(start_date_obj, "%Y-%m-%d")
-                                            start_date_str = parsed.strftime("%d/%m/%Y")
-                                        except:
-                                            start_date_str = start_date_obj
-                                            
-                                cert_data = {
-                                    "cert_id": intern.get("intern_id"),
-                                    "student_name": intern.get("fullname"),
-                                    "start_date": start_date_str,
-                                    "end_date": current_date_cert,
-                                    "verify_link": f"www.gtfoundations.in/certificate/{intern.get('intern_id')}"
-                                }
-                                generate_dynamic_certificate(cert_data)
-                                generated_count += 1
-                            except Exception as e:
-                                failed_count += 1
-                                error_msg = f"{intern.get('fullname', 'Unknown')} ({intern.get('intern_id', 'N/A')}): {str(e)}"
-                                errors.append(error_msg)
-                                print(f"Error generating certificate for {intern.get('intern_id')}: {e}")
-                        
-                        # Build response with generation results
-                        if failed_count == 0:
-                            return jsonify({
-                                "status": "success",
-                                "message": f"Certificates approved and generated for {generated_count} intern(s)"
-                            })
-                        elif generated_count > 0:
-                            return jsonify({
-                                "status": "partial",
-                                "message": f"{generated_count} certificate(s) generated, {failed_count} failed",
-                                "errors": errors
-                            })
-                        else:
-                            return jsonify({
-                                "status": "error",
-                                "message": f"Certificate approval saved but all {failed_count} certificate(s) failed to generate",
-                                "errors": errors
-                            }), 500
+                    # Get IDs from form data (JSON string) or JSON body
+                    if request.form:
+                        import json as json_mod
+                        member_ids = json_mod.loads(data.get('ids', '[]'))
                     else:
+                        member_ids = data.get('ids', [])
+                    
+                    if not member_ids:
                         return jsonify({"status": "error", "message": "No intern IDs provided"}), 400
+                    
+                    # Handle signature file uploads
+                    import uuid as uuid_mod
+                    import os
+                    temp_sig_dir = os.path.join(app.root_path, 'data', 'certificate_data', 'temp_signatures')
+                    os.makedirs(temp_sig_dir, exist_ok=True)
+                    
+                    mentor_sig_path = None
+                    head_sig_path = None
+                    
+                    if 'mentor_signature' in request.files:
+                        file = request.files['mentor_signature']
+                        if file and file.filename != '':
+                            unique_name = f"mentor_{uuid_mod.uuid4().hex}.png"
+                            mentor_sig_path = os.path.join(temp_sig_dir, unique_name)
+                            file.save(mentor_sig_path)
+                    
+                    if 'head_signature' in request.files:
+                        file = request.files['head_signature']
+                        if file and file.filename != '':
+                            unique_name = f"head_{uuid_mod.uuid4().hex}.png"
+                            head_sig_path = os.path.join(temp_sig_dir, unique_name)
+                            file.save(head_sig_path)
+                    
+                    if not mentor_sig_path or not head_sig_path:
+                        # Cleanup any uploaded file
+                        if mentor_sig_path and os.path.exists(mentor_sig_path):
+                            os.remove(mentor_sig_path)
+                        if head_sig_path and os.path.exists(head_sig_path):
+                            os.remove(head_sig_path)
+                        return jsonify({"status": "error", "message": "Both Mentor and Head of Event signatures are required"}), 400
+                    
+                    import datetime
+                    current_date_db = datetime.datetime.now().strftime('%Y-%m-%d')
+                    current_date_cert = datetime.datetime.now().strftime('%d/%m/%Y')
+                    
+                    format_strings = ','.join(['%s'] * len(member_ids))
+                    query_params = [current_date_db, current_date_db] + member_ids
+                    cursor.execute(f"UPDATE our_intern SET cert_approved = TRUE, end_date = %s, duration = CONCAT(DATEDIFF(%s, start_date), ' Days') WHERE id IN ({format_strings})", tuple(query_params))
+                    conn.commit()
+                    
+                    # Fetch intern details to generate certificates
+                    cursor.execute(f"SELECT intern_id, fullname, start_date FROM our_intern WHERE id IN ({format_strings})", tuple(member_ids))
+                    approved_interns = cursor.fetchall()
+                    from core.certificate_generate import generate_dynamic_certificate
+                    
+                    generated_count = 0
+                    failed_count = 0
+                    errors = []
+                    
+                    for intern in approved_interns:
+                        try:
+                            start_date_obj = intern.get("start_date")
+                            start_date_str = ""
+                            if start_date_obj:
+                                if hasattr(start_date_obj, 'strftime'):
+                                    start_date_str = start_date_obj.strftime("%d/%m/%Y")
+                                elif isinstance(start_date_obj, str):
+                                    try:
+                                        parsed = datetime.datetime.strptime(start_date_obj, "%Y-%m-%d")
+                                        start_date_str = parsed.strftime("%d/%m/%Y")
+                                    except:
+                                        start_date_str = start_date_obj
+                                        
+                            cert_data = {
+                                "cert_id": intern.get("intern_id"),
+                                "student_name": intern.get("fullname"),
+                                "start_date": start_date_str,
+                                "end_date": current_date_cert,
+                                "verify_link": f"www.gtfoundations.in/certificate/{intern.get('intern_id')}"
+                            }
+                            generate_dynamic_certificate(cert_data, mentor_sig_path=mentor_sig_path, head_sig_path=head_sig_path)
+                            generated_count += 1
+                        except Exception as e:
+                            failed_count += 1
+                            error_msg = f"{intern.get('fullname', 'Unknown')} ({intern.get('intern_id', 'N/A')}): {str(e)}"
+                            errors.append(error_msg)
+                            print(f"Error generating certificate for {intern.get('intern_id')}: {e}")
+                    
+                    # Cleanup: Delete temporary signature files
+                    try:
+                        if mentor_sig_path and os.path.exists(mentor_sig_path):
+                            os.remove(mentor_sig_path)
+                        if head_sig_path and os.path.exists(head_sig_path):
+                            os.remove(head_sig_path)
+                        # Remove temp directory if empty
+                        if os.path.exists(temp_sig_dir) and not os.listdir(temp_sig_dir):
+                            os.rmdir(temp_sig_dir)
+                    except Exception as cleanup_err:
+                        print(f"Warning: Could not cleanup temp signatures: {cleanup_err}")
+                    
+                    # Build response with generation results
+                    if failed_count == 0:
+                        return jsonify({
+                            "status": "success",
+                            "message": f"Certificates approved and generated for {generated_count} intern(s)"
+                        })
+                    elif generated_count > 0:
+                        return jsonify({
+                            "status": "partial",
+                            "message": f"{generated_count} certificate(s) generated, {failed_count} failed",
+                            "errors": errors
+                        })
+                    else:
+                        return jsonify({
+                            "status": "error",
+                            "message": f"Certificate approval saved but all {failed_count} certificate(s) failed to generate",
+                            "errors": errors
+                        }), 500
 
                 elif action == 'cancel_cert':
                     member_ids = data.get('ids', [])

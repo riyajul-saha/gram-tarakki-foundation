@@ -1,15 +1,77 @@
+/* ═══════════════════════════════════════════════════════════
+   CAREER PAGE — Premium JS
+   ═══════════════════════════════════════════════════════════ */
+
 let jobs = [];
 
-// Fetch job data from JSON file
+// ── Fetch job data ──────────────────────────────────────────
 fetch('/api/data/career.json')
     .then(response => response.json())
     .then(data => {
         jobs = data;
         renderJobs();
+        initScrollAnimations();
     })
     .catch(error => console.error('Error fetching jobs data:', error));
 
-// Render jobs based on filters
+// ── Department icon map ─────────────────────────────────────
+const DEPT_ICONS = {
+    'Tech': 'fas fa-laptop-code',
+    'Education': 'fas fa-graduation-cap',
+    'Marketing': 'fas fa-bullhorn',
+    'Operations': 'fas fa-cogs',
+    'default': 'fas fa-briefcase'
+};
+
+function getDeptIcon(dept) {
+    return DEPT_ICONS[dept] || DEPT_ICONS['default'];
+}
+
+// ── Tag color helper ────────────────────────────────────────
+function getTagClass(tag, job) {
+    const t = tag.toLowerCase();
+    if (t === job.department?.toLowerCase()) return 'tag-dept';
+    if (t === job.type?.toLowerCase()) return 'tag-type';
+    if (t === job.location?.toLowerCase()) return 'tag-location';
+    return 'tag-default';
+}
+
+// ── Date formatting helpers ─────────────────────────────────
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d)) return dateStr;
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function getRelativeDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d)) return dateStr;
+    const now = new Date();
+    const diffMs = now - d;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return formatDate(dateStr);
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+    return formatDate(dateStr);
+}
+
+function getDaysUntil(dateStr) {
+    if (!dateStr) return null;
+    const d = new Date(dateStr);
+    if (isNaN(d)) return null;
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    d.setHours(0, 0, 0, 0);
+    return Math.ceil((d - now) / (1000 * 60 * 60 * 24));
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDER JOB CARDS
+// ══════════════════════════════════════════════════════════
 function renderJobs() {
     const search = document.getElementById('searchInput').value.toLowerCase();
     const dept = document.getElementById('deptFilter').value;
@@ -28,107 +90,306 @@ function renderJobs() {
     });
 
     const container = document.getElementById('jobsContainer');
+
     if (filtered.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No jobs match your criteria.</p>';
+        container.innerHTML = `
+            <div class="no-jobs-message">
+                <i class="fas fa-search"></i>
+                <h3>No positions found</h3>
+                <p>Try adjusting your filters or check back later for new openings.</p>
+            </div>
+        `;
         return;
     }
+
     let html = '';
-    filtered.forEach(job => {
+    filtered.forEach((job, index) => {
+        const deptIcon = getDeptIcon(job.department);
+        const daysLeft = getDaysUntil(job.deadline);
+        const isClosed = job.status === 'closed';
+
+        // Build tags — use department, type, and location as auto-tags if tags array is empty
+        let tagsHtml = '';
+        if (job.tags && job.tags.length > 0) {
+            tagsHtml = job.tags.map(t => `<span class="tag ${getTagClass(t, job)}">${t}</span>`).join('');
+        } else {
+            // Auto-generate tags from department, type, location
+            const autoTags = [];
+            if (job.department) autoTags.push(`<span class="tag tag-dept">${job.department}</span>`);
+            if (job.type) autoTags.push(`<span class="tag tag-type">${job.type}</span>`);
+            if (job.location) autoTags.push(`<span class="tag tag-location">${job.location}</span>`);
+            tagsHtml = autoTags.join('');
+        }
+
+        // Deadline display
+        let deadlineHtml = '';
+        if (job.deadline) {
+            if (isClosed) {
+                deadlineHtml = `<span class="job-deadline"><i class="fas fa-lock"></i> Closed</span>`;
+            } else if (daysLeft !== null && daysLeft >= 0) {
+                deadlineHtml = `<span class="job-deadline"><i class="fas fa-clock"></i> ${daysLeft === 0 ? 'Last day!' : daysLeft + ' days left'}</span>`;
+            } else if (daysLeft !== null && daysLeft < 0) {
+                deadlineHtml = `<span class="job-deadline"><i class="fas fa-calendar-check"></i> Deadline passed</span>`;
+            }
+        }
+        if (job.posted) {
+            deadlineHtml += `<span class="job-deadline"><i class="fas fa-calendar-plus"></i> Posted ${getRelativeDate(job.posted)}</span>`;
+        }
+
         html += `
-                    <div class="job-card">
-                        <div class="job-tags">
-                            ${job.tags.map(t => `<span class="tag">${t}</span>`).join('')}
-                        </div>
-                        <h3 class="job-title">${job.title}</h3>
-                        <div class="job-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${job.location}</span>
-                            <span><i class="fas fa-briefcase"></i> ${job.type}</span>
-                            <span><i class="fas fa-rupee-sign"></i> ${job.salary}</span>
-                        </div>
-                        <div class="job-desc">${job.desc}</div>
-                        <div class="job-buttons">
-                            <button class="btn btn-outline" onclick="showJobDetails(${job.id})">View Details</button>
-                            <button class="btn" onclick="openApplyModal(${job.id}, '${job.title.replace(/'/g, "\\'")}')">Apply Now</button>
-                        </div>
+            <div class="job-card animate-on-scroll" style="transition-delay: ${index * 0.08}s">
+                <div class="job-card-header">
+                    <div class="job-icon">
+                        <i class="${deptIcon}"></i>
                     </div>
-                `;
+                    <div class="job-card-header-text">
+                        <div class="job-tags">${tagsHtml}</div>
+                        <h3 class="job-title">${job.title}</h3>
+                    </div>
+                </div>
+                <div class="job-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> ${job.location}</span>
+                    <span><i class="fas fa-briefcase"></i> ${job.type}</span>
+                    <span><i class="fas fa-rupee-sign"></i> ${job.salary}</span>
+                </div>
+                <div class="job-desc">${job.desc}</div>
+                <div class="job-card-footer">
+                    <div>${deadlineHtml}</div>
+                    <div class="job-buttons">
+                        <button class="btn btn-outline" onclick="showJobDetails(${job.id})">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                        <button class="btn" onclick="openApplyModal(${job.id}, '${job.title.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-paper-plane"></i> Apply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
     });
     container.innerHTML = html;
+
+    // Re-trigger scroll animation for newly rendered cards
+    initScrollAnimations();
 }
 
-// Job details modal
+// ══════════════════════════════════════════════════════════
+// VIEW DETAILS MODAL — Premium Popup
+// ══════════════════════════════════════════════════════════
 function showJobDetails(id) {
     const job = jobs.find(j => j.id === id);
     if (!job) return;
+
     const modal = document.getElementById('jobModal');
     const content = document.getElementById('jobModalContent');
+
+    const isClosed = job.status === 'closed';
+    const daysLeft = getDaysUntil(job.deadline);
+
+    // Build status badges
+    let statusBadges = '';
+    if (isClosed) {
+        statusBadges += `<span class="status-badge status-closed"><i class="fas fa-lock"></i> Closed</span>`;
+    } else {
+        statusBadges += `<span class="status-badge status-active">Actively Hiring</span>`;
+    }
+    if (job.deadline) {
+        if (daysLeft !== null && daysLeft >= 0 && !isClosed) {
+            statusBadges += `<span class="status-badge status-deadline"><i class="fas fa-clock"></i> ${daysLeft === 0 ? 'Last day to apply!' : daysLeft + ' days left'}</span>`;
+        }
+    }
+    if (job.posted) {
+        statusBadges += `<span class="status-badge" style="background:#f0f4f1;color:#5a6b5c;"><i class="fas fa-calendar-plus"></i> Posted ${formatDate(job.posted)}</span>`;
+    }
+
+    // Build responsibilities
+    let responsibilitiesHtml = '';
+    if (job.responsibilities && job.responsibilities.length > 0) {
+        responsibilitiesHtml = `
+            <h4 class="modal-section-title">
+                <i class="fas fa-tasks"></i> Responsibilities
+            </h4>
+            <ul class="modal-list">
+                ${job.responsibilities.map(r => `<li>${r}</li>`).join('')}
+            </ul>
+        `;
+    }
+
+    // Build requirements
+    let requirementsHtml = '';
+    if (job.requirements && job.requirements.length > 0) {
+        requirementsHtml = `
+            <h4 class="modal-section-title">
+                <i class="fas fa-check-circle"></i> Requirements
+            </h4>
+            <ul class="modal-list">
+                ${job.requirements.map(r => `<li>${r}</li>`).join('')}
+            </ul>
+        `;
+    }
+
     content.innerHTML = `
-                <h2>${job.title}</h2>
-                <p><strong>Location:</strong> ${job.location}</p>
-                <p><strong>Department:</strong> ${job.department}</p>
-                <p><strong>Job Type:</strong> ${job.type}</p>
-                <p><strong>Salary:</strong> ${job.salary}</p>
-                <p><strong>Posted:</strong> ${job.posted}</p>
-                <h3>About Role</h3>
-                <p>${job.desc}</p>
-                <h3>Responsibilities</h3>
-                <ul>
-                    ${job.responsibilities ? job.responsibilities.map(r => `<li>${r}</li>`).join('') : ''}
-                </ul>
-                <h3>Requirements</h3>
-                <ul>
-                    ${job.requirements ? job.requirements.map(r => `<li>${r}</li>`).join('') : ''}
-                </ul>
-                <button class="btn" onclick="openApplyModal(${job.id}, '${job.title.replace(/'/g, "\\'")}')">Apply Now</button>
-            `;
+        <!-- Modal Header / Banner -->
+        <div class="modal-job-header">
+            <h2 class="modal-job-title">${job.title}</h2>
+            <div class="modal-job-meta">
+                <span class="modal-meta-item"><i class="fas fa-map-marker-alt"></i> ${job.location}</span>
+                <span class="modal-meta-item"><i class="fas fa-building"></i> ${job.department}</span>
+                <span class="modal-meta-item"><i class="fas fa-briefcase"></i> ${job.type}</span>
+                <span class="modal-meta-item"><i class="fas fa-rupee-sign"></i> ${job.salary}</span>
+            </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-job-body">
+            <!-- Status Badges -->
+            <div class="modal-status-row">
+                ${statusBadges}
+            </div>
+
+            <!-- About Role -->
+            <h4 class="modal-section-title">
+                <i class="fas fa-info-circle"></i> About This Role
+            </h4>
+            <div class="modal-about-text">${job.desc}</div>
+
+            ${responsibilitiesHtml}
+            ${requirementsHtml}
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-job-footer">
+            <button class="btn" onclick="openApplyModal(${job.id}, '${job.title.replace(/'/g, "\\'")}')">
+                <i class="fas fa-paper-plane"></i> Apply for This Role
+            </button>
+            <button class="btn btn-outline" onclick="closeJobModal()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button class="modal-share-btn" onclick="shareJob(${job.id})" title="Copy link">
+                <i class="fas fa-share-alt"></i>
+            </button>
+        </div>
+    `;
+
     modal.classList.add('active');
+
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = 'hidden';
 }
 
 function closeJobModal() {
     document.getElementById('jobModal').classList.remove('active');
+    document.body.style.overflow = '';
 }
 
-// Apply modal
+// ── Share job ───────────────────────────────────────────────
+function shareJob(id) {
+    const job = jobs.find(j => j.id === id);
+    if (!job) return;
+
+    const url = window.location.origin + '/career#open-positions';
+    const text = `Check out this ${job.type} position: ${job.title} at Gram Tarakki Foundation — ${url}`;
+
+    if (navigator.share) {
+        navigator.share({ title: job.title, text: text, url: url })
+            .catch(() => fallbackCopy(url));
+    } else {
+        fallbackCopy(url);
+    }
+}
+
+function fallbackCopy(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Link copied to clipboard!');
+    }).catch(() => {
+        showToast('Could not copy link');
+    });
+}
+
+// ── Toast notification ──────────────────────────────────────
+function showToast(message) {
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #1a2e1d;
+        color: white;
+        padding: 12px 28px;
+        border-radius: 14px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        z-index: 3000;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        opacity: 0;
+        transition: all 0.35s cubic-bezier(.4,0,.2,1);
+        font-family: 'Inter', sans-serif;
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+        setTimeout(() => toast.remove(), 350);
+    }, 2500);
+}
+
+// ══════════════════════════════════════════════════════════
+// APPLY MODAL
+// ══════════════════════════════════════════════════════════
 function openApplyModal(jobId, jobTitle) {
-    // Check if the job is closed before opening apply form
     const job = jobs.find(j => j.id === jobId);
     if (job && job.status === 'closed') {
         showJobClosedPopup(jobTitle);
         return;
     }
 
+    // Close job details modal first if open
+    closeJobModal();
+
     document.getElementById('applyJobTitle').innerText = jobTitle;
     document.getElementById('applyJobId').value = jobId;
     document.getElementById('applyModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 function showJobClosedPopup(jobTitle) {
-    // Remove any existing popup
     const existing = document.getElementById('jobClosedOverlay');
     if (existing) existing.remove();
 
     const overlay = document.createElement('div');
     overlay.id = 'jobClosedOverlay';
-    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.65);z-index:2000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);animation:fadeIn .3s ease;padding:20px';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,20,0.6);z-index:2000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:fadeIn .3s ease;padding:20px';
 
     const popup = document.createElement('div');
-    popup.style.cssText = 'background:white;border-radius:24px;padding:44px 36px;text-align:center;max-width:460px;width:100%;box-shadow:0 25px 60px rgba(0,0,0,0.2);animation:modalFadeIn .4s ease';
+    popup.style.cssText = 'background:white;border-radius:24px;padding:44px 36px;text-align:center;max-width:460px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,0.2);animation:modalSlideIn .45s cubic-bezier(.4,0,.2,1)';
     popup.innerHTML = `
-        <div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#fef2f2,#fee2e2);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;animation:pulseIcon 1.8s ease infinite">
+        <div style="width:76px;height:76px;border-radius:20px;background:linear-gradient(135deg,#fef2f2,#fee2e2);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;animation:pulseIcon 1.8s ease infinite">
             <i class="fas fa-lock" style="font-size:1.8rem;color:#dc2626;"></i>
         </div>
-        <h3 style="font-size:1.45rem;margin-bottom:8px;color:#1e293b;font-weight:700;">Position Closed</h3>
-        <p style="color:#64748b;margin-bottom:6px;font-size:0.95rem;line-height:1.7;">
-            Sorry, the position <strong style="color:#1e293b;">${jobTitle}</strong> is currently not accepting applications.
+        <h3 style="font-size:1.45rem;margin-bottom:8px;color:#1a2e1d;font-weight:700;font-family:'Poppins',sans-serif;">Position Closed</h3>
+        <p style="color:#5a6b5c;margin-bottom:6px;font-size:0.95rem;line-height:1.7;">
+            Sorry, the position <strong style="color:#1a2e1d;">${jobTitle}</strong> is currently not accepting applications.
         </p>
-        <p style="color:#94a3b8;font-size:0.88rem;line-height:1.6;margin-bottom:28px;">
+        <p style="color:#94a396;font-size:0.88rem;line-height:1.6;margin-bottom:28px;">
             This role may re-open soon. Please explore other openings or check back in a few days.
         </p>
         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-            <button onclick="document.getElementById('jobClosedOverlay').remove()" class="btn btn-outline" style="padding:11px 28px;border-radius:12px;font-weight:600;">
+            <button onclick="document.getElementById('jobClosedOverlay').remove()" class="btn btn-outline" style="padding:11px 28px;border-radius:14px;font-weight:600;">
                 <i class="fas fa-arrow-left"></i> Go Back
             </button>
-            <button onclick="document.getElementById('jobClosedOverlay').remove();window.scrollTo({top:document.getElementById('jobsContainer').offsetTop-100,behavior:'smooth'})" class="btn" style="padding:11px 28px;border-radius:12px;font-weight:600;">
+            <button onclick="document.getElementById('jobClosedOverlay').remove();window.scrollTo({top:document.getElementById('jobsContainer').offsetTop-100,behavior:'smooth'})" class="btn" style="padding:11px 28px;border-radius:14px;font-weight:600;">
                 <i class="fas fa-search"></i> Browse Jobs
             </button>
         </div>
@@ -137,7 +398,6 @@ function showJobClosedPopup(jobTitle) {
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
 
-    // Close on overlay click
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
 
     // Inject keyframe if not already present
@@ -152,10 +412,6 @@ function showJobClosedPopup(jobTitle) {
             @keyframes fadeIn {
                 from { opacity: 0; } to { opacity: 1; }
             }
-            @keyframes modalFadeIn {
-                from { opacity: 0; transform: translateY(20px) scale(0.96); }
-                to { opacity: 1; transform: translateY(0) scale(1); }
-            }
         `;
         document.head.appendChild(style);
     }
@@ -163,17 +419,16 @@ function showJobClosedPopup(jobTitle) {
 
 function closeApplyModal() {
     document.getElementById('applyModal').classList.remove('active');
+    document.body.style.overflow = '';
     resetFileUploads();
 }
 
 function resetFileUploads() {
-    // Reset resume upload area
     const resumeArea = document.getElementById('resumeUploadArea');
     if (resumeArea) {
         resumeArea.classList.remove('uploaded');
         document.getElementById('resumeFileName').innerHTML = 'Click to upload your resume';
     }
-    // Reset photo upload area
     const photoArea = document.getElementById('photoUploadArea');
     if (photoArea) {
         photoArea.classList.remove('uploaded');
@@ -181,10 +436,12 @@ function resetFileUploads() {
     }
 }
 
-// Allowed image types (SVG blocked to prevent XSS)
+// ══════════════════════════════════════════════════════════
+// FILE UPLOAD VALIDATION
+// ══════════════════════════════════════════════════════════
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-const MAX_PHOTO_SIZE_KB = 100;   // 100 KB
-const MAX_RESUME_SIZE_MB = 1;    // 1 MB
+const MAX_PHOTO_SIZE_KB = 100;
+const MAX_RESUME_SIZE_MB = 1;
 
 document.getElementById('resume')?.addEventListener('change', function () {
     const area = document.getElementById('resumeUploadArea');
@@ -216,7 +473,6 @@ document.getElementById('photo')?.addEventListener('change', function () {
         const file = this.files[0];
         const fileSizeKB = file.size / 1024;
 
-        // Block SVG and non-allowed types
         if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
             alert('Only JPG, PNG and WebP images are allowed. SVG files are not permitted for security reasons.');
             this.value = '';
@@ -241,13 +497,16 @@ document.getElementById('photo')?.addEventListener('change', function () {
     }
 });
 
+// ══════════════════════════════════════════════════════════
+// FORM SUBMISSION
+// ══════════════════════════════════════════════════════════
 async function handleApply(e) {
     e.preventDefault();
     const form = document.getElementById('applicationForm');
     const submitBtn = document.getElementById('applySubmitBtn');
     const originalHTML = submitBtn.innerHTML;
 
-    // --- Pre-submit file validation ---
+    // Pre-submit file validation
     const photoInput = document.getElementById('photo');
     if (photoInput && photoInput.files.length > 0) {
         const photo = photoInput.files[0];
@@ -267,7 +526,6 @@ async function handleApply(e) {
             return;
         }
     }
-    // --- End pre-submit validation ---
 
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
     submitBtn.disabled = true;
@@ -298,31 +556,38 @@ async function handleApply(e) {
 }
 
 function showSuccessPopup() {
-    // Create overlay
     const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:2000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .3s ease';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,20,0.6);z-index:2000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:fadeIn .3s ease;padding:20px';
     const popup = document.createElement('div');
-    popup.style.cssText = 'background:white;border-radius:24px;padding:40px;text-align:center;max-width:420px;width:90%;animation:modalFadeIn .4s ease';
+    popup.style.cssText = 'background:white;border-radius:24px;padding:44px 36px;text-align:center;max-width:440px;width:90%;animation:modalSlideIn .45s cubic-bezier(.4,0,.2,1);box-shadow:0 30px 80px rgba(0,0,0,0.2)';
     popup.innerHTML = `
-        <div style="width:70px;height:70px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+        <div style="width:76px;height:76px;border-radius:20px;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;">
             <i class="fas fa-check" style="font-size:2rem;color:#2E7D32;"></i>
         </div>
-        <h3 style="font-size:1.5rem;margin-bottom:10px;color:#1a1a1a;">Application Sent!</h3>
-        <p style="color:#666;margin-bottom:24px;line-height:1.6;">Your application has been submitted successfully.<br>We will review it and get back to you soon.</p>
-        <button onclick="this.closest('div[style]').parentElement.remove()" class="btn" style="padding:12px 40px;">Got it!</button>
+        <h3 style="font-size:1.5rem;margin-bottom:10px;color:#1a2e1d;font-family:'Poppins',sans-serif;font-weight:700;">Application Sent!</h3>
+        <p style="color:#5a6b5c;margin-bottom:24px;line-height:1.7;font-size:0.95rem;">Your application has been submitted successfully.<br>We will review it and get back to you soon.</p>
+        <button onclick="this.closest('div[style]').parentElement.remove()" class="btn" style="padding:13px 40px;border-radius:14px;">Got it!</button>
     `;
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
 }
 
-// FAQ toggle
+// ══════════════════════════════════════════════════════════
+// FAQ TOGGLE
+// ══════════════════════════════════════════════════════════
 function toggleFaq(element) {
     const item = element.closest('.faq-item');
+    // Close other open FAQs
+    document.querySelectorAll('.faq-item.active').forEach(el => {
+        if (el !== item) el.classList.remove('active');
+    });
     item.classList.toggle('active');
 }
 
-// Filter event listeners
+// ══════════════════════════════════════════════════════════
+// FILTER EVENT LISTENERS
+// ══════════════════════════════════════════════════════════
 document.getElementById('searchInput').addEventListener('input', renderJobs);
 document.getElementById('deptFilter').addEventListener('change', renderJobs);
 document.getElementById('typeFilter').addEventListener('change', renderJobs);
@@ -335,5 +600,41 @@ renderJobs();
 window.addEventListener('click', function (e) {
     if (e.target.classList.contains('modal')) {
         e.target.classList.remove('active');
+        document.body.style.overflow = '';
     }
 });
+
+// Close modals on Escape key
+window.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.active').forEach(modal => {
+            modal.classList.remove('active');
+        });
+        document.body.style.overflow = '';
+        const closedOverlay = document.getElementById('jobClosedOverlay');
+        if (closedOverlay) closedOverlay.remove();
+    }
+});
+
+// ══════════════════════════════════════════════════════════
+// SCROLL ANIMATIONS (Intersection Observer)
+// ══════════════════════════════════════════════════════════
+function initScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        if (!el.classList.contains('is-visible')) {
+            observer.observe(el);
+        }
+    });
+}
+
+// Initialize animations on page load
+document.addEventListener('DOMContentLoaded', initScrollAnimations);

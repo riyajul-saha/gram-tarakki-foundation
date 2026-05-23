@@ -352,6 +352,95 @@
     <span id="toastMessage">Action completed</span>
 </div>
 
+<!-- Signature Upload Modal -->
+<div id="signatureModal" class="modal">
+    <div class="modal-content signature-modal">
+        <span class="close-modal" onclick="closeModal('signatureModal')">&times;</span>
+        <div class="modal-header-icon">
+            <div class="modal-icon-circle" style="background: linear-gradient(135deg, #10b981, #059669)"><i class="fas fa-file-signature"></i></div>
+            <div>
+                <h2>Upload Signatures</h2>
+                <p class="modal-subtitle">Upload mentor & head of event signatures for certificates</p>
+            </div>
+        </div>
+
+        <div class="sig-intern-summary">
+            <div class="summary-icon"><i class="fas fa-users"></i></div>
+            <div class="summary-text">Generating certificates for <span id="sigInternCount">0</span> intern(s)</div>
+        </div>
+
+        <div class="sig-upload-section">
+            <div class="sig-upload-group">
+                <label><i class="fas fa-chalkboard-teacher"></i> Mentor's Signature <span class="required-star">*</span></label>
+                <div class="sig-upload-zone" id="mentorSigZone" ondragover="handleSigDragOver(event)" ondragleave="handleSigDragLeave(event)" ondrop="handleSigDrop(event, 'mentor')" onclick="document.getElementById('mentorSigInput').click()">
+                    <input type="file" id="mentorSigInput" accept="image/png,image/jpeg,image/webp" onchange="handleSigSelect(event, 'mentor')">
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="upload-text"><strong>Click to upload</strong> or drag & drop</div>
+                    <div class="upload-hint">PNG, JPG or WEBP (signature image)</div>
+                </div>
+            </div>
+            <div class="sig-upload-group">
+                <label><i class="fas fa-user-tie"></i> Head of Event's Signature <span class="required-star">*</span></label>
+                <div class="sig-upload-zone" id="headSigZone" ondragover="handleSigDragOver(event)" ondragleave="handleSigDragLeave(event)" ondrop="handleSigDrop(event, 'head')" onclick="document.getElementById('headSigInput').click()">
+                    <input type="file" id="headSigInput" accept="image/png,image/jpeg,image/webp" onchange="handleSigSelect(event, 'head')">
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="upload-text"><strong>Click to upload</strong> or drag & drop</div>
+                    <div class="upload-hint">PNG, JPG or WEBP (signature image)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sig-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeSignatureModal()"><i class="fas fa-times"></i> Cancel</button>
+            <button type="button" class="btn btn-success" id="sigConfirmBtn" onclick="confirmCertApproval()"><i class="fas fa-certificate"></i> Confirm & Generate</button>
+        </div>
+    </div>
+</div>
+
+<!-- Certificate Generation Overlay -->
+<div id="certGenOverlay" class="cert-gen-overlay">
+    <div class="cert-gen-card">
+        <div class="gen-particles">
+            <div class="gen-particle"></div>
+            <div class="gen-particle"></div>
+            <div class="gen-particle"></div>
+            <div class="gen-particle"></div>
+            <div class="gen-particle"></div>
+        </div>
+
+        <!-- Generating State -->
+        <div class="gen-generating-state" id="genGeneratingState">
+            <div class="gen-icon-container">
+                <div class="gen-spinner-ring"></div>
+                <div class="gen-icon-bg"><i class="fas fa-certificate"></i></div>
+            </div>
+            <div class="gen-title">Generating Certificates</div>
+            <div class="gen-subtitle">Creating certificate for <span class="gen-current-name" id="genCurrentName">...</span></div>
+            <div class="gen-progress-wrapper">
+                <div class="gen-progress-bar">
+                    <div class="gen-progress-fill" id="genProgressFill"></div>
+                </div>
+                <div class="gen-progress-info">
+                    <span id="genProgressText">0 of 0 completed</span>
+                    <span class="gen-progress-percent" id="genProgressPercent">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success State -->
+        <div class="gen-success-state" id="genSuccessState">
+            <div class="confetti-container" id="confettiContainer"></div>
+            <div class="success-icon-container">
+                <div class="success-checkmark-ring"></div>
+                <div class="success-icon-bg"><i class="fas fa-check"></i></div>
+            </div>
+            <div class="success-title">Certificates Generated!</div>
+            <div class="success-subtitle" id="genSuccessMessage">All <strong>0</strong> certificates have been successfully created and are ready to view.</div>
+            <button class="success-close-btn" onclick="closeGenOverlay()"><i class="fas fa-thumbs-up"></i> Awesome, Done!</button>
+        </div>
+    </div>
+</div>
+
 <!-- Confirm Modal -->
 <div id="confirmModal" class="modal">
     <div class="modal-content" style="max-width: 420px;">

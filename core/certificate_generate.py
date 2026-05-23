@@ -5,7 +5,7 @@ import textwrap
 import json
 import os
 
-def generate_dynamic_certificate(data):
+def generate_dynamic_certificate(data, mentor_sig_path=None, head_sig_path=None):
     # Setup paths
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(current_dir)
@@ -146,13 +146,15 @@ def generate_dynamic_certificate(data):
         sig_height = int(img_height * 0.10) # Increased from 8% to 10%
         
         # Head Signature (Above the line on the left)
-        head_sig = Image.open(os.path.join(data_dir, "head_signature.png")).convert("RGBA")
+        head_sig_file = head_sig_path if head_sig_path else os.path.join(data_dir, "head_signature.png")
+        head_sig = Image.open(head_sig_file).convert("RGBA")
         head_sig = head_sig.resize((sig_width, sig_height))
         # Signature Y position is fine as dotted line is at the same place
         img.paste(head_sig, (int(img_width * 0.15), int(img_height * 0.72)), mask=head_sig)
 
         # Mentor Signature (Above the line on the right)
-        mentor_sig = Image.open(os.path.join(data_dir, "mentor_signature.png")).convert("RGBA")
+        mentor_sig_file = mentor_sig_path if mentor_sig_path else os.path.join(data_dir, "mentor_signature.png")
+        mentor_sig = Image.open(mentor_sig_file).convert("RGBA")
         mentor_sig = mentor_sig.resize((sig_width, sig_height))
         img.paste(mentor_sig, (int(img_width * 0.65), int(img_height * 0.72)), mask=mentor_sig)
     except FileNotFoundError:
