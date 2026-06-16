@@ -42,7 +42,9 @@ def _send_via_google_script(email, subject, html_body):
     except Exception as e:
         print(f"Exception during Google Script email fallback: {e}", flush=True)
 
-def send_email_async(email, html_body, subject="Application Received – Gram Tarakki Foundation"):
+import threading
+
+def _send_email_sync(email, html_body, subject):
     try:
         print(f"Starting to send email to {email}...", flush=True)
         gmail_user = os.getenv("GMAIL")
@@ -74,3 +76,12 @@ def send_email_async(email, html_body, subject="Application Received – Gram Ta
     except Exception as e:
         print(f"SMTP failed or timed out ({e}). Falling back to Google Script...", flush=True)
         _send_via_google_script(email, subject, html_body)
+
+def send_email_async(email, html_body, subject="Application Received – Gram Tarakki Foundation"):
+    """
+    Sends an email in a background thread so the HTTP response isn't blocked.
+    Daemon is set to True so it doesn't prevent the server from shutting down.
+    """
+    thread = threading.Thread(target=_send_email_sync, args=(email, html_body, subject))
+    thread.daemon = True
+    thread.start()
