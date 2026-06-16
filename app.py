@@ -1,6 +1,6 @@
 import os
 from datetime import timedelta
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from dotenv import load_dotenv
 
 # Load environment variables from .env file (if it exists)
