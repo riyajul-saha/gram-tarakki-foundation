@@ -746,13 +746,63 @@ def init_routes(app):
     # UTILITY ROUTES
     # ==========================================================================
 
+    @app.route("/api/jobs", methods=["GET"])
+    def get_jobs():
+        """
+        Public API to get all jobs from the database.
+        """
+        try:
+            conn = get_db_connection()
+            if not conn:
+                return jsonify({"status": "error", "message": "Database error"}), 500
+            
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM career_details")
+            jobs = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            
+            import json
+            formatted_jobs = []
+            for job in jobs:
+                formatted_job = {
+                    "id": job["id"],
+                    "title": job["title"],
+                    "department": job["department"],
+                    "type": job["job_type"],
+                    "location": job["location"],
+                    "salary": job["salary"],
+                    "desc": job["description"],
+                    "status": job["status"]
+                }
+                
+                # Parse JSON fields
+                for field in ["responsibilities", "requirements", "tags"]:
+                    try:
+                        formatted_job[field] = json.loads(job[field]) if job[field] else []
+                    except json.JSONDecodeError:
+                        formatted_job[field] = []
+                        
+                # Format dates
+                if job.get("deadline"):
+                    formatted_job["deadline"] = job["deadline"].strftime("%Y-%m-%d")
+                if job.get("posted"):
+                    formatted_job["posted"] = job["posted"].strftime("%Y-%m-%d")
+                    
+                formatted_jobs.append(formatted_job)
+                
+            return jsonify(formatted_jobs)
+        except Exception as e:
+            print(f"Error fetching jobs: {e}")
+            return jsonify({"status": "error", "message": "Failed to fetch jobs"}), 500
+
     @app.route("/api/data/<filename>")
     def serve_data_file(filename):
         """
         Serve JSON data files from the root data/ folder securely.
         (Ensures files are not publicly accessible via /static)
         """
-        ALLOWED_FILES = {'career.json', 'program_info.json'}
+        ALLOWED_FILES = {'program_info.json'}
         if filename not in ALLOWED_FILES:
             abort(404)
             

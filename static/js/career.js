@@ -5,7 +5,7 @@
 let jobs = [];
 
 // ── Fetch job data ──────────────────────────────────────────
-fetch('/api/data/career.json')
+fetch('/api/jobs')
     .then(response => response.json())
     .then(data => {
         jobs = data;

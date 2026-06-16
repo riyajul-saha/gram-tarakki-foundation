@@ -2,7 +2,7 @@ upload/
 certificate/
 desktop.ini
 hash.py
-carrier.json
+data/*json
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

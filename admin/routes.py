@@ -495,19 +495,45 @@ def init_routes(app):
         if not session.get('admin_logged_in'):
             return jsonify({"status": "error", "message": "Unauthorized"}), 401
             
-        import json
-        import os
-        json_path = os.path.join(app.root_path, 'data', 'career.json')
-        
         if request.method == "GET":
-            if os.path.exists(json_path):
-                with open(json_path, 'r', encoding='utf-8') as f:
-                    try:
-                        jobs = json.load(f)
-                        return jsonify(jobs)
-                    except json.JSONDecodeError:
-                        return jsonify([])
-            return jsonify([])
+            try:
+                from core.db import get_db_connection
+                conn = get_db_connection()
+                if not conn:
+                    return jsonify([])
+                cursor = conn.cursor(dictionary=True)
+                cursor.execute("SELECT * FROM career_details")
+                jobs = cursor.fetchall()
+                cursor.close()
+                conn.close()
+                
+                import json
+                formatted_jobs = []
+                for job in jobs:
+                    formatted_job = {
+                        "id": job["id"],
+                        "title": job["title"],
+                        "department": job["department"],
+                        "type": job["job_type"],
+                        "location": job["location"],
+                        "salary": job["salary"],
+                        "desc": job["description"],
+                        "status": job["status"]
+                    }
+                    for field in ["responsibilities", "requirements", "tags"]:
+                        try:
+                            formatted_job[field] = json.loads(job[field]) if job[field] else []
+                        except:
+                            formatted_job[field] = []
+                    if job.get("deadline"):
+                        formatted_job["deadline"] = job["deadline"].strftime("%Y-%m-%d")
+                    if job.get("posted"):
+                        formatted_job["posted"] = job["posted"].strftime("%Y-%m-%d")
+                    formatted_jobs.append(formatted_job)
+                return jsonify(formatted_jobs)
+            except Exception as e:
+                print(f"Error reading jobs: {e}")
+                return jsonify([])
             
         if request.method == "POST":
             try:
@@ -518,53 +544,65 @@ def init_routes(app):
                 action = data.get('action') # 'create', 'update', 'status', 'delete'
                 job_data = data.get('job')
                 
-                if action == 'create' and not job_data:
+                if action in ['create', 'update'] and not job_data:
                     return jsonify({"status": "error", "message": "Job data is required"}), 400
                 
-                jobs = []
-                if os.path.exists(json_path):
-                    with open(json_path, 'r', encoding='utf-8') as f:
-                        try:
-                            jobs = json.load(f)
-                        except json.JSONDecodeError:
-                            pass
-                            
+                from core.db import get_db_connection
+                conn = get_db_connection()
+                if not conn:
+                    return jsonify({"status": "error", "message": "Database connection failed"}), 500
+                cursor = conn.cursor()
+                
+                import json
                 if action == 'create':
-                    new_id = max([j.get('id', 0) for j in jobs], default=0) + 1
-                    job_data['id'] = new_id
-                    # Map requirements properly
-                    if isinstance(job_data.get('requirements'), str):
-                        job_data['requirements'] = [r.strip() for r in job_data['requirements'].split('\n') if r.strip()]
-                    if 'responsibilities' not in job_data:
-                        job_data['responsibilities'] = []
-                    if 'tags' not in job_data:
-                        job_data['tags'] = []
-                    jobs.append(job_data)
+                    reqs = job_data.get('requirements', [])
+                    if isinstance(reqs, str):
+                        reqs = [r.strip() for r in reqs.split('\n') if r.strip()]
+                    cursor.execute("""
+                        INSERT INTO career_details 
+                        (title, department, job_type, location, salary, description, responsibilities, requirements, tags, status, deadline, posted)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        job_data.get('title'), job_data.get('department'), job_data.get('type'), 
+                        job_data.get('location'), job_data.get('salary'), job_data.get('desc'),
+                        json.dumps(job_data.get('responsibilities', [])), json.dumps(reqs), 
+                        json.dumps(job_data.get('tags', [])), job_data.get('status', 'active'),
+                        job_data.get('deadline') or None, job_data.get('posted') or None
+                    ))
+                    conn.commit()
                 elif action == 'update':
-                    job_id = job_data.get('id')
-                    for i, j in enumerate(jobs):
-                        if j.get('id') == job_id:
-                            if isinstance(job_data.get('requirements'), str):
-                                job_data['requirements'] = [r.strip() for r in job_data['requirements'].split('\n') if r.strip()]
-                            jobs[i].update(job_data)
-                            break
+                    reqs = job_data.get('requirements', [])
+                    if isinstance(reqs, str):
+                        reqs = [r.strip() for r in reqs.split('\n') if r.strip()]
+                    cursor.execute("""
+                        UPDATE career_details SET
+                        title=%s, department=%s, job_type=%s, location=%s, salary=%s, description=%s,
+                        responsibilities=%s, requirements=%s, tags=%s, status=%s, deadline=%s, posted=%s
+                        WHERE id=%s
+                    """, (
+                        job_data.get('title'), job_data.get('department'), job_data.get('type'), 
+                        job_data.get('location'), job_data.get('salary'), job_data.get('desc'),
+                        json.dumps(job_data.get('responsibilities', [])), json.dumps(reqs), 
+                        json.dumps(job_data.get('tags', [])), job_data.get('status', 'active'),
+                        job_data.get('deadline') or None, job_data.get('posted') or None,
+                        job_data.get('id')
+                    ))
+                    conn.commit()
                 elif action == 'status':
-                    job_id = data.get('id')
-                    new_status = data.get('status')
-                    for i, j in enumerate(jobs):
-                        if j.get('id') == job_id:
-                            jobs[i]['status'] = new_status
-                            break
+                    cursor.execute("UPDATE career_details SET status=%s WHERE id=%s", (data.get('status'), data.get('id')))
+                    conn.commit()
                 elif action == 'delete':
-                    job_id = data.get('id')
-                    jobs = [j for j in jobs if j.get('id') != job_id]
+                    cursor.execute("DELETE FROM career_details WHERE id=%s", (data.get('id'),))
+                    conn.commit()
                 else:
                     return jsonify({"status": "error", "message": f"Unknown action: {action}"}), 400
                 
-                with open(json_path, 'w', encoding='utf-8') as f:
-                    json.dump(jobs, f, indent=4)
-                    
-                return jsonify({"status": "success", "jobs": jobs})
+                cursor.close()
+                conn.close()
+                
+                # Fetch updated list to send back or just success
+                return jsonify({"status": "success", "jobs": []})  # Frontend currently re-fetches or uses this
+
             except Exception as e:
                 print(f"Error in api_jobs POST: {e}")
                 return jsonify({"status": "error", "message": "An internal error occurred"}), 500
@@ -617,27 +655,18 @@ def init_routes(app):
                             if member:
                                 job_type = 'staff'
                                 pos = str(member.get('position', ''))
-                                import json, os
-                                from flask import current_app
-                                json_path = os.path.join(current_app.root_path, 'data', 'career.json')
+                                cursor.execute("SELECT title, job_type FROM career_details WHERE id = %s", (pos,))
+                                job_data = cursor.fetchone()
                                 job_title = pos
-                                if os.path.exists(json_path):
-                                    with open(json_path, 'r', encoding='utf-8') as f:
-                                        try:
-                                            jobs = json.load(f)
-                                            for j in jobs:
-                                                if str(j.get('id', '')) == pos:
-                                                    job_title = j.get('title', '')
-                                                    # Check the explicit job type from career.json
-                                                    c_type = j.get('type', '').lower()
-                                                    if 'intern' in c_type or 'intern' in job_title.lower():
-                                                        job_type = 'internship'
-                                                    elif 'volunteer' in c_type or 'volunteer' in job_title.lower():
-                                                        job_type = 'volunteer'
-                                                    else:
-                                                        job_type = 'staff'
-                                                    break
-                                        except: pass
+                                if job_data:
+                                    job_title = job_data.get('title', pos)
+                                    c_type = job_data.get('job_type', '').lower()
+                                    if 'intern' in c_type or 'intern' in job_title.lower():
+                                        job_type = 'internship'
+                                    elif 'volunteer' in c_type or 'volunteer' in job_title.lower():
+                                        job_type = 'volunteer'
+                                    else:
+                                        job_type = 'staff'
                                 staff_id = generate_staff_id(cursor, job_type)
                                 if job_type == 'internship':
                                     import datetime

@@ -1,5 +1,8 @@
 import os
 import mysql.connector
+from mysql.connector import pooling
+
+_connection_pool = None
 
 def init_db():
     try:
@@ -235,6 +238,52 @@ def init_db():
         except mysql.connector.Error:
             pass
         
+        # Create career_details table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS career_details (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                department VARCHAR(255),
+                job_type VARCHAR(100),
+                location VARCHAR(255),
+                salary VARCHAR(100),
+                description TEXT,
+                responsibilities TEXT,
+                requirements TEXT,
+                tags TEXT,
+                status VARCHAR(50) DEFAULT 'active',
+                deadline DATE,
+                posted DATE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        
+        # Add Indexes to frequently queried columns
+        indexes = [
+            ("join_student", "idx_status", "status"),
+            ("join_student", "idx_created_at", "created_at"),
+            ("join_student", "idx_student_id", "student_id"),
+            ("join_volunteer", "idx_status", "status"),
+            ("join_volunteer", "idx_created_at", "created_at"),
+            ("join_volunteer", "idx_email", "email"),
+            ("join_staff", "idx_status", "status"),
+            ("join_staff", "idx_created_at", "created_at"),
+            ("join_partner", "idx_status", "status"),
+            ("donate", "idx_status", "status"),
+            ("donate", "idx_email_phone", "email(100), phone(20)"),
+            ("our_staff", "idx_status", "status"),
+            ("our_staff", "idx_staff_id", "staff_id"),
+            ("our_intern", "idx_status", "status"),
+            ("our_intern", "idx_intern_id", "intern_id"),
+            ("career_details", "idx_status", "status"),
+        ]
+        
+        for table, idx_name, cols in indexes:
+            try:
+                cursor.execute(f"CREATE INDEX {idx_name} ON {table} ({cols})")
+            except mysql.connector.Error:
+                pass
+                
         connection.commit()
         cursor.close()
         connection.close()
@@ -242,15 +291,23 @@ def init_db():
         print(f"Error initializing DB: {err}")
 
 def get_db_connection():
+    global _connection_pool
     try:
-        connection = mysql.connector.connect(
-            host=os.getenv("DB_HOST", "localhost"),
-            port=int(os.getenv("DB_PORT", 3306)),
-            user=os.getenv("DB_USER", "root"),
-            password=os.getenv("DB_PASSWORD", ""),
-            database=os.getenv("DB_NAME", "gram_tarakki")
-        )
-        return connection
+        if _connection_pool is None:
+            dbconfig = {
+                "host": os.getenv("DB_HOST", "localhost"),
+                "port": int(os.getenv("DB_PORT", 3306)),
+                "user": os.getenv("DB_USER", "root"),
+                "password": os.getenv("DB_PASSWORD", ""),
+                "database": os.getenv("DB_NAME", "gram_tarakki")
+            }
+            _connection_pool = pooling.MySQLConnectionPool(
+                pool_name="gtf_pool",
+                pool_size=10,
+                pool_reset_session=True,
+                **dbconfig
+            )
+        return _connection_pool.get_connection()
     except mysql.connector.Error as err:
-        print(f"Error connecting to database: {err}")
+        print(f"Error connecting to database via pool: {err}")
         return None
