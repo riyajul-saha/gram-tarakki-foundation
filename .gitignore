@@ -3,6 +3,7 @@ certificate/
 desktop.ini
 hash.py
 data/*json
+gtf_key.json
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
