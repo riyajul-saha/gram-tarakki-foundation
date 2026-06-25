@@ -139,11 +139,11 @@ def _send_via_gmail_api(email, subject, html_body):
 def _send_email_sync(email, html_body, subject):
     print(f"Starting email delivery process for {email}...", flush=True)
     
-    # 1. Try Gmail API
-    if _send_via_gmail_api(email, subject, html_body):
-        return
+    # # 1. Try Gmail API
+    # if _send_via_gmail_api(email, subject, html_body):
+    #     return
     
-    print("Gmail API failed. Falling back to Google Script...", flush=True)
+    # print("Gmail API failed. Falling back to Google Script...", flush=True)
     
     # 2. Try Google Script
     if _send_via_google_script(email, subject, html_body):
