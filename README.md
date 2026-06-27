@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://gtfoundations.in">
-    <img src="https://img.shields.io/badge/🌐_Live-gtfoundations.in-0d6efd?style=for-the-badge" alt="Live Website" />
+  <a href="https://gramtarakkifoundation.org">
+    <img src="https://img.shields.io/badge/🌐_Live-gramtarakkifoundation.org-0d6efd?style=for-the-badge" alt="Live Website" />
   </a>
   <img src="https://img.shields.io/badge/python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/Flask-3.x-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask" />
