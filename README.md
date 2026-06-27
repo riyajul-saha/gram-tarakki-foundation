@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://gtfoundations.in/static/images/home/logo.webp" alt="Gram Tarakki Foundation Logo" width="120" />
+  <img src="https://gramtarakkifoundation.org/static/images/home/logo.webp" alt="Gram Tarakki Foundation Logo" width="120" />
 </p>
 
 <h1 align="center">🌾 Gram Tarakki Foundation</h1>
