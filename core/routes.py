@@ -8,6 +8,16 @@ from core.email_sender import send_email_async
 from core.db import get_db_connection, init_db
 from core.security import rate_limit, validate_image_file, validate_pdf_file
 import mysql.connector
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+cloudinary.config(
+    cloud_name=os.getenv('cloud_name'),
+    api_key=os.getenv('api_key'),
+    api_secret=os.getenv('api_secret'),
+    secure=True
+)
 
 # ==============================================================================
 # Initialization
@@ -542,11 +552,13 @@ def init_routes(app):
                 if file_size > 1 * 1024 * 1024:
                     return jsonify({"status": "error", "message": "Resume must be under 1 MB."}), 400
                 unique_filename = f"{uuid.uuid4().hex}_{filename}"
-                resume_upload_dir = os.path.join(os.getcwd(), 'upload', 'resume')
-                os.makedirs(resume_upload_dir, exist_ok=True)
-                file_path = os.path.join(resume_upload_dir, unique_filename)
-                file.save(file_path)
-                resume_path = f"/upload/resume/{unique_filename}"
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    folder="job_applications/resumes",
+                    public_id=unique_filename,
+                    resource_type="raw"
+                )
+                resume_path = upload_result.get('secure_url')
         else:
             return jsonify({"status": "error", "message": "Resume is required"}), 400
 
@@ -570,11 +582,13 @@ def init_routes(app):
                 if file_size > 100 * 1024:
                     return jsonify({"status": "error", "message": "Photo must be under 100 KB."}), 400
                 unique_filename = f"{uuid.uuid4().hex}_{filename}"
-                photo_upload_dir = os.path.join(os.getcwd(), 'upload', 'staff_photo')
-                os.makedirs(photo_upload_dir, exist_ok=True)
-                file_path = os.path.join(photo_upload_dir, unique_filename)
-                file.save(file_path)
-                photo_path = f"/upload/staff_photo/{unique_filename}"
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    folder="job_applications/photos",
+                    public_id=unique_filename,
+                    resource_type="auto"
+                )
+                photo_path = upload_result.get('secure_url')
 
         try:
             # Database connection

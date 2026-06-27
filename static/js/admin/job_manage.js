@@ -228,7 +228,7 @@ async function toggleJobStatus(id, currentStatus) {
 }
 
 function renderApplicants() {
-    let html = `<div class="filter-bar"><div class="filter-left"><div class="search-input"><i class="fas fa-search"></i><input id="applicantSearch" placeholder="Search..."></div><select id="statusFilter" class="filter-select"><option value="">All Status</option><option>applied</option><option>shortlisted</option><option>interview</option><option>selected</option><option>rejected</option><option>resign</option></select><select id="jobFilter" class="filter-select"><option value="">All Jobs</option>${jobs.map(j => `<option value="${j.id}">${j.title}</option>`).join('')}</select></div><div><button class="btn-sm btn-outline" id="bulkReject">Bulk Reject</button><button class="btn-sm" id="bulkShortlist">Bulk Shortlist</button></div></div><div class="table-wrapper"><table><thead><tr><th><input type="checkbox" id="selectAll"></th><th>Photo</th><th>Name/Email</th><th>Phone</th><th>Applied For</th><th>Experience</th><th>Resume</th><th>Status</th><th>Actions</th></tr></thead><tbody id="applicantsTable"></tbody></table></div>`;
+    let html = `<div class="filter-bar"><div class="filter-left"><div class="search-input"><i class="fas fa-search"></i><input id="applicantSearch" placeholder="Search..."></div><select id="statusFilter" class="filter-select"><option value="">All Status</option><option>applied</option><option>shortlisted</option><option>interview</option><option>selected</option><option>rejected</option><option>resign</option></select><select id="jobFilter" class="filter-select"><option value="">All Jobs</option>${jobs.map(j => `<option value="${j.id}">${j.title}</option>`).join('')}</select></div><div><button class="btn-sm btn-outline" id="bulkReject">Bulk Reject</button><button class="btn-sm" id="bulkShortlist">Bulk Shortlist</button><button class="btn-sm btn-danger" style="margin-left: 5px;" id="bulkDelete">Bulk Delete</button></div></div><div class="table-wrapper"><table><thead><tr><th><input type="checkbox" id="selectAll"></th><th>Photo</th><th>Name/Email</th><th>Phone</th><th>Applied For</th><th>Experience</th><th>Resume</th><th>Status</th><th>Actions</th></tr></thead><tbody id="applicantsTable"></tbody></table></div>`;
     document.getElementById('tabApplicants').innerHTML = html;
     function filterApplicants() {
         let search = document.getElementById('applicantSearch').value.toLowerCase();
@@ -262,10 +262,11 @@ function renderApplicants() {
                 shortlistOrAcceptBtn = `<button class="icon-btn-sm" onclick="updateApplicantStatus(${a.id}, 'shortlisted')" title="Shortlist"><i class="fas fa-star"></i></button>`;
                 interviewBtn = `<button class="icon-btn-sm" onclick="openInterviewModal(${a.id})" title="Schedule Interview"><i class="fas fa-calendar"></i></button>`;
             }
-            let rejectBtnTitle = a.status === 'selected' ? 'Delete' : 'Reject';
-            let rejectBtnClass = a.status === 'selected' ? 'fa-trash-alt' : 'fa-times';
-            let rejectAction = a.status === 'selected' ? `deleteApplicant(${a.id})` : `updateApplicantStatus(${a.id}, 'rejected')`;
-            return `<tr><td><input type="checkbox" class="applicantCheck" data-id="${a.id}"></td><td>${photoTd}</td><td>${a.name}<br><small>${a.email}</small></td><td>${a.phone}</td><td>${appliedForDisplay}</td><td>${a.experience || '--'}</td><td><button class="icon-btn-sm" onclick="viewResume('${a.resume}')"><i class="fas fa-file-pdf"></i></button></td><td><span class="status-badge status-${a.status}">${a.status}</span></td><td><div class="action-btns"><button class="icon-btn-sm" onclick="viewApplicant(${a.id})" title="View"><i class="fas fa-eye"></i></button>${shortlistOrAcceptBtn}<button class="icon-btn-sm" onclick="${rejectAction}" title="${rejectBtnTitle}"><i class="fas ${rejectBtnClass}"></i></button>${interviewBtn}</div></td></tr>`;
+            let rejectBtnTitle = a.status === 'selected' ? 'Resign' : 'Reject';
+            let rejectBtnClass = a.status === 'selected' ? 'fa-user-times' : 'fa-times';
+            let rejectAction = a.status === 'selected' ? `updateApplicantStatus(${a.id}, 'resign')` : `updateApplicantStatus(${a.id}, 'rejected')`;
+            let deleteBtn = `<button class="icon-btn-sm" onclick="deleteApplicant(${a.id})" title="Delete" style="color: #ef4444;"><i class="fas fa-trash-alt"></i></button>`;
+            return `<tr><td><input type="checkbox" class="applicantCheck" data-id="${a.id}"></td><td>${photoTd}</td><td>${a.name}<br><small>${a.email}</small></td><td>${a.phone}</td><td>${appliedForDisplay}</td><td>${a.experience || '--'}</td><td><button class="icon-btn-sm" onclick="viewResume('${a.resume}')"><i class="fas fa-file-pdf"></i></button></td><td><span class="status-badge status-${a.status}">${a.status}</span></td><td><div class="action-btns"><button class="icon-btn-sm" onclick="viewApplicant(${a.id})" title="View"><i class="fas fa-eye"></i></button>${shortlistOrAcceptBtn}<button class="icon-btn-sm" onclick="${rejectAction}" title="${rejectBtnTitle}"><i class="fas ${rejectBtnClass}"></i></button>${interviewBtn}${deleteBtn}</div></td></tr>`;
         }).join('');
         attachBulkEvents();
     }
@@ -274,6 +275,11 @@ function renderApplicants() {
         if (selectAll) selectAll.onclick = (e) => document.querySelectorAll('.applicantCheck').forEach(cb => cb.checked = e.target.checked);
         document.getElementById('bulkReject').onclick = () => { document.querySelectorAll('.applicantCheck:checked').forEach(cb => updateApplicantStatus(parseInt(cb.dataset.id), 'rejected')); };
         document.getElementById('bulkShortlist').onclick = () => { document.querySelectorAll('.applicantCheck:checked').forEach(cb => updateApplicantStatus(parseInt(cb.dataset.id), 'shortlisted')); };
+        document.getElementById('bulkDelete').onclick = () => { 
+            if (confirm('Are you sure you want to delete the selected applicants?')) {
+                document.querySelectorAll('.applicantCheck:checked').forEach(cb => deleteApplicant(parseInt(cb.dataset.id)));
+            }
+        };
     }
     document.getElementById('applicantSearch').addEventListener('input', filterApplicants);
     document.getElementById('statusFilter').addEventListener('change', filterApplicants);
