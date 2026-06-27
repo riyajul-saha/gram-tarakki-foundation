@@ -94,7 +94,7 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 #         
 #         # Local e testing er jonno 'gtf_key.json', Render e secret file theke asbe
 #         service_account_file = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "gtf_key.json")
-#         delegated_email = os.getenv("DELEGATED_EMAIL", "info@gtfoundations.in")
+#         delegated_email = os.getenv("DELEGATED_EMAIL", "info@gramtarakkifoundation.org")
 #         
 #         if not os.path.exists(service_account_file):
 #             print(f"Error: JSON Key file not found at {service_account_file}", flush=True)

@@ -4,4 +4,4 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /upload/
 
-Sitemap: https://gtfoundations.in/sitemap.xml
+Sitemap: https://gramtarakkifoundation.org/sitemap.xml

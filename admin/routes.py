@@ -1302,7 +1302,7 @@ def init_routes(app):
                                 "student_name": intern.get("fullname"),
                                 "start_date": start_date_str,
                                 "end_date": current_date_cert,
-                                "verify_link": f"www.gtfoundations.in/certificate/{intern.get('intern_id')}"
+                                "verify_link": f"www.gramtarakkifoundation.org/certificate/{intern.get('intern_id')}"
                             }
                             generate_dynamic_certificate(cert_data, mentor_sig_path=mentor_sig_path, head_sig_path=head_sig_path)
                             generated_count += 1

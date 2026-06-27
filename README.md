@@ -387,7 +387,7 @@ We welcome contributions from the community! Here's how you can help:
 <table>
 <tr>
 <td>📧 <strong>Email</strong></td>
-<td><a href="mailto:info@gtfoundations.in">info@gtfoundations.in</a></td>
+<td><a href="mailto:info@gramtarakkifoundation.org">info@gramtarakkifoundation.org</a></td>
 </tr>
 <tr>
 <td>📞 <strong>Phone</strong></td>
@@ -399,7 +399,7 @@ We welcome contributions from the community! Here's how you can help:
 </tr>
 <tr>
 <td>🌐 <strong>Website</strong></td>
-<td><a href="https://gtfoundations.in">gtfoundations.in</a></td>
+<td><a href="https://gramtarakkifoundation.org">gramtarakkifoundation.org</a></td>
 </tr>
 </table>
 

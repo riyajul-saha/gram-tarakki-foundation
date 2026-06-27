@@ -67,7 +67,7 @@ def redirect_to_custom_domain():
     # URL host check kora
     if request.host.endswith('.onrender.com'):
         # Notun URL toiri kore 301 status soho redirect kora
-        new_url = f"https://www.gtfoundations.in"
+        new_url = f"https://www.gramtarakkifoundation.org"
         return redirect(new_url, code=301)
 
 # Extra static file routes (e.g., sitemap.xml, robots.txt, Bing auth) 
